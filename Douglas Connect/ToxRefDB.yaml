@@ -1,0 +1,601 @@
+swagger: '2.0'
+info:
+  title: ToxRef interface (NEL/LEL/NOAEL/LOAEL summary values)
+  description: |
+    This Api exposes the EPA's ToxRef summary dataset (August 2014).
+
+    For now, this Api exposes one of the three summary files, namely the one with computed No Effect Level (NEL)/Lowest Effect Level (LEL)
+    and/or No Observed Adverse Effect Level (NOAEL)/Lowest Observed Adverse Effect Level (LOAEL) across the thousands of assays currently in ToxRefDB.
+
+    The endpoints provided by this Api are: Compound, Assay and Result (Result is combining compound, assay and result data).
+  version: "1.0.0"
+# Service domain - mandatory
+host: toxrefdb-api.cloud.douglasconnect.com
+schemes:
+  - https
+basePath: /beta
+produces:
+  - application/json
+
+paths:
+  /compounds:
+    get:
+      summary: "Get compounds available in ToxRefDB"
+      operationId: compounds_get
+      x-swagger-router-controller: controllers.compounds_controller
+      tags:
+        - compound
+      parameters:
+        - $ref: '#/parameters/Offset'
+        - $ref: '#/parameters/Limit'
+        - $ref: '#/parameters/SearchQuery'
+        - $ref: '#/parameters/CompoundIdFilter'
+      responses:
+        200:
+          description: "List of compounds"
+          schema:
+            $ref: '#/definitions/Compounds'
+        default:
+          description: "Unexpected error"
+          schema:
+            $ref: '#/definitions/Error'
+  /assays:
+    get:
+      summary: "Get assays available in ToxRefDB"
+      operationId: assays_get
+      x-swagger-router-controller: controllers.assays_controller
+      tags:
+        - assay
+      parameters:
+        - $ref: '#/parameters/Offset'
+        - $ref: '#/parameters/Limit'
+        - $ref: '#/parameters/SearchQuery'
+        - $ref: '#/parameters/AssayIdFilter'
+        - $ref: '#/parameters/StudyIdFilter'
+        - $ref: '#/parameters/SpeciesFilter'
+        - $ref: '#/parameters/EntryStatusFilter'
+        - $ref: '#/parameters/UsabilityDescFilter'
+        - $ref: '#/parameters/GuidelineNameFilter'
+        - $ref: '#/parameters/AdminMethodFilter'
+        - $ref: '#/parameters/AdminRouteFilter'
+        - $ref: '#/parameters/StudyTypeFilter'
+        - $ref: '#/parameters/EffectCategoryFilter'
+      responses:
+        200:
+          description: "List of assays"
+          schema:
+            $ref: '#/definitions/AssaysAndAggregations'
+        default:
+          description: "Unexpected error"
+          schema:
+            $ref: '#/definitions/Error'
+  /results:
+    get:
+      summary: "Get results eriched with associated compound and assay information"
+      operationId: results_get
+      x-swagger-router-controller: controllers.results_controller
+      tags:
+        - result
+      parameters:
+        - $ref: '#/parameters/Offset'
+        - $ref: '#/parameters/Limit'
+        - $ref: '#/parameters/SearchQuery'
+        - $ref: '#/parameters/ResultIdFilter'
+        - $ref: '#/parameters/CompoundIdFilter'
+        - $ref: '#/parameters/AssayIdFilter'
+        - $ref: '#/parameters/StudyIdFilter'
+        - $ref: '#/parameters/SpeciesFilter'
+        - $ref: '#/parameters/EntryStatusFilter'
+        - $ref: '#/parameters/UsabilityDescFilter'
+        - $ref: '#/parameters/GuidelineNameFilter'
+        - $ref: '#/parameters/AdminMethodFilter'
+        - $ref: '#/parameters/AdminRouteFilter'
+        - $ref: '#/parameters/StudyTypeFilter'
+        - $ref: '#/parameters/EffectCategoryFilter'
+      responses:
+        200:
+          description: "List of results together with associated compound and assay information "
+          schema:
+            $ref: '#/definitions/ResultsAndAggregations'
+        default:
+          description: "Unexpected error"
+          schema:
+            $ref: '#/definitions/Error'
+parameters:
+  Offset:
+    name: offset
+    description: "Number of assay endpoints to skip (for paging)"
+    in: query
+    required: false
+    type: integer
+  Limit:
+    name: limit
+    description: "Maximum count of assay endpoints to return (for paging)"
+    in: query
+    required: false
+    type: integer
+  SearchQuery:
+    name: query
+    description: "Query string for the full text search"
+    in: query
+    required: false
+    type: string
+  CompoundIdFilter:
+    name: compoundIdFilter
+    description: "Filter by compound IDs"
+    in: query
+    type: array
+    collectionFormat: csv
+    required: false
+    items:
+      type: string
+  AssayIdFilter:
+    name: assayIdFilter
+    description: "Filter by assay IDs"
+    in: query
+    type: array
+    collectionFormat: csv
+    required: false
+    items:
+      type: string
+  StudyIdFilter:
+    name: studyIdFilter
+    description: "Filter by study IDs"
+    in: query
+    type: array
+    collectionFormat: csv
+    required: false
+    items:
+      type: string
+  ResultIdFilter:
+    name: resultIdFilter
+    description: "Filter results by result IDs"
+    in: query
+    required: false
+    type: array
+    collectionFormat: csv
+    items:
+      type: string
+  SpeciesFilter:
+    name: speciesFilter
+    description: "Filter by the species field (e.g. Mouse, Rat, ...)"
+    in: query
+    type: array
+    collectionFormat: csv
+    required: false
+    items:
+      type: string
+  EntryStatusFilter:
+    name: entryStatusFilter
+    description: "Filter by the entry status field (e.g. Complete, Incomplete, ...)"
+    in: query
+    type: array
+    collectionFormat: csv
+    required: false
+    items:
+      type: string
+  UsabilityDescFilter:
+    name: usabilityDescFilter
+    description: "Filter by the usability description field (e.g. Unacceptable, Acceptable Guideline (post-1998), ...)"
+    in: query
+    type: array
+    collectionFormat: csv
+    required: false
+    items:
+      type: string
+  GuidelineNameFilter:
+    name: guidelineNameFilter
+    description: "Filter by the guideline name field (e.g. Chronic toxicity, Carcinogenicity, ...)"
+    in: query
+    type: array
+    collectionFormat: csv
+    required: false
+    items:
+      type: string
+  AdminMethodFilter:
+    name: adminMethodFilter
+    description: "Filter by the admin method field"
+    in: query
+    type: array
+    collectionFormat: csv
+    required: false
+    items:
+      type: string
+  AdminRouteFilter:
+    name: adminRouteFilter
+    description: "Filter by the administration route field (e.g. Oral, Direct, ...)"
+    in: query
+    type: array
+    collectionFormat: csv
+    required: false
+    items:
+      type: string
+  StudyTypeFilter:
+    name: studyTypeFilter
+    description: "Filter by the study type field (e.g. SUB, CHR, ...)"
+    in: query
+    type: array
+    collectionFormat: csv
+    required: false
+    items:
+      type: string
+  EffectCategoryFilter:
+    name: effectCategoryFilter
+    description: "Filter by the effect category field (e.g. Systemic, Offspring, ...)"
+    in: query
+    type: array
+    collectionFormat: csv
+    required: false
+    items:
+      type: string
+definitions:
+  Compounds:
+    type: object
+    properties:
+      total:
+        type: integer
+        description: "Total count of results with current filtering"
+      compounds:
+        type: array
+        items:
+          $ref: '#/definitions/Compound'
+  Compound:
+    type: object
+    properties:
+      _id_:
+        type: string
+        title: "Compound ID"
+        description: "Compound unique identifier"
+      casNumber:
+        type: string
+        title: "CAS number"
+        description: "CAS Number as stored in Toxcast. Can be empty string if no valid CAS number is stored in ToxCast."
+        x-ontology: http://edamontology.org/data_3102
+      chemicalName:
+        type: string
+        title: "Chemical name"
+        description: "Chemical name (as stored in ToxCast)"
+      chemicalSets:
+        type: array
+        title: "Chemical sets"
+        items:
+          type: string
+        description: "Provides supplemental information in terms of which ToxCast testing phase"
+      compoundId:
+        type: string
+        title: "Compound ID"
+        description: "Internal identifier of compounds within ToxRefDB"
+      # inchi:
+      #   type: string
+      #   description: |
+      #     InChI of the compound (source is the offical DSSTox translation file)
+      #   x-ontology: http://edamontology.org/format_1197
+      # inchiKey:
+      #   type: string
+      #   description: |
+      #     InChIKey of the compound (source is the offical DSSTox translation file)
+      #   x-ontology: http://edamontology.org/format_1199
+      # smiles:
+      #   type: string
+      #   description: |
+      #     Smiles of the compound (source is the offical DSSTox translation file)
+      #   x-ontology: http://edamontology.org/format_1196
+  Assay:
+    type: object
+    properties:
+      _id_:
+        type: string
+        title: "Assay ID"
+        description: "Assay unique identifier"
+      studyType:
+        type: string
+        title: "Study type"
+        description: "Study type group based on guidelineNo (CHR=chronic/cancer; MGR=multigenerational reproductive; DEV=Prenatal developmental; SUB=Subchronic; SAC=Subacute; REP=reproductive fertility)"
+      studyTypeId:
+        type: integer
+        title: "Study type ID"
+        description: "Field match with studyType (key value used in database)"
+      effectCategory:
+        type: string
+        title: "Effect category"
+        description: "Grouping of effects based on study type and endpoint type (generally every effect for a particular study type belongs to an endpoint category) "
+      species:
+        type: string
+        title: "Species"
+        description: "Tested species"
+      speciesId:
+        type: integer
+        title: "Species ID"
+        description: "Field match with species (key value used in database)"
+      strain:
+        type: string
+        title: "Strain"
+        description: "Tested strain if exact match"
+      commentsAnimal:
+        type: string
+        title: "Comments (animal)"
+        description: "usually this provides specification of strain"
+      adminMethod:
+        type: string
+        title: "Admin method"
+        description: "Method of administration"
+      adminRoute:
+        type: string
+        title: "Admin route"
+        description: "Route of administration"
+      doseStart:
+        type: integer
+        x-nullable: true
+        title: "Dose start"
+        description: "Starting time (generally as listed in study report)"
+      doseStartUnit:
+        type: string
+        title: "Dose start unit"
+        description: "Unit of time including gestational days and generations"
+      doseEnd:
+        type: integer
+        x-nullable: true
+        title: "Dose end"
+        description: "Dose end time (generally as listed in study report)"
+      doseEndUnit:
+        type: string
+        title: "Dose end unit"
+        description: "Unit of time including gestational days and generations"
+      lotBatch:
+        type: string
+        title: "Lot batch"
+        description: "Lot and batch information of test material if provided"
+      purity:
+        type: number
+        format: float
+        x-nullable: true
+        title: "Purity"
+        description: "Purity of test material if provided"
+      source:
+        type: string
+        title: "Source"
+        description: "Source of test material if provided"
+      ldt:
+        type: number
+        format: float
+        title: "Low dose tested"
+        description: "low dose tested (in this file this is the same as minDose)"
+      hdt:
+        type: number
+        format: float
+        title: "High dose tested"
+        description: "high dose tested (in this file this is the same as maxDose)"
+      doseUnit:
+        type: string
+        title: "Dose unit"
+        description: "Unit of dose"
+      noDosesTested:
+        type: integer
+        title: "No doses tested"
+        description: "Number of dose groups (low-1, mid-2, mid-high-3, high-4 for example; this group male and female dosing to a single level)"
+      dataSource:
+        type: string
+        title: "Data source"
+        description: "Primary source of study or study review (e.g., OPP DER = Office of Pesticide Program Data Evaluation Record, openLit = open literature study)"
+      entryStatusId:
+        type: integer
+        title: "Entry status ID"
+        description: "Field match with entryStatus (key value used in database)"
+      entryStatus:
+        type: string
+        title: "Entry status"
+        description: "Summarizes the status of data entry (partially complete (effect data) = data entry is complete but independent external review has not been completed; complete = indendent review has been completed (only a fraction of the studies have undergone this external review)"
+      entryLevelId:
+        type: integer
+        title: "Entry level ID"
+        description: "Field match with entryLevel (key value used in database)"
+      entryLevel:
+        type: string
+        title: "Entry level"
+        description: "Level of detail the study was entered (for the vast majority of studies all treatment related effects were entered); summary = all effects entered provided in the summary document or abstract but no assurance that all effects were mentioned"
+      usability:
+        type: integer
+        title: "Usability"
+        description: "1&2=Guideline Acceptable; 3=Non-Guideline Acceptable; 4=Unacceptable; 5=Incomplete/Deficient Report; 6=Not Evaluated (Recommendation)"
+      usabilityDesc:
+        type: string
+        title: "Usability desc"
+        description: "Description of dataUsabilityCode"
+      studyId:
+        type: integer
+        title: "Study ID"
+        description: "Unique study identifier (database generated)"
+      sourceStudyNumericId:
+        type: integer
+        x-nullable: true
+        title: "Source study numeric ID"
+        description: "Most often the MRID (EPA OPP study id) but can be PMID for Open Lit"
+      sourceStudyAlphanumericId:
+        type: integer
+        x-nullable: true
+        title: "Source study alphanumeric ID"
+        description: "Other study id information or source (non-numeric) study id"
+      year:
+        type: integer
+        x-nullable: true
+        title: "Year"
+        description: "Year study was conducted/concluded/report written"
+      citation:
+        type: string
+        title: "Citation"
+        description: "Reference for study; only to be used as descriptive information and not definitive citation as these are not fully cross-referenced."
+      guidelineNo:
+        type: string
+        title: "Guideline number"
+        description: "Closest match to OPPTS guideline number (Study type identifier)"
+      guidelineName:
+        type: string
+        title: "Guideline name"
+        description: "Closest match to OPPTS guideline name (Study type identifier)"
+  ResultValues:
+    type: object
+    properties:
+      _id_:
+        type: string
+        title: "Result ID"
+        description: "Result unique identifier"
+      studyLevelLelDoseLevel:
+        type: integer
+        x-nullable: true
+        title: "Study level LEL dose level"
+        description: "Used to determine if any LEL was established across any endpoint category for the study (this helps to see if any effects were observed at all and to QC if effect data was entered at all)"
+      lelQualifier:
+        type: string
+        title: "LEL qualifier"
+        description: "Provides context for the LEL especially when no effect for a particular endpoint category was not observed. "
+      lelDoseLevel:
+        type: integer
+        x-nullable: true
+        title: "LEL dose level"
+        description: "Dose level of the LEL (Low-1,Mid-2,High-3…)"
+      lelDose:
+        type: number
+        format: float
+        x-nullable: true
+        title: "LEL dose"
+        description: "Dose of LEL"
+      nelQualifier:
+        type: string
+        title: "NEL qualifier"
+        description: "Provides context for the NEL; If the nelDose is null (blank) then the user of this data can decide if they would like to derive the NEL based on the LEL/10 or LEL/3 or to leave blank/null/missing."
+      nelDoseLevel:
+        type: integer
+        x-nullable: true
+        title: "NEL dose level"
+        description: "Dose level of the NEL"
+      nelDose:
+        type: number
+        format: float
+        x-nullable: true
+        title: "NEL dose"
+        description: "Dose of NEL (see nel qualifier for context around missing/null/blank values)"
+      studyLevelLoaelDoseLevel:
+        type: integer
+        x-nullable: true
+        title: "Study level LOAEL dose level"
+        description: "Used to determine if any LOAEL was established across any endpoint category for the study (this helps to see if any effects were observed at all and to QC if effect data was entered at all)"
+      loaelQualifier:
+        type: string
+        title: "LOAEL qualifier"
+        description: "Provides context for the LOAEL especially when no effect for a particular endpoint category was not observed. NOAEL and LOAEL were derived primarily from the OPP source documents and most other data sources do not have NOAEL/LOAEL values. "
+      loaelDoseLevel:
+        type: integer
+        x-nullable: true
+        title: "LOAEL dose level"
+        description: "Dose level of the LOAEL (Low-1,Mid-2,High-3…)"
+      loaelDose:
+        type: number
+        format: float
+        x-nullable: true
+        title: "LOAEL dose"
+        description: "Dose of LOAEL"
+      noaelQualifier:
+        type: string
+        title: "NOAEL qualifier"
+        description: "Provides context for the NOAEL; If the noaelDose is null (blank) then the user of this data can decide if they would like to derive the NOAEL based on the LOAEL/10 or LOAEL/3 or to leave blank/null/missing."
+      noaelDoseLevel:
+        type: integer
+        x-nullable: true
+        title: "NOAEL dose level"
+        description: "Dose level of the NOAEL"
+      noaelDose:
+        type: number
+        format: float
+        x-nullable: true
+        title: "NOAEL dose"
+        description: "Dose of NOAEL (see nel qualifier for context around missing/null/blank values)"
+  Result:
+    type: object
+    properties:
+      _id_:
+        type: string
+        title: "Result ID"
+        description: "Result unique identifier"
+      compound:
+        $ref: '#/definitions/Compound'
+      assay:
+        $ref: '#/definitions/Assay'
+      result:
+        $ref: '#/definitions/ResultValues'
+  AssaysAndAggregations:
+    type: object
+    properties:
+      assays:
+        type: array
+        items:
+          $ref: '#/definitions/Assay'
+      aggregations:
+        $ref: '#/definitions/Aggregations'
+      total:
+        type: integer
+        description: "Total count of results with current filtering"
+  ResultsAndAggregations:
+    type: object
+    properties:
+      results:
+        type: array
+        description: "Array of Result objects"
+        items:
+          $ref: '#/definitions/Result'
+      aggregations:
+        $ref: '#/definitions/Aggregations'
+      total:
+        type: integer
+        description: "Total count of results with current filtering"
+  Aggregation:
+    type: object
+    properties:
+      title:
+        type: string
+        description: "Display title for the group of faceting terms"
+      filterTerm:
+        type: string
+        description: "Term used to filter the results"
+      terms:
+        type: array
+        description: "Faceting terms for this group"
+        items:
+          type: object
+          properties:
+            value:
+              type: string
+              description: "Value to display to the user and use for filtering"
+            count:
+              type: integer
+              description: "Number of items if the current view is filtered by exactly this additional value"
+            url:
+              type: string
+              format: url
+              description: "Preconfigured endpoint url with the same result set as the current one but also filtered to this value"
+  Aggregations:
+    type: object
+    properties:
+      species:
+        $ref: '#/definitions/Aggregation'
+      entryStatus:
+        $ref: '#/definitions/Aggregation'
+      usabilityDesc:
+        $ref: '#/definitions/Aggregation'
+      guidelineName:
+        $ref: '#/definitions/Aggregation'
+      adminMethod:
+        $ref: '#/definitions/Aggregation'
+      adminRoute:
+        $ref: '#/definitions/Aggregation'
+      studyType:
+        $ref: '#/definitions/Aggregation'
+      effectCategory:
+        $ref: '#/definitions/Aggregation'
+  Error:
+    type: object
+    properties:
+      code:
+        type: integer
+        format: int32
+      message:
+        type: string
