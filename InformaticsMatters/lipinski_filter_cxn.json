@@ -1,0 +1,173 @@
+  {
+    "serviceConfig": {
+      "id": "chemaxon.calculators.lipinski",
+      "name": "Lipinski (CXN)",
+      "description": "Lipinski rule of 5 filter using ChemAxon calculators",
+      "tags": [
+        "lipinski",
+        "filter",
+        "druglike",
+        "molecularproperties",
+        "chemaxon"
+      ],
+      "resourceUrl": "https://squonk.it/xwiki/bin/view/Cell+Directory/Data/Lipinski+filter+%28CXN%29",
+      "icon": "icons/filter_molecules.png",
+      "inputDescriptors": [
+        {
+          "name": "input",
+          "mediaType": "application/x-squonk-dataset-molecule+json",
+          "primaryType": "org.squonk.dataset.Dataset",
+          "secondaryType": "org.squonk.types.MoleculeObject"
+        }
+      ],
+      "outputDescriptors": [
+        {
+          "name": "output",
+          "mediaType": "application/x-squonk-dataset-molecule+json",
+          "primaryType": "org.squonk.dataset.Dataset",
+          "secondaryType": "org.squonk.types.MoleculeObject"
+        }
+      ],
+      "optionDescriptors": [
+        {
+          "@class": "org.squonk.options.OptionDescriptor",
+          "typeDescriptor": {
+            "@class": "org.squonk.options.SimpleTypeDescriptor",
+            "type": "java.lang.String"
+          },
+          "key": "query.filterMode",
+          "label": "Filter mode",
+          "description": "How to filter results",
+          "values": [
+            "INCLUDE_PASS",
+            "INCLUDE_FAIL",
+            "INCLUDE_ALL"
+          ],
+          "defaultValue": "INCLUDE_PASS",
+          "visible": true,
+          "editable": true,
+          "minValues": 1,
+          "maxValues": 1,
+          "modes": [
+            "User"
+          ]
+        },
+        {
+          "@class": "org.squonk.options.OptionDescriptor",
+          "typeDescriptor": {
+            "@class": "org.squonk.options.SimpleTypeDescriptor",
+            "type": "java.lang.Integer"
+          },
+          "key": "query.filterThreshold",
+          "label": "Number of violations",
+          "description": "Number of violations to accept",
+          "defaultValue": 1,
+          "visible": true,
+          "editable": true,
+          "minValues": 1,
+          "maxValues": 1,
+          "modes": [
+            "User"
+          ]
+        },
+        {
+          "@class": "org.squonk.options.OptionDescriptor",
+          "typeDescriptor": {
+            "@class": "org.squonk.options.SimpleTypeDescriptor",
+            "type": "org.squonk.types.NumberRange$Float"
+          },
+          "key": "query.MolWeight_CXN",
+          "label": "Mol weight",
+          "description": "Molecular weight",
+          "defaultValue": {
+            "@class": "org.squonk.types.NumberRange$Float",
+            "minValue": 0,
+            "maxValue": 500
+          },
+          "visible": true,
+          "editable": true,
+          "minValues": 0,
+          "maxValues": 1,
+          "modes": [
+            "User"
+          ]
+        },
+        {
+          "@class": "org.squonk.options.OptionDescriptor",
+          "typeDescriptor": {
+            "@class": "org.squonk.options.SimpleTypeDescriptor",
+            "type": "org.squonk.types.NumberRange$Float"
+          },
+          "key": "query.LogP_CXN",
+          "label": "LogP",
+          "description": "LogP partition coefficient",
+          "defaultValue": {
+            "@class": "org.squonk.types.NumberRange$Float",
+            "maxValue": 5
+          },
+          "visible": true,
+          "editable": true,
+          "minValues": 0,
+          "maxValues": 1,
+          "modes": [
+            "User"
+          ]
+        },
+        {
+          "@class": "org.squonk.options.OptionDescriptor",
+          "typeDescriptor": {
+            "@class": "org.squonk.options.SimpleTypeDescriptor",
+            "type": "org.squonk.types.NumberRange$Integer"
+          },
+          "key": "query.HBD_CXN",
+          "label": "HBD count",
+          "description": "H-bond donor count",
+          "defaultValue": {
+            "@class": "org.squonk.types.NumberRange$Integer",
+            "minValue": 0,
+            "maxValue": 5
+          },
+          "visible": true,
+          "editable": true,
+          "minValues": 0,
+          "maxValues": 1,
+          "modes": [
+            "User"
+          ]
+        },
+        {
+          "@class": "org.squonk.options.OptionDescriptor",
+          "typeDescriptor": {
+            "@class": "org.squonk.options.SimpleTypeDescriptor",
+            "type": "org.squonk.types.NumberRange$Integer"
+          },
+          "key": "query.HBA_CXN",
+          "label": "HBA count",
+          "description": "H-bond acceptor count",
+          "defaultValue": {
+            "@class": "org.squonk.types.NumberRange$Integer",
+            "minValue": 0,
+            "maxValue": 10
+          },
+          "visible": true,
+          "editable": true,
+          "minValues": 0,
+          "maxValues": 1,
+          "modes": [
+            "User"
+          ]
+        }
+      ],
+      "status": "UNKNOWN",
+      "statusLastChecked": null,
+      "executorClassName": "org.squonk.execution.steps.impl.MoleculeServiceThinExecutorStep"
+    },
+    "thinDescriptors": [
+      {
+        "input": "input",
+        "output": "output",
+        "filtering": true
+      }
+    ],
+    "executionEndpoint": "lipinski"
+  }
