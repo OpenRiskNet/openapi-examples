@@ -58,7 +58,7 @@ Inlcuded are an example of each type
 
 These descriptors result in the following "cells" appearing in the Squonk Computational Notebook: 
 
-![Squonk cells](/cells.png)
+![Squonk cells](cells.png)
 
 Further explanations on these descriptors can be provided.
 
