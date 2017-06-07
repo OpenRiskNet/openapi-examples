@@ -53,8 +53,8 @@ For Docker services Swagger does not directly apply, though in reality the execu
 
 Inlcuded are an example of each type
 
-* HTTP descriptor for Lipinski filter using ChemAxon: [lipinski_filter_cxn.json]
-* Docker descriptor for performing molecule clustering using RDKit: [cluster_butina.json]
+* HTTP descriptor for Lipinski filter using ChemAxon: [see here](lipinski_filter_cxn.json)
+* Docker descriptor for performing molecule clustering using RDKit: [see here](cluster_butina.json)
 
 These descriptors result in the following "cells" appearing in the Squonk Computational Notebook: 
 
