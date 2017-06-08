@@ -1,0 +1,1399 @@
+# Definition of the SCAIView query API
+swagger: '2.0'
+
+# This is your document metadata
+info:
+  version: "1.0"
+  title: SCAIView API
+  description: all document and text analytics related queries - find and retrieve documents or concepts
+  contact: 
+    name: Sven Hodapp
+    url: http://www.scai.fraunhofer.de
+    email: sven.hodapp@scai.fraunhofer.de
+  license: 
+    name: Fraunhofer terms and conditions
+    url: http://www.scaiview.com/en/terms-and-conditions.html
+  termsOfService: academic use only
+
+host: api.scaiview.com
+
+basePath: /v1
+
+schemes: 
+  - http
+  - https
+
+paths:
+  
+  ########################################################################################
+  # document retrieval  
+  ########################################################################################
+  
+  # fulltext query.
+  /document/fulltextSearch:
+    post:
+      summary: find all documents containing the search term (or expression)
+      description: |
+        Returns a list of `document identifiers` where the **search term** matches anywhere in the document. 
+        The lucene query syntax can be used (see https://lucene.apache.org/core/2_9_4/queryparsersyntax.html). 
+        Optional query parameter of **limit** determines size of returned document array. 
+      tags:
+        - document retrieval
+      operationId: docFulltextSearch
+      consumes:
+        - application/xml
+      produces:
+        - application/json
+        - application/xml
+      parameters:
+        - name: searchTerm
+          in: body
+          description: search term or expression 
+          required: true
+          schema:
+            $ref: "#/definitions/searchTerm"
+        - name: limit
+          in: query
+          description: maximum number of results to return
+          required: false
+          type: integer
+          format: int32      
+      responses:
+        200:
+          description: Successful response
+          schema:
+            title: documents
+            type: array
+            items:
+              $ref: '#/definitions/documentId'              
+        400:
+          description: Invalid search term
+          schema:
+            $ref: '#/definitions/errorModel'
+        404:
+          description: Document not found
+          schema:
+            $ref: '#/definitions/errorModel'
+        415:
+          description: Unsupported media type
+          schema:
+            $ref: '#/definitions/errorModel'
+        501:
+          description: Not implemented
+          schema:
+            $ref: '#/definitions/errorModel'
+        default:
+          description: Unexpected error
+          schema:
+            $ref: '#/definitions/errorModel'
+                        
+  # concept query.
+  /document/conceptSearch:
+    post:
+      summary: find all documents containing the concept
+      description: |
+        Returns a list of `document identifiers` where the **concept** is annotated anywhere in the document. 
+        Optional query parameter of **limit** determines size of returned document array. 
+      tags:
+        - document retrieval
+      operationId: docConceptSearch
+      consumes:
+        - application/xml
+      produces:
+        - application/json
+        - application/xml
+      parameters:
+        - name: conceptId
+          in: body
+          description: concept 
+          required: true
+          schema:
+            $ref: "#/definitions/conceptId"
+        - name: limit
+          in: query
+          description: maximum number of results to return
+          required: false
+          type: integer
+          format: int32      
+      responses:
+        200:
+          description: Successful response
+          schema:
+            title: documentId
+            type: array
+            items:
+              $ref: '#/definitions/documentId'              
+        400:
+          description: Invalid search term
+          schema:
+            $ref: '#/definitions/errorModel'
+        404:
+          description: Document not found
+          schema:
+            $ref: '#/definitions/errorModel'
+        415:
+          description: Unsupported media type
+          schema:
+            $ref: '#/definitions/errorModel'
+        501:
+          description: Not implemented
+          schema:
+            $ref: '#/definitions/errorModel'
+        default:
+          description: Unexpected error
+          schema:
+            $ref: '#/definitions/errorModel'
+            
+  # tree query.
+  /document/treeSearch:
+    post:
+      summary: find all documents containing any concepts belonging to that tree
+      description: |
+        Returns a list of `document identifiers` where any children of the **tree root** match anywhere in the document. 
+        Optional query parameter of **limit** determines
+        size of returned document array. 
+      tags:
+        - document retrieval
+      operationId: docTreeSearch
+      consumes:
+        - application/xml
+      produces:
+        - application/json
+        - application/xml
+      parameters:
+        - name: treeId
+          in: body
+          description: identifier of the search tree 
+          required: true
+          schema:
+            $ref: "#/definitions/treeId"
+        - name: limit
+          in: query
+          description: maximum number of results to return
+          required: false
+          type: integer
+          format: int32      
+      responses:
+        200:
+          description: Successful response
+          schema:
+            title: documentId
+            type: array
+            items:
+              $ref: '#/definitions/documentId'              
+        400:
+          description: Invalid search term
+          schema:
+            $ref: '#/definitions/errorModel'
+        404:
+          description: Document not found
+          schema:
+            $ref: '#/definitions/errorModel'
+        415:
+          description: Unsupported media type
+          schema:
+            $ref: '#/definitions/errorModel'
+        501:
+          description: Not implemented
+          schema:
+            $ref: '#/definitions/errorModel'
+        default:
+          description: Unexpected error
+          schema:
+            $ref: '#/definitions/errorModel'
+            
+  # date query.
+  /document/dateSearch:
+    post:
+      summary: find all documents that have been published in a certain date span
+      description: |
+        Returns a list of `document identifiers` hat have been published in a certain date span. 
+        Optional query parameter of **limit** determines
+        size of returned document array. 
+      tags:
+        - document retrieval
+      operationId: docDateSearch
+      consumes:
+        - application/xml
+      produces:
+        - application/json
+        - application/xml
+      parameters:
+        - name: date
+          in: body
+          description: from that date on up to that date
+          required: true
+          schema:
+            $ref: "#/definitions/dateRange"
+        - name: limit
+          in: query
+          description: maximum number of results to return
+          required: false
+          type: integer
+          format: int32      
+      responses:
+        200:
+          description: Successful response
+          schema:
+            title: documentId
+            type: array
+            items:
+              $ref: '#/definitions/documentId'              
+        400:
+          description: Invalid search term
+          schema:
+            $ref: '#/definitions/errorModel'
+        404:
+          description: Document not found
+          schema:
+            $ref: '#/definitions/errorModel'
+        415:
+          description: Unsupported media type
+          schema:
+            $ref: '#/definitions/errorModel'
+        501:
+          description: Not implemented
+          schema:
+            $ref: '#/definitions/errorModel'
+        default:
+          description: Unexpected error
+          schema:
+            $ref: '#/definitions/errorModel'
+            
+  # date query.
+  /document/journalSearch:
+    post:
+      summary: find all documents that have been published in a certain journal
+      description: |
+        Returns a list of `document identifiers` hat have been published in a certain journal. 
+        Optional query parameter of **limit** determines
+        size of returned document array. 
+      tags:
+        - document retrieval
+      operationId: docJournalSearch
+      consumes:
+        - application/xml
+      produces:
+        - application/json
+        - application/xml
+      parameters:
+        - name: journal
+          in: body
+          description: published in that journal
+          required: true
+          schema:
+            $ref: "#/definitions/journalId"
+        - name: limit
+          in: query
+          description: maximum number of results to return
+          required: false
+          type: integer
+          format: int32      
+      responses:
+        200:
+          description: Successful response
+          schema:
+            title: documentId
+            type: array
+            items:
+              $ref: '#/definitions/documentId'              
+        400:
+          description: Invalid search term
+          schema:
+            $ref: '#/definitions/errorModel'
+        404:
+          description: Document not found
+          schema:
+            $ref: '#/definitions/errorModel'
+        415:
+          description: Unsupported media type
+          schema:
+            $ref: '#/definitions/errorModel'
+        501:
+          description: Not implemented
+          schema:
+            $ref: '#/definitions/errorModel'
+        default:
+          description: Unexpected error
+          schema:
+            $ref: '#/definitions/errorModel'
+            
+  # fulltext query.
+  /document/runSearch:
+    post:
+      summary: find all documents belonging to a run
+      description: |
+        Returns a list of `document identifiers` where the documents have been processed in a run. Optional query parameter of **limit** determines size of returned document array. 
+      tags:
+        - document retrieval
+      operationId: docRunSearch
+      consumes:
+        - application/xml
+      produces:
+        - application/json
+        - application/xml
+      parameters:
+        - name: runId
+          in: body
+          description: identifier of a run
+          required: true
+          schema:
+            $ref: "#/definitions/runId"
+        - name: limit
+          in: query
+          description: maximum number of results to return
+          required: false
+          type: integer
+          format: int32      
+      responses:
+        200:
+          description: Successful response
+          schema:
+            title: documentId
+            type: array
+            items:
+              $ref: '#/definitions/documentId'              
+        400:
+          description: Invalid search term
+          schema:
+            $ref: '#/definitions/errorModel'
+        404:
+          description: Document not found
+          schema:
+            $ref: '#/definitions/errorModel'
+        415:
+          description: Unsupported media type
+          schema:
+            $ref: '#/definitions/errorModel'
+        501:
+          description: Not implemented
+          schema:
+            $ref: '#/definitions/errorModel'
+        default:
+          description: Unexpected error
+          schema:
+            $ref: '#/definitions/errorModel'
+                        
+  /document/authorSearch:
+    post:
+      summary: find all documents published by that author
+      description: |
+        Returns a list of `document identifiers` where the documents have been written by the reqeuested author. Optional query parameter of **limit** determines size of returned document array. 
+      tags:
+        - document retrieval
+      operationId: docAuthorSearch
+      consumes:
+        - application/xml
+      produces:
+        - application/json
+        - application/xml
+      parameters:
+        - name: authorId
+          in: body
+          description: identifier of an author
+          required: true
+          schema:
+            $ref: "#/definitions/authorId"
+        - name: limit
+          in: query
+          description: maximum number of results to return
+          required: false
+          type: integer
+          format: int32      
+      responses:
+        200:
+          description: Successful response
+          schema:
+            title: documentId
+            type: array
+            items:
+              $ref: '#/definitions/documentId'              
+        400:
+          description: Invalid search term
+          schema:
+            $ref: '#/definitions/errorModel'
+        404:
+          description: Document not found
+          schema:
+            $ref: '#/definitions/errorModel'
+        415:
+          description: Unsupported media type
+          schema:
+            $ref: '#/definitions/errorModel'
+        501:
+          description: Not implemented
+          schema:
+            $ref: '#/definitions/errorModel'
+        default:
+          description: Unexpected error
+          schema:
+            $ref: '#/definitions/errorModel'
+                        
+  /document/{documentId}:
+    get:
+      tags:
+        - document retrieval
+      summary: find document by ID
+      description: Returns a document object (title, authors, source, date,...). Can return `CAS`.
+      operationId: getDocumentById
+      produces:
+        - application/json
+        - application/xml
+        - application/xmi
+      parameters:
+        - in: path
+          name: documentId
+          description: ID of document that needs to be fetched (e.g. `17504100`).
+          required: true
+          type: string
+      responses:
+        200:
+          description: successful operation
+          schema:
+            $ref: "#/definitions/document"
+        400:
+          description: Invalid ID supplied
+          schema:
+            $ref: '#/definitions/errorModel'
+        404:
+          description: Document not found
+          schema:
+            $ref: '#/definitions/errorModel'
+        415:
+          description: Unsupported media type
+          schema:
+            $ref: '#/definitions/errorModel'
+        501:
+          description: Not implemented
+          schema:
+            $ref: '#/definitions/errorModel'
+        default:
+          description: Unexpected error
+          schema:
+            $ref: '#/definitions/errorModel'
+
+  ########################################################################################
+  # concept retrieval  
+  ########################################################################################
+  
+  /concept/{conceptId}/countDocuments:
+    get:
+      tags:
+        - concept retrieval
+      summary: number of documents mentioning that concept
+      description: Returns a count of all documents containing that concept.
+      operationId: getDocumentCountByCId
+      produces:
+        - application/json
+        - application/xml
+      parameters:
+        - in: path
+          name: conceptId
+          description: ID of concept that needs to be counted (e.g. `[Human Genes / Proteins:"BRCA1"]`).
+          required: true
+          type: string
+        - name: corpusId
+          in: query
+          description: ID of the document corpus (i.e. a selection of documents), default is all
+          required: false
+          type: string
+        - name: model
+          in: query
+          description: ID of the JPM model (e.g. name of dictionary version used), default is latest
+          required: false
+          type: string
+        - name: groupBy
+          in: query
+          description: valid values are `total`, `year`, `month`, default is **total**
+          type: string
+      responses:
+        "404":
+          description: Concept not found
+        "200":
+          description: successful operation
+          schema:
+            title: count
+            type: array
+            items:
+              $ref: "#/definitions/count"
+        "400":
+          description: Invalid ID supplied
+            
+  /concept/{conceptId}/{synonym}/countDocuments:
+    get:
+      tags:
+        - concept retrieval
+      summary: number of documents mentioning that synonym of a concept
+      description: Returns a count of all documents containing that synonym.
+      operationId: getSynDocumentCountByCId
+      produces:
+        - application/json
+        - application/xml
+      parameters:
+        - in: path
+          name: conceptId
+          description: ID of concept that needs to be counted (e.g. `[Human Genes / Proteins:"BRCA1"]`).
+          required: true
+          type: string
+        - in: path
+          name: synonym
+          description: synonym that needs to be counted (e.g. `breast and ovarian cancer susceptibility protein1`).
+          required: true
+          type: string
+        - name: corpusId
+          in: query
+          description: ID of the document corpus (i.e. a selection of documents), default is all
+          required: false
+          type: string
+        - name: model
+          in: query
+          description: ID of the JPM model (e.g. name of dictionary version used), default is latest
+          required: false
+          type: string
+        - name: groupBy
+          in: query
+          description: valid values are `total`, `year`, `month`, default is **total**
+          type: string
+      responses:
+        "404":
+          description: Concept not found
+        "200":
+          description: successful operation
+          schema:
+            title: count
+            type: array
+            items:
+              $ref: "#/definitions/count"
+        "400":
+          description: Invalid ID supplied
+            
+  /concept/{conceptId}/countHits:
+    get:
+      tags:
+        - concept retrieval
+      summary: number of hits mapped to that concept
+      description: Returns a count of all hits in all documents.
+      operationId: getConceptHitCountByCId
+      produces:
+        - application/json
+        - application/xml
+      parameters:
+        - in: path
+          name: conceptId
+          description: ID of concept that needs to be counted (e.g. `[Human Genes / Proteins:"BRCA1"]`).
+          required: true
+          type: string
+        - name: corpusId
+          in: query
+          description: ID of the document corpus (i.e. a selection of documents), default is all
+          required: false
+          type: string
+        - name: model
+          in: query
+          description: ID of the JPM model (e.g. name of dictionary version used), default is latest
+          required: false
+          type: string
+        - name: groupBy
+          in: query
+          description: valid values are `total`, `year`, `month`, default is **total**
+          type: string
+      responses:
+        "404":
+          description: Concept not found
+        "200":
+          description: successful operation
+          schema:
+            title: count
+            type: array
+            items:
+              $ref: "#/definitions/count"
+        "400":
+          description: Invalid ID supplied
+          
+  /concept/{conceptId}/{synonym}/countHits:
+    get:
+      tags:
+        - concept retrieval
+      summary: number of hits mapped to that synonym
+      description: Returns a count of all hits of a synonym of a concept in all documents.
+      operationId: getSynHitCountByCId
+      produces:
+        - application/json
+        - application/xml
+      parameters:
+        - in: path
+          name: conceptId
+          description: ID of concept that needs to be counted (e.g. `[Human Genes / Proteins:"BRCA1"]`).
+          required: true
+          type: string
+        - in: path
+          name: synonym
+          description: synonym that needs to be counted (e.g. `breast and ovarian cancer susceptibility protein1`).
+          required: true
+          type: string
+        - name: corpusId
+          in: query
+          description: ID of the document corpus (i.e. a selection of documents), default is all
+          required: false
+          type: string
+        - name: model
+          in: query
+          description: ID of the JPM model (e.g. name of dictionary version used), default is latest
+          required: false
+          type: string
+        - name: groupBy
+          in: query
+          description: valid values are `total`, `year`, `month`, default is **total**
+          type: string
+      responses:
+        "404":
+          description: Concept or synonym not found
+        "200":
+          description: successful operation
+          schema:
+            title: count
+            type: array
+            items:
+              $ref: "#/definitions/count"
+        "400":
+          description: Invalid ID or synonym supplied
+
+  /concept/noHits:
+    get:
+      tags:
+        - concept retrieval
+      summary: retrieve all concepts that don't have a hit
+      description: Returns a list of all concepts that don't have a hit in a document.
+      operationId: getNoHit
+      produces:
+        - application/json
+        - application/xml
+      parameters:
+        - name: model
+          in: query
+          description: ID of the JPM model
+          required: false
+          type: string
+      responses:
+        "200":
+          description: successful operation
+          schema:
+            title: conceptId
+            type: array
+            items:
+              $ref: '#/definitions/conceptId'              
+        "400":
+          description: Invalid model ID supplied
+  
+  # concept query for a document        
+  /document/{documentId}/getConcepts:
+    get:
+      tags:
+        - concept retrieval
+      summary: retrieve all concepts that are within that document
+      description: Returns a list of all concepts that have a hit in that document.
+      operationId: getDocumentConcepts
+      produces:
+        - application/json
+        - application/xml
+      parameters:
+        - in: path
+          name: documentId
+          description: ID of document to be analysed (e.g. 17504100).
+          required: true
+          type: string
+        - name: conceptClass
+          in: query
+          description: class of the concepts (e.g. `[Human Genes / Proteins]`).
+          required: false
+          type: string
+      responses:
+        "200":
+          description: successful operation
+          schema:
+            title: conceptId
+            type: array
+            items:
+              $ref: '#/definitions/conceptId'              
+        "400":
+          description: Invalid model ID supplied
+
+  # concept query for a document        
+  /document/{documentId}/countConcepts:
+    get:
+      tags:
+        - concept retrieval
+      summary: number of concepts that are within that document
+      description: Returns a list of all concepts that have a hit in that document and their occurrences.
+      operationId: countDocumentConcepts
+      produces:
+        - application/json
+        - application/xml
+      parameters:
+        - in: path
+          name: documentId
+          description: ID of document to be analysed (e.g. 17504100).
+          required: true
+          type: string
+        - name: conceptClass
+          in: query
+          description: class of the concepts (e.g. `[Human Genes / Proteins]`).
+          required: false
+          type: string
+      responses:
+        "200":
+          description: successful operation
+          schema:
+            title: concept
+            type: array
+            items:
+              $ref: '#/definitions/count'              
+        "400":
+          description: Invalid model ID supplied
+
+  # concept query for a document        
+  /document/{documentId}/countWords:
+    get:
+      tags:
+        - concept retrieval
+      summary: number of words that are within that document
+      description: Returns how many words are within that document.
+      operationId: countDocumentWords
+      produces:
+        - application/json
+        - application/xml
+      parameters:
+        - in: path
+          name: documentId
+          description: ID of document to be analysed (e.g. 17504100).
+          required: true
+          type: string
+      responses:
+        "200":
+          description: successful operation
+          schema:
+            title: concept
+            type: integer
+            format: int64           
+        "400":
+          description: Invalid model ID supplied
+
+  ########################################################################################
+  # terminology retrieval  
+  ########################################################################################
+  
+  /terminology/{terminologyId}/countDocuments:
+    get:
+      tags:
+        - terminology retrieval
+      summary: number of documents mentioning concepts from that terminology
+      description: Returns a count of all documents containing concepts from that terminology.
+      operationId: getDocumentCountByTId
+      produces:
+        - application/json
+        - application/xml
+      parameters:
+        - in: path
+          name: terminologyId
+          description: ID of terminology that needs to be counted (e.g. `[Human Genes / Proteins]`).
+          required: true
+          type: string
+        - name: corpusId
+          in: query
+          description: ID of the document corpus (i.e. a selection of documents), default is all
+          required: false
+          type: string
+        - name: model
+          in: query
+          description: ID of the JPM model (e.g. name of dictionary version used), default is latest
+          required: false
+          type: string
+        - name: groupBy
+          in: query
+          description: valid values are `total`, `year`, `month`, default is **total**
+          type: string
+      responses:
+        "404":
+          description: Concept not found
+        "200":
+          description: successful operation
+          schema:
+            title: count
+            type: array
+            items:
+              $ref: "#/definitions/count"
+        "400":
+          description: Invalid ID supplied
+          
+  ########################################################################################
+  # author retrieval  
+  ########################################################################################
+  
+  # fulltext query.
+  /author/fulltextSearch:
+    post:
+      summary: find all authors publishing on the search term (or expression)
+      description: |
+        Returns a list of `authors` where the **search term** matches anywhere in their publication. 
+        The lucene query syntax can be used (see https://lucene.apache.org/core/2_9_4/queryparsersyntax.html). 
+        Optional query parameter of **limit** determines size of returned author array. 
+      tags:
+        - author retrieval
+      operationId: auhtorFulltextSearch
+      consumes:
+        - application/json
+        - application/xml
+      produces:
+        - application/json
+        - application/xml
+      parameters:
+        - name: searchTerm
+          in: body
+          description: search term or expression 
+          required: true
+          schema:
+            $ref: "#/definitions/searchTerm"
+        - name: limit
+          in: query
+          description: maximum number of results to return
+          required: false
+          type: integer
+          format: int32      
+      responses:
+        "200":
+          description: Successful response
+          schema:
+            title: author
+            type: array
+            items:
+              $ref: '#/definitions/author'              
+        "405":
+          description: Invalid input
+        default:
+          description: unexpected error
+          schema:
+            $ref: '#/definitions/errorModel'
+                        
+  # concept query.
+  /author/conceptSearch:
+    post:
+      summary: find all authors publishing on the concept
+      description: |
+        Returns a list of `authors` where the **concept** is annotated anywhere in their publication. 
+        Optional query parameter of **limit** determines size of returned author array. 
+      tags:
+        - author retrieval
+      operationId: authorConceptSearch
+      consumes:
+        - application/json
+        - application/xml
+      produces:
+        - application/json
+        - application/xml
+      parameters:
+        - name: conceptId
+          in: body
+          description: concept 
+          required: true
+          schema:
+            $ref: "#/definitions/conceptId"
+        - name: limit
+          in: query
+          description: maximum number of results to return
+          required: false
+          type: integer
+          format: int32      
+      responses:
+        "200":
+          description: Successful response
+          schema:
+            title: author
+            type: array
+            items:
+              $ref: '#/definitions/author'
+        "405":
+          description: Invalid input
+        default:
+          description: unexpected error
+          schema:
+            $ref: '#/definitions/errorModel'
+
+  /author/{documentId}:
+    get:
+      tags:
+        - author retrieval
+      summary: find authors by document ID
+      description: Returns all authors of that document.
+      operationId: getAuhorByDocId
+      produces:
+        - application/json
+        - application/xml
+      parameters:
+        - in: path
+          name: documentId
+          description: ID of document that needs to be analysed (e.g. `17504100`).
+          required: true
+          type: string
+      responses:
+        "404":
+          description: Document not found
+        "200":
+          description: successful operation
+          schema:
+            title: author
+            type: array
+            items:
+              $ref: '#/definitions/author'
+        "400":
+          description: Invalid ID supplied
+          
+  ########################################################################################
+  # corpus retrieval  
+  ########################################################################################
+ 
+  /corpus/{corpusId}:
+    get:
+      tags:
+        - corpus retrieval
+      summary: fetch a document corpus by ID
+      description: Returns a list of documents belonging to that corpus.
+      operationId: getCorpusById
+      produces:
+        - application/json
+        - application/xml
+      parameters:
+        - in: path
+          name: corpusId
+          description: ID of corpus that needs to be fetched (e.g. `todo`).
+          required: true
+          type: string
+      responses:
+        200:
+          description: Successful response
+          schema:
+            title: documentId
+            type: array
+            items:
+              $ref: '#/definitions/documentId'              
+        400:
+          description: Invalid ID supplied
+          schema:
+            $ref: '#/definitions/errorModel'
+        404:
+          description: Corpus not found
+          schema:
+            $ref: '#/definitions/errorModel'
+        415:
+          description: Unsupported media type
+          schema:
+            $ref: '#/definitions/errorModel'
+        501:
+          description: Not implemented
+          schema:
+            $ref: '#/definitions/errorModel'
+        default:
+          description: Unexpected error
+          schema:
+            $ref: '#/definitions/errorModel'
+
+  /corpus/{corpusId}/add/{documentId}:
+    get:
+      tags:
+        - corpus retrieval
+      summary: add document to corpus
+      description: Adds a specific document to a corpus and returns size of the corpus.
+      operationId: corpusAddDocument
+      produces:
+        - application/json
+        - application/xml
+      parameters:
+        - in: path
+          name: corpusId
+          description: ID of corpus to be fetched (e.g. `todo`).
+          required: true
+          type: string
+        - in: path
+          name: documentId
+          description: ID of document that needs to be added (e.g. `1003045`).
+          required: true
+          type: string
+      responses:
+        "404":
+          description: Corpus not found
+        "200":
+          description: successful operation
+          schema:
+            $ref: "#/definitions/count"
+        "400":
+          description: Invalid ID supplied
+
+  /corpus/{corpusId}/remove/{documentId}:
+    get:
+      tags:
+        - corpus retrieval
+      summary: remove document from corpus
+      description: Removes a specific document from a corpus and returns size of the corpus.
+      operationId: corpusRemoveDocument
+      produces:
+        - application/json
+        - application/xml
+      parameters:
+        - in: path
+          name: corpusId
+          description: ID of corpus to be fetched (e.g. `todo`).
+          required: true
+          type: string
+        - in: path
+          name: documentId
+          description: ID of document that needs to be removed (e.g. `1003045`).
+          required: true
+          type: string
+      responses:
+        "404":
+          description: Corpus or document not found
+        "200":
+          description: successful operation
+          schema:
+            $ref: "#/definitions/count"
+        "400":
+          description: Invalid ID supplied
+
+
+  ########################################################################################
+  # text mining 
+  ########################################################################################
+  
+  # Biomedical Term Inspector
+  /term-inspector/{terminology}/{term}:
+    get:
+      summary: What is known about that term
+      description: Show all synonyms, labels and mappings of that term.
+      tags:
+        - text mining
+      operationId: termInspector
+      produces:
+        - application/xml
+      parameters:
+        - in: path
+          name: terminology
+          description: terminology of the term (e.g. HGNC)
+          required: true
+          type: string
+        - in: path
+          name: term
+          description: some biomedical term (e.g. APP)
+          required: true
+          type: string
+      responses:
+        "200":
+          description: Successful response - returns as TSV list of terms
+          schema:
+            $ref: '#/definitions/prominer-entity'
+
+        "204": 
+          description: No Content - The server successfully processed the request but is not returning any content (scaiview found no terms in that terminology).
+          
+        "503":
+          description: Service unavailable -  We've observed a timeout. Maybe the underlying query server ("scaiview") or broker is unavailable.
+
+        default:
+          description: unexpected error
+          schema:
+            $ref: '#/definitions/errorModel'
+
+  /term-autocomplete/{prefix}:
+    get:
+      summary: find all terms that start with that prefix
+      description: finds all terms and synonyms which start with that prefix.
+      tags:
+        - text mining
+      operationId: termAutocomplete
+      produces:
+        - application/json
+      parameters:
+        - in: path
+          name: prefix
+          description: prefix of the term (e.g. sy)
+          required: true
+          type: string
+      responses:
+        "200":
+          description: Successful response - returns as TSV list of terms
+          schema:
+            title: ArrayOfResults
+            type: array
+            items:
+              $ref: '#/definitions/results'
+
+        "204": 
+          description: No Content - The server successfully processed the request but is not returning any content (scaiview found no matching terms).
+          
+        "503":
+          description: Service unavailable -  We've observed a timeout. Maybe the underlying query server ("scaiview") or broker is unavailable.
+
+        default:
+          description: unexpected error
+          schema:
+            $ref: '#/definitions/errorModel'
+
+  # hypothetical statements.
+  /statement/isHypothetical:
+    post:
+      summary: tests if a sentence contains a hypothetical statement
+      description: |
+        Returns true if hypothetical. 
+      tags:
+        - text mining
+      operationId: isHypothetical
+      consumes:
+        - application/json
+        - application/xml
+      produces:
+        - application/json
+        - application/xml
+      parameters:
+        - name: statement
+          in: body
+          description: a small peace of text, ideally a sentence 
+          required: true
+          schema:
+            $ref: "#/definitions/statement"
+      responses:
+        "200":
+          description: Successful response
+          schema:
+            title: hypothetical
+            type: boolean
+        "405":
+          description: Invalid input
+        default:
+          description: unexpected error
+          schema:
+            $ref: '#/definitions/errorModel'
+          
+  # concepts of a statement
+  /statement/getConcepts:
+    post:
+      summary: extracts all concepts from a sentence
+      description: |
+        Returns all concepts mentioned in that statement. 
+      tags:
+        - text mining
+      operationId: getConcepts
+      consumes:
+        - application/json
+        - application/xml
+      produces:
+        - application/json
+        - application/xml
+      parameters:
+        - name: statement
+          in: body
+          description: a small peace of text, ideally a sentence 
+          required: true
+          schema:
+            $ref: "#/definitions/statement"
+      responses:
+        "200":
+          description: Successful response
+          schema:
+            title: conceptID
+            type: array
+            items:
+              $ref: '#/definitions/conceptId'              
+        "405":
+          description: Invalid input
+        default:
+          description: unexpected error
+          schema:
+            $ref: '#/definitions/errorModel'
+          
+  # B-terms of 2 corpora 
+  /getB-Terms/{corpusId-A}/{corpusId-C}:
+    post:
+      summary: extracts all B-terms from 2 corpora
+      description: |
+        Returns all concepts mentioned in both corpora (c.f. https://www.ncbi.nlm.nih.gov/pmc/articles/PMC2693227/)
+      tags:
+        - text mining
+      operationId: getBTerms
+      consumes:
+        - application/json
+        - application/xml
+      produces:
+        - application/json
+        - application/xml
+      parameters:
+        - in: path
+          name: corpusId-A
+          description: ID of 1st corpus to be analysed (e.g. ).
+          required: true
+          type: string
+        - in: path
+          name: corpusId-C
+          description: ID of 2nd corpus to be analysed (e.g. ).
+          required: true
+          type: string
+      responses:
+        "200":
+          description: Successful response
+          schema:
+            title: conceptID
+            type: array
+            items:
+              $ref: '#/definitions/conceptId'              
+        "405":
+          description: Invalid input
+        default:
+          description: unexpected error
+          schema:
+            $ref: '#/definitions/errorModel'
+          
+########################################################################################
+# definitions
+########################################################################################
+
+definitions:
+  errorModel:
+    type: object
+    required:
+      - code
+      - message
+    properties:
+      code:
+        type: integer
+        format: int32
+      message:
+        type: string
+        
+  document:
+    type: object
+    properties:
+      documentId:
+        type: string
+        example: 17504100
+      title:
+        type: string
+        example: Crystallization and preliminary X-ray diffraction analysis of PD-L1, a highly glycosylated ribosome inactivating protein with DNase activity.
+      source:
+        type: string
+        example: Protein and peptide letters
+      authors:
+        type: string
+        example: Ruggiero, Alessia; Chambery, Angela; Di Maro, Antimo; Mastroianni, Antonietta; Parente, Augusto; Berisio, Rita
+      publicationDate:
+        type: string
+        format: date
+        example: 2007-10-31
+      abstract:
+        type: string
+        example: PD-L1 is a highly glycosylated type 1 ribosome inactivating protein, from Phytolacca dioica leaves, with the peculiarity to act also as a DNase. PD-L1 has been successfully crystallized using vapour diffusion and seeding techniques. Crystals belong to the monoclinic C2 space group, with unit cell dimensions a=161.01, b=34.73, c=120.63 A, beta=127.99 degrees . Two molecules are present in the asymmetric unit. Phase determination has been achieved using molecular replacement.
+        
+  searchTerm:
+    type: string
+    example: test*
+
+  statement:
+    type: string
+    example:  Physiological (18)F-fluorocholine in the gastrointestinal tract may interfere with the detection of malignant lymph nodes.
+    
+  conceptId:
+    type: string
+    example: Human Genes/Proteins:"MAPT"
+
+  treeId:
+    type: string
+    example: MeSH DiseaseNode:"Neoplasms"
+
+  journalId:
+    type: string
+    example: The International journal of neuroscience
+    
+  authorId:
+    type: string
+    example: Hofmann-Apitius
+    
+  documentId:
+    type: string
+    example: 17504100
+    
+  runId:
+    type: string
+    example: JPM-80-HS-80
+    
+  count:
+    type: object
+    properties:
+      label:
+        type: string
+        example: total
+      number:
+        type: integer
+        format: int64
+        example: 1234
+        
+  dateRange:
+    type: object
+    properties:
+      fromDate:
+        type: string
+        format: date
+        example: 2007-01-31
+      toDate:
+        type: string
+        format: date
+        example: 2007-10-31
+  synonym:
+    type: string
+    example: protease nexin-II
+
+  prominer-entity:
+    type: object
+    properties:
+      name:
+        type: string
+        example: APP
+      class:
+        type: string
+        example: [HGNC:APP]
+      desc:
+        type: string
+      ids:
+        type: array
+        items:
+          $ref: '#/definitions/id'
+      synonyms:
+        type: array
+        items:
+          $ref: '#/definitions/synonym'
+
+  results:
+    type: object
+    properties:
+      title:
+        type: string
+        example: SYAP1
+      description:
+        type: string
+        example: HGNC
+
+  id:
+    type: string
+    example: ENTREZGENE:351
+  
+  author:
+    type: object
+    properties:
+      surname:
+        type: string
+        example: Jacobs
+      forename:
+        type: string
+        example: Marc
+      degree:
+        type: string
+        example: Dr.
+      affiliation:
+        type: string
+        example: Fraunhofer SCAI
+
