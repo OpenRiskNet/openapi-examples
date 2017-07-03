@@ -1,0 +1,2701 @@
+swagger: '2.0'
+info:
+  description: >-
+    Jaqpot v4 (Quattro) is the 4th version of a YAQP, a RESTful web service
+    which can be used to train machine learning models and use them to obtain
+    toxicological predictions for given chemical compounds or engineered nano
+    materials. The project is written in Java8 and JEE7.
+  version: 4.0.3
+  title: Jaqpot API
+  contact:
+    name: >-
+      Charalampos Chomenidis, Pantelis Sopasakis, Evangelia Anagnostopoulou,
+      Angelos Valsamis, George Drakakis, Georgia Tsiliki, Philip Doganis,
+      Haralambos Sarimveis
+    url: 'https://github.com/KinkyDesign/jaqpot-web/issues'
+    email: hampos@me.com
+host: 'dev.jaqpot.org:8081'
+basePath: /jaqpot/services
+tags:
+  - name: report
+  - name: aa
+  - name: model
+  - name: validation
+  - name: task
+  - name: feature
+  - name: algorithm
+  - name: user
+  - name: dataset
+schemes:
+  - http
+paths:
+  /aa/authorize:
+    post:
+      tags:
+        - aa
+      consumes:
+        - application/x-www-form-urlencoded
+      summary: Requests authorization from SSO
+      description: >-
+        Checks whether the client identified by the provided AA token can apply
+        a method to a URI
+      operationId: authorize
+      produces:
+        - application/json
+      parameters:
+        - name: subjectid
+          in: header
+          description: Authorization token
+          required: false
+          type: string
+        - name: method
+          in: formData
+          description: HTTP method
+          required: true
+          type: string
+          default: GET
+          enum:
+            - GET
+            - POST
+            - PUT
+            - DELETE
+        - name: uri
+          in: formData
+          description: URI
+          required: true
+          type: string
+      responses:
+        '200':
+          description: You have authorization for the given URI and HTTP method
+          schema:
+            type: string
+        '401':
+          description: >-
+            Wrong, missing or insufficient credentials. Error report is
+            produced.
+          schema:
+            $ref: '#/definitions/ErrorReport'
+        '403':
+          description: >-
+            Your authorization token is valid but you are forbidden from
+            applying the specified method.
+          schema:
+            $ref: '#/definitions/ErrorReport'
+        '500':
+          description: Internal server error - this request cannot be served.
+          schema:
+            $ref: '#/definitions/ErrorReport'
+  /aa/login:
+    post:
+      tags:
+        - aa
+      summary: Creates Security Token
+      description: Uses OpenAM server to get a security token.
+      operationId: login
+      consumes:
+        - application/x-www-form-urlencoded
+      produces:
+        - application/json
+        - text/uri-list
+      parameters:
+        - name: username
+          in: formData
+          description: Username
+          required: true
+          type: string
+        - name: password
+          in: formData
+          description: Password
+          required: true
+          type: string
+      responses:
+        '200':
+          description: Successfully log in
+          schema:
+            $ref: '#/definitions/AuthToken'
+        '401':
+          description: >-
+            Wrong, missing or insufficient credentials. Error report is
+            produced.
+          schema:
+            $ref: '#/definitions/ErrorReport'
+        '500':
+          description: Internal server error - this request cannot be served.
+          schema:
+            $ref: '#/definitions/ErrorReport'
+  /aa/logout:
+    post:
+      tags:
+        - aa
+      summary: Logs out a user
+      description: Invalidates a security token and logs out the corresponding user
+      operationId: logout
+      consumes:
+        - text/plain
+      produces:
+        - application/json
+      parameters:
+        - name: subjectid
+          in: header
+          description: Authorization token
+          required: false
+          type: string
+      responses:
+        '200':
+          description: Logged out
+          schema:
+            type: string
+        '401':
+          description: >-
+            Wrong, missing or insufficient credentials. Error report is
+            produced.
+          schema:
+            $ref: '#/definitions/ErrorReport'
+        '500':
+          description: Internal server error - this request cannot be served.
+          schema:
+            $ref: '#/definitions/ErrorReport'
+  /aa/validate:
+    post:
+      tags:
+        - aa
+      summary: Validate authorization token
+      description: Checks whether an authorization token is valid
+      operationId: validate
+      produces:
+        - application/json
+      parameters:
+        - name: subjectid
+          in: header
+          description: Authorization token
+          required: false
+          type: string
+      responses:
+        '200':
+          description: Your authorization token is valid
+          schema:
+            type: string
+        '401':
+          description: >-
+            Wrong, missing or insufficient credentials. Error report is
+            produced.
+          schema:
+            $ref: '#/definitions/ErrorReport'
+        '500':
+          description: Internal server error - this request cannot be served.
+          schema:
+            $ref: '#/definitions/ErrorReport'
+  /algorithm:
+    get:
+      tags:
+        - algorithm
+      summary: Finds all Algorithms
+      description: Finds all Algorithms JaqpotQuattro supports
+      operationId: getAlgorithms
+      produces:
+        - application/json
+        - text/uri-list
+      parameters:
+        - name: subjectid
+          in: header
+          description: Authorization token
+          required: false
+          type: string
+        - name: class
+          in: query
+          description: class
+          required: false
+          type: string
+        - name: start
+          in: query
+          description: start
+          required: false
+          type: integer
+          default: 0
+          format: int32
+        - name: max
+          in: query
+          description: max
+          required: false
+          type: integer
+          default: 10
+          format: int32
+      responses:
+        '200':
+          description: A list of algorithms in the Jaqpot framework
+          schema:
+            type: array
+            items:
+              $ref: '#/definitions/Algorithm'
+        '401':
+          description: >-
+            Wrong, missing or insufficient credentials. Error report is
+            produced.
+          schema:
+            $ref: '#/definitions/ErrorReport'
+        '500':
+          description: Internal server error - this request cannot be served.
+          schema:
+            $ref: '#/definitions/ErrorReport'
+    post:
+      tags:
+        - algorithm
+      summary: Creates Algorithm
+      description: >-
+        Registers a new JPDI-compliant algorithm service. When registering a new
+        JPDI-compliant algorithm web service it is crucial to propertly annotate
+        your algorithm with appropriate ontological classes following the <a
+        href="http://opentox.org/dev/apis/api-1.1/Algorithms">OpenTox algorithms
+        ontology</a>. For instance, a Clustering algorithm must be annotated
+        with <code>ot:Clustering</code>. It is also important for
+        discoverability to add tags to your algorithm using the
+        <code>meta.subjects</code> field. An example is provided below.
+      operationId: createAlgorithm
+      produces:
+        - application/json
+        - text/uri-list
+      consumes:
+        - application/x-www-form-urlencoded
+      parameters:
+        - in: body
+          name: body
+          description: Algorithm in JSON
+          required: true
+          schema:
+            $ref: '#/definitions/Algorithm'
+        - name: subjectid
+          in: header
+          description: Authorization token
+          required: false
+          type: string
+        - name: title
+          in: header
+          description: Title of your algorithm
+          required: false
+          type: string
+        - name: description
+          in: header
+          description: Short description of your algorithm
+          required: false
+          type: string
+        - name: tags
+          in: header
+          description: >-
+            Tags for your algorithm (in a comma separated list) to facilitate
+            look-up
+          required: false
+          type: string
+      responses:
+        '200':
+          description: Algorithm successfully registered in the system
+          schema:
+            $ref: '#/definitions/Algorithm'
+        '401':
+          description: >-
+            Wrong, missing or insufficient credentials. Error report is
+            produced.
+          schema:
+            $ref: '#/definitions/ErrorReport'
+        '403':
+          description: Algorithm quota has been exceeded
+          schema:
+            $ref: '#/definitions/ErrorReport'
+        '500':
+          description: Internal server error - this request cannot be served.
+          schema:
+            $ref: '#/definitions/ErrorReport'
+  '/algorithm/{id}':
+    get:
+      tags:
+        - algorithm
+      summary: Finds Algorithm
+      description: Finds Algorithm with provided name
+      operationId: getAlgorithm
+      produces:
+        - application/json
+        - text/uri-list
+        - application/ld+json
+      parameters:
+        - name: subjectid
+          in: header
+          description: Authorization token
+          required: false
+          type: string
+        - name: id
+          in: path
+          required: true
+          type: string
+      responses:
+        '200':
+          description: Algorithm was found in the system
+          schema:
+            $ref: '#/definitions/Algorithm'
+        '401':
+          description: >-
+            Wrong, missing or insufficient credentials. Error report is
+            produced.
+          schema:
+            $ref: '#/definitions/ErrorReport'
+        '404':
+          description: Algorithm was not found
+          schema:
+            $ref: '#/definitions/ErrorReport'
+        '500':
+          description: Internal server error - this request cannot be served.
+          schema:
+            $ref: '#/definitions/ErrorReport'
+    post:
+      tags:
+        - algorithm
+      consumes:
+        - application/x-www-form-urlencoded
+      summary: Creates Model
+      description: Applies Dataset and Parameters on Algorithm and creates Model.
+      operationId: trainModel
+      produces:
+        - application/json
+        - text/uri-list
+      parameters:
+        - name: title
+          in: formData
+          required: true
+          type: string
+        - name: description
+          in: formData
+          required: true
+          type: string
+        - name: dataset_uri
+          in: formData
+          required: false
+          type: string
+          default: 'http://app.jaqpot.org:8080/jaqpot/services/dataset/corona'
+        - name: prediction_feature
+          in: formData
+          required: false
+          type: string
+          default: >-
+            https://apps.ideaconsult.net/enmtest/property/TOX/UNKNOWN_TOXICITY_SECTION/Log2+transformed/94D664CFE4929A0F400A5AD8CA733B52E049A688/3ed642f9-1b42-387a-9966-dea5b91e5f8a
+        - name: parameters
+          in: formData
+          required: false
+          type: string
+        - name: transformations
+          in: formData
+          required: false
+          type: string
+          default: >-
+            http://app.jaqpot.org:8080/jaqpot/services/pmml/corona-standard-transformations
+        - name: scaling
+          in: formData
+          required: false
+          type: string
+          default: 'http://app.jaqpot.org:8080/jaqpot/services/algorithm/standarization'
+        - name: doa
+          in: formData
+          required: false
+          type: string
+          default: 'http://app.jaqpot.org:8080/jaqpot/services/algorithm/leverage'
+        - name: id
+          in: path
+          required: true
+          type: string
+        - name: subjectid
+          in: header
+          required: false
+          type: string
+      responses:
+        '200':
+          description: The process has successfully been started. A task URI is returned.
+          schema:
+            $ref: '#/definitions/Task'
+        '400':
+          description: Bad request. More info can be found in details of Error Report.
+          schema:
+            $ref: '#/definitions/ErrorReport'
+        '401':
+          description: >-
+            Wrong, missing or insufficient credentials. Error report is
+            produced.
+          schema:
+            $ref: '#/definitions/ErrorReport'
+        '404':
+          description: Algorithm was not found.
+          schema:
+            $ref: '#/definitions/ErrorReport'
+        '500':
+          description: Internal server error - this request cannot be served.
+          schema:
+            $ref: '#/definitions/ErrorReport'
+    delete:
+      tags:
+        - algorithm
+      summary: Unregisters an algorithm of given ID
+      description: >-
+        Deletes an algorithm of given ID. The application of this method
+        requires authentication and assumes certain priviledges.
+      operationId: deleteAlgorithm
+      produces:
+        - application/json
+      parameters:
+        - name: id
+          in: path
+          description: ID of the algorithm which is to be deleted.
+          required: true
+          type: string
+        - name: subjectid
+          in: header
+          required: false
+          type: string
+      responses:
+        '200':
+          description: Algorithm deleted successfully
+        '401':
+          description: >-
+            Wrong, missing or insufficient credentials. Error report is
+            produced.
+          schema:
+            $ref: '#/definitions/ErrorReport'
+        '403':
+          description: This is a forbidden operation (do not attempt to repeat it).
+          schema:
+            $ref: '#/definitions/ErrorReport'
+        '500':
+          description: Internal server error - this request cannot be served.
+          schema:
+            $ref: '#/definitions/ErrorReport'
+    patch:
+      tags:
+        - algorithm
+      summary: Modifies a particular Algorithm resource
+      description: >-
+        Modifies (applies a patch on) an Algorithm resource of a given ID. This
+        implementation of PATCH follows the RFC 6902 proposed standard. See
+        https://tools.ietf.org/rfc/rfc6902.txt for details.
+      operationId: modifyAlgorithm
+      consumes:
+        - application/json-patch+json
+      produces:
+        - application/json
+        - text/uri-list
+      parameters:
+        - name: subjectid
+          in: header
+          description: >-
+            Clients need to authenticate in order to create resources on the
+            server
+          required: false
+          type: string
+        - name: id
+          in: path
+          description: ID of an existing BibTeX.
+          required: true
+          type: string
+        - in: body
+          name: body
+          description: The patch in JSON according to the RFC 6902 specs
+          required: true
+          schema:
+            type: string
+      responses:
+        '200':
+          description: Algorithm patched successfully
+          schema:
+            $ref: '#/definitions/Algorithm'
+        '401':
+          description: >-
+            Wrong, missing or insufficient credentials. Error report is
+            produced.
+          schema:
+            $ref: '#/definitions/ErrorReport'
+        '403':
+          description: This is a forbidden operation (do not attempt to repeat it).
+          schema:
+            $ref: '#/definitions/ErrorReport'
+        '500':
+          description: Internal server error - this request cannot be served.
+          schema:
+            $ref: '#/definitions/ErrorReport'
+  /dataset:
+    get:
+      tags:
+        - dataset
+      summary: Finds all Datasets
+      description: >-
+        Finds all Datasets in the DB of Jaqpot and returns them in a list.
+        Results can be obtained either in the form of a URI list or as a JSON
+        list as specified by the Accept HTTP header. In the latter case, a list
+        will be returned containing only the IDs of the datasets, their metadata
+        and their ontological classes. The parameter max, which specifies the
+        maximum number of IDs to be listed is limited to 500; if the client
+        specifies a larger value, an HTTP Warning Header will be returned (RFC
+        2616) with code P670.
+      operationId: listDatasets
+      produces:
+        - application/json
+        - text/uri-list
+      parameters:
+        - name: subjectid
+          in: header
+          description: Authorization token
+          required: false
+          type: string
+        - name: start
+          in: query
+          description: start
+          required: false
+          type: integer
+          default: 0
+          format: int32
+        - name: max
+          in: query
+          description: max - the server imposes an upper limit of 500 on this parameter.
+          required: false
+          type: integer
+          default: 10
+          format: int32
+      responses:
+        '200':
+          description: Datasets found and are listed in the response body
+          schema:
+            type: array
+            items:
+              $ref: '#/definitions/Dataset'
+        '401':
+          description: You are not authorized to access this resource
+          schema:
+            $ref: '#/definitions/ErrorReport'
+        '403':
+          description: >-
+            This request is forbidden (e.g., no authentication token is
+            provided)
+          schema:
+            $ref: '#/definitions/ErrorReport'
+        '500':
+          description: Internal server error - this request cannot be served.
+          schema:
+            $ref: '#/definitions/ErrorReport'
+    post:
+      tags:
+        - dataset
+      summary: Creates a new Dataset
+      description: The new Dataset created will be assigned on a random generated Id
+      operationId: createDataset
+      consumes:
+        - application/json
+      produces:
+        - text/uri-list
+        - application/json
+      parameters:
+        - name: subjectid
+          in: header
+          description: Authorization token
+          required: false
+          type: string
+        - in: body
+          name: body
+          required: false
+          schema:
+            $ref: '#/definitions/Dataset'
+      responses:
+        '200':
+          description: Dataset was created succesfully
+          schema:
+            $ref: '#/definitions/Dataset'
+        '401':
+          description: You are not authorized to access this resource
+          schema:
+            $ref: '#/definitions/ErrorReport'
+        '403':
+          description: >-
+            This request is forbidden (e.g., no authentication token is
+            provided)
+          schema:
+            $ref: '#/definitions/ErrorReport'
+        '500':
+          description: Internal server error - this request cannot be served.
+          schema:
+            $ref: '#/definitions/ErrorReport'
+  /dataset/createDummyDataset:
+    post:
+      tags:
+        - dataset
+      summary: Creates dummy dataset By .xls document
+      description: 'Creates dummy features/substances, returns Dataset'
+      operationId: createDummyDataset
+      consumes:
+        - multipart/form-data
+      produces:
+        - application/json
+        - text/uri-list
+      parameters:
+        - name: subjectid
+          in: header
+          required: false
+          type: string
+        - name: file
+          in: formData
+          description: 'xls[m,x] file'
+          required: true
+          type: file
+        - name: title
+          in: formData
+          description: Title of dataset
+          required: true
+          type: string
+        - name: description
+          in: formData
+          description: Description of dataset
+          required: true
+          type: string
+      responses:
+        '200':
+          description: successful operation
+          schema:
+            $ref: '#/definitions/Task'
+  /dataset/empty:
+    post:
+      tags:
+        - dataset
+      consumes:
+        - application/x-www-form-urlencoded
+      summary: Creates a new empty Dataset
+      description: The new empty Dataset created will be assigned on a random generated Id
+      operationId: createEmptyDataset
+      produces:
+        - text/uri-list
+        - application/json
+      parameters:
+        - name: subjectid
+          in: header
+          description: Authorization token
+          required: false
+          type: string
+        - name: title
+          in: formData
+          required: false
+          type: string
+        - name: description
+          in: formData
+          required: false
+          type: string
+      responses:
+        '200':
+          description: Dataset was created succesfully
+          schema:
+            $ref: '#/definitions/Dataset'
+        '401':
+          description: You are not authorized to access this resource
+          schema:
+            $ref: '#/definitions/ErrorReport'
+        '403':
+          description: >-
+            This request is forbidden (e.g., no authentication token is
+            provided)
+          schema:
+            $ref: '#/definitions/ErrorReport'
+        '500':
+          description: Internal server error - this request cannot be served.
+          schema:
+            $ref: '#/definitions/ErrorReport'
+  /dataset/featured:
+    get:
+      tags:
+        - dataset
+      summary: Finds all Datasets
+      description: >-
+        Finds Featured Datasets in the DB of Jaqpot and returns them in a list.
+        Results can be obtained either in the form of a URI list or as a JSON
+        list as specified by the Accept HTTP header. In the latter case, a list
+        will be returned containing only the IDs of the datasets, their metadata
+        and their ontological classes. The parameter max, which specifies the
+        maximum number of IDs to be listed is limited to 500; if the client
+        specifies a larger value, an HTTP Warning Header will be returned (RFC
+        2616) with code P670.
+      operationId: listFeaturedDatasets
+      produces:
+        - application/json
+        - text/uri-list
+      parameters:
+        - name: subjectid
+          in: header
+          description: Authorization token
+          required: false
+          type: string
+        - name: start
+          in: query
+          description: start
+          required: false
+          type: integer
+          default: 0
+          format: int32
+        - name: max
+          in: query
+          description: max - the server imposes an upper limit of 500 on this parameter.
+          required: false
+          type: integer
+          default: 10
+          format: int32
+      responses:
+        '200':
+          description: Datasets found and are listed in the response body
+          schema:
+            type: array
+            items:
+              $ref: '#/definitions/Dataset'
+        '401':
+          description: You are not authorized to access this resource
+          schema:
+            $ref: '#/definitions/ErrorReport'
+        '403':
+          description: >-
+            This request is forbidden (e.g., no authentication token is
+            provided)
+          schema:
+            $ref: '#/definitions/ErrorReport'
+        '500':
+          description: Internal server error - this request cannot be served.
+          schema:
+            $ref: '#/definitions/ErrorReport'
+  /dataset/merge:
+    post:
+      tags:
+        - dataset
+      consumes:
+        - application/x-www-form-urlencoded
+      summary: Merges Datasets
+      description: >-
+        The new intersected Dataset created will be assigned on a random
+        generated Id
+      operationId: mergeDatasets
+      produces:
+        - application/json
+        - text/uri-list
+      parameters:
+        - name: dataset_uris
+          in: formData
+          required: false
+          type: string
+        - name: subjectid
+          in: header
+          required: false
+          type: string
+      responses:
+        '200':
+          description: Dataset was created succesfully
+          schema:
+            $ref: '#/definitions/Dataset'
+        '401':
+          description: You are not authorized to access this resource
+          schema:
+            $ref: '#/definitions/ErrorReport'
+        '403':
+          description: >-
+            This request is forbidden (e.g., no authentication token is
+            provided)
+          schema:
+            $ref: '#/definitions/ErrorReport'
+        '500':
+          description: Internal server error - this request cannot be served.
+          schema:
+            $ref: '#/definitions/ErrorReport'
+  '/dataset/{id}':
+    get:
+      tags:
+        - dataset
+      summary: Finds Dataset by Id
+      description: Finds specified Dataset
+      operationId: getDataset
+      produces:
+        - text/csv
+        - application/json
+      parameters:
+        - name: subjectid
+          in: header
+          description: Authorization token
+          required: false
+          type: string
+        - name: id
+          in: path
+          required: true
+          type: string
+        - name: rowStart
+          in: query
+          required: false
+          type: integer
+          format: int32
+        - name: rowMax
+          in: query
+          required: false
+          type: integer
+          format: int32
+        - name: colStart
+          in: query
+          required: false
+          type: integer
+          format: int32
+        - name: colMax
+          in: query
+          required: false
+          type: integer
+          format: int32
+        - name: stratify
+          in: query
+          required: false
+          type: string
+        - name: seed
+          in: query
+          required: false
+          type: integer
+          format: int64
+        - name: folds
+          in: query
+          required: false
+          type: integer
+          format: int32
+        - name: target_feature
+          in: query
+          required: false
+          type: string
+      responses:
+        '200':
+          description: Dataset was found
+          schema:
+            $ref: '#/definitions/Dataset'
+        '401':
+          description: You are not authorized to access this resource
+          schema:
+            $ref: '#/definitions/ErrorReport'
+        '403':
+          description: >-
+            This request is forbidden (e.g., no authentication token is
+            provided)
+          schema:
+            $ref: '#/definitions/ErrorReport'
+        '404':
+          description: Dataset was not found in the system
+          schema:
+            $ref: '#/definitions/ErrorReport'
+        '500':
+          description: Internal server error - this request cannot be served.
+          schema:
+            $ref: '#/definitions/ErrorReport'
+    delete:
+      tags:
+        - dataset
+      summary: Deletes dataset
+      description: ''
+      operationId: deleteDataset
+      produces:
+        - application/json
+        - text/uri-list
+      parameters:
+        - name: subjectid
+          in: header
+          description: Authorization token
+          required: false
+          type: string
+        - name: id
+          in: path
+          required: true
+          type: string
+      responses:
+        '200':
+          description: Dataset was succesfully deleted
+        '401':
+          description: You are not authorized to access this resource
+          schema:
+            $ref: '#/definitions/ErrorReport'
+        '403':
+          description: >-
+            This request is forbidden (e.g., no authentication token is
+            provided)
+          schema:
+            $ref: '#/definitions/ErrorReport'
+        '404':
+          description: Dataset was not found in the system
+          schema:
+            $ref: '#/definitions/ErrorReport'
+        '500':
+          description: Internal server error - this request cannot be served.
+          schema:
+            $ref: '#/definitions/ErrorReport'
+  '/dataset/{id}/features':
+    get:
+      tags:
+        - dataset
+      summary: Finds Features of Dataset by Id
+      description: Finds specified Dataset's features
+      operationId: getDatasetFeatures
+      produces:
+        - application/json
+      parameters:
+        - name: subjectid
+          in: header
+          description: Authorization token
+          required: false
+          type: string
+        - name: id
+          in: path
+          required: true
+          type: string
+      responses:
+        '200':
+          description: Dataset's features found and are listed in the response body
+          schema:
+            $ref: '#/definitions/Dataset'
+        '401':
+          description: You are not authorized to access this resource
+          schema:
+            $ref: '#/definitions/ErrorReport'
+        '403':
+          description: >-
+            This request is forbidden (e.g., no authentication token is
+            provided)
+          schema:
+            $ref: '#/definitions/ErrorReport'
+        '404':
+          description: Dataset was not found in the system
+          schema:
+            $ref: '#/definitions/ErrorReport'
+        '500':
+          description: Internal server error - this request cannot be served.
+          schema:
+            $ref: '#/definitions/ErrorReport'
+  '/dataset/{id}/meta':
+    get:
+      tags:
+        - dataset
+      summary: Finds MetaData of Dataset by Id
+      description: Finds specified Dataset's MetaData
+      operationId: getDatasetMeta
+      produces:
+        - application/json
+      parameters:
+        - name: subjectid
+          in: header
+          description: Authorization token
+          required: false
+          type: string
+        - name: id
+          in: path
+          required: true
+          type: string
+      responses:
+        '200':
+          description: Dataset's meta data found and are listed in the response body
+          schema:
+            $ref: '#/definitions/Dataset'
+        '401':
+          description: You are not authorized to access this resource
+          schema:
+            $ref: '#/definitions/ErrorReport'
+        '403':
+          description: >-
+            This request is forbidden (e.g., no authentication token is
+            provided)
+          schema:
+            $ref: '#/definitions/ErrorReport'
+        '404':
+          description: Dataset was not found in the system
+          schema:
+            $ref: '#/definitions/ErrorReport'
+        '500':
+          description: Internal server error - this request cannot be served.
+          schema:
+            $ref: '#/definitions/ErrorReport'
+  '/dataset/{id}/qprf':
+    post:
+      tags:
+        - dataset
+      consumes:
+        - application/x-www-form-urlencoded
+      summary: Creates QPRF Report
+      description: ''
+      operationId: createQPRFReport
+      produces:
+        - application/json
+        - text/uri-list
+      parameters:
+        - name: subjectid
+          in: header
+          description: Authorization token
+          required: false
+          type: string
+        - name: id
+          in: path
+          required: true
+          type: string
+        - name: substance_uri
+          in: formData
+          required: false
+          type: string
+        - name: title
+          in: formData
+          required: false
+          type: string
+        - name: description
+          in: formData
+          required: false
+          type: string
+      responses:
+        '200':
+          description: Dataset was succesfully deleted
+        '400':
+          description: Bad Request. More details can be found in details of ErrorReport
+          schema:
+            $ref: '#/definitions/ErrorReport'
+        '401':
+          description: You are not authorized to access this resource
+          schema:
+            $ref: '#/definitions/ErrorReport'
+        '403':
+          description: >-
+            This request is forbidden (e.g., no authentication token is
+            provided)
+          schema:
+            $ref: '#/definitions/ErrorReport'
+        '404':
+          description: Dataset was not found in the system
+          schema:
+            $ref: '#/definitions/ErrorReport'
+        '500':
+          description: Internal server error - this request cannot be served.
+          schema:
+            $ref: '#/definitions/ErrorReport'
+  '/dataset/{id}/qprf-dummy':
+    post:
+      tags:
+        - dataset
+      consumes:
+        - application/x-www-form-urlencoded
+      summary: Creates QPRF Dummy Report
+      description: ''
+      operationId: createQPRFReportDummy
+      produces:
+        - application/json
+        - text/uri-list
+      parameters:
+        - name: subjectid
+          in: header
+          description: Authorization token
+          required: false
+          type: string
+        - name: id
+          in: path
+          required: true
+          type: string
+        - name: substance_uri
+          in: formData
+          required: false
+          type: string
+        - name: title
+          in: formData
+          required: false
+          type: string
+        - name: description
+          in: formData
+          required: false
+          type: string
+      responses:
+        '200':
+          description: Dataset was succesfully deleted
+        '400':
+          description: Bad Request. More details can be found in details of ErrorReport
+          schema:
+            $ref: '#/definitions/ErrorReport'
+        '401':
+          description: You are not authorized to access this resource
+          schema:
+            $ref: '#/definitions/ErrorReport'
+        '403':
+          description: >-
+            This request is forbidden (e.g., no authentication token is
+            provided)
+          schema:
+            $ref: '#/definitions/ErrorReport'
+        '404':
+          description: Dataset was not found in the system
+          schema:
+            $ref: '#/definitions/ErrorReport'
+        '500':
+          description: Internal server error - this request cannot be served.
+          schema:
+            $ref: '#/definitions/ErrorReport'
+  /feature:
+    get:
+      tags:
+        - feature
+      summary: Lists features
+      description: >-
+        Lists Feature entries in the DB of Jaqpot and returns them in a list.
+        Results can be obtained either in the form of a URI list or as a JSON
+        list as specified by the Accept HTTP header. In the latter case, a list
+        will be returned containing only the IDs of the features, their metadata
+        and their ontological classes. The parameter max, which specifies the
+        maximum number of IDs to be listed is limited to 500; if the client
+        specifies a larger value, an HTTP Warning Header will be returned (RFC
+        2616) with code P670.
+      operationId: listFeatures
+      produces:
+        - application/json
+        - text/uri-list
+      parameters:
+        - name: subjectid
+          in: header
+          description: Authorization token
+          required: false
+          type: string
+        - name: query
+          in: query
+          description: Generic query
+          required: false
+          type: string
+        - name: start
+          in: query
+          description: start
+          required: false
+          type: integer
+          default: 0
+          format: int32
+        - name: max
+          in: query
+          description: max - the server imposes an upper limit of 500 on this parameter.
+          required: false
+          type: integer
+          default: 10
+          format: int32
+      responses:
+        '200':
+          description: Feature entries found and are listed in the response body
+        '401':
+          description: You are not authorized to access this user
+        '403':
+          description: >-
+            This request is forbidden (e.g., no authentication token is
+            provided)
+        '500':
+          description: Internal server error - this request cannot be served.
+    post:
+      tags:
+        - feature
+      summary: Creates a new Feature
+      description: >-
+        Creates a new feature which is assigned a random unique ID. When
+        creating a new feature, clients must wary not only for its syntactic
+        correctness, but also for its semantic completeness. It is strongly
+        recommended to add a comprehensive and identifying title to your feature
+        using the <code>meta.titles</code> field, to add a description in
+        <code>meta.descriptions</code> and also to add a list of tags in
+        <code>meta.subjects</code> that will facilitate the discoverability of
+        your features later. Additionally, all features should be annotated with
+        appropriate ontological classes (from the OpenTox ontology), such as
+        <code>ot:Feature</code>, <code>ot:NumericFeature</code> and
+        <code>ot:NominalFeature</code>. Features that are created as prediction
+        features for a model or are descriptors that can be calculated using a
+        descriptor calculation web service should be linked to this/these
+        service(s) using <code>meta.hasSources</code>. Finally, nominal features
+        should define their admissible values in <code>admissibleValues</code>.
+        Malformed feature documents will not be accepted by the server and an
+        error report will be generated and returned to the client. Notice also
+        that authentication, authorization and accounting restrictions may
+        apply.
+      operationId: createFeature
+      consumes:
+        - application/json
+      produces:
+        - application/json
+        - text/uri-list
+      parameters:
+        - name: subjectid
+          in: header
+          description: >-
+            Clients need to authenticate in order to create resources on the
+            server
+          required: false
+          type: string
+        - in: body
+          name: body
+          description: >-
+            Feature in JSON representation compliant with the Feature
+            specifications. Malformed Feature entries with missing fields will
+            not be accepted.
+          required: true
+          schema:
+            $ref: '#/definitions/Feature'
+      responses:
+        '200':
+          description: Feature was created successfully.
+        '400':
+          description: 'Bad request: malformed feature'
+        '401':
+          description: You are not authorized to access this resource
+        '403':
+          description: >-
+            This request is forbidden (e.g., no authentication token is
+            provided)
+        '500':
+          description: Internal server error - this request cannot be served.
+  '/feature/{id}':
+    get:
+      tags:
+        - feature
+      summary: Finds Feature by ID
+      description: Finds specified Feature (by ID)
+      operationId: getFeature
+      produces:
+        - application/json
+        - text/uri-list
+      parameters:
+        - name: subjectid
+          in: header
+          description: Authorization token
+          required: false
+          type: string
+        - name: id
+          in: path
+          required: true
+          type: string
+      responses:
+        '200':
+          description: successful operation
+          schema:
+            $ref: '#/definitions/Feature'
+    put:
+      tags:
+        - feature
+      summary: Places a new Feature at a particular URI
+      description: >-
+        Creates a new Feature entry at the specified URI. If a Feature already
+        exists at this URI,it will be replaced. If, instead, no Feature is
+        stored under the specified URI, a new Feature entry will be created.
+        Notice that authentication, authorization and accounting (quota)
+        restrictions may apply.
+      operationId: putFeature
+      consumes:
+        - application/json
+      produces:
+        - application/json
+        - text/uri-list
+      parameters:
+        - name: id
+          in: path
+          description: ID of the Feature.
+          required: true
+          type: string
+        - in: body
+          name: body
+          description: Feature in JSON
+          required: true
+          schema:
+            $ref: '#/definitions/Feature'
+        - name: subjectid
+          in: header
+          description: >-
+            Clients need to authenticate in order to create resources on the
+            server
+          required: false
+          type: string
+      responses:
+        '200':
+          description: Feature entry was created successfully.
+        '400':
+          description: Feature entry was not created because the request was malformed
+        '401':
+          description: You are not authorized to create a feature on the server
+        '403':
+          description: >-
+            This request is forbidden (e.g., no authentication token is
+            provided)
+        '500':
+          description: Internal server error - this request cannot be served.
+    delete:
+      tags:
+        - feature
+      summary: Deletes a particular Feature resource.
+      description: >-
+        Deletes a Feature of a given ID. The method is idempondent, that is, it
+        can be used more than once without triggering an exception/error. If the
+        Feature does not exist, the method will return without errors.
+        Authentication and authorization requirements apply, so clients that are
+        not authenticated with a valid token or do not have sufficient
+        priviledges will not be able to delete a Feature using this method.
+      operationId: deleteFeature
+      produces:
+        - application/json
+        - text/uri-list
+      parameters:
+        - name: subjectid
+          in: header
+          description: >-
+            Clients need to authenticate in order to create resources on the
+            server
+          required: false
+          type: string
+        - name: id
+          in: path
+          description: ID of the Model.
+          required: true
+          type: string
+      responses:
+        '200':
+          description: Feature entry was deleted successfully.
+        '401':
+          description: You are not authorized to delete this resource
+        '403':
+          description: >-
+            This request is forbidden (e.g., no authentication token is
+            provided)
+        '500':
+          description: Internal server error - this request cannot be served.
+  /model:
+    get:
+      tags:
+        - model
+      summary: Finds all Models
+      description: >-
+        Finds all Models from Jaqpot Dataset. The response will list all models
+        and will return either a URI list of a list of JSON model objects. In
+        the latter case, only the IDs, metadata, ontological classes and
+        reliability of the models will be returned. Use the parameters start and
+        max to get paginated results.
+      operationId: listModels
+      produces:
+        - application/json
+        - text/uri-list
+      parameters:
+        - name: subjectid
+          in: header
+          description: Authorization token
+          required: false
+          type: string
+        - name: start
+          in: query
+          description: start
+          required: false
+          type: integer
+          default: 0
+          format: int32
+        - name: max
+          in: query
+          description: max - the server imposes an upper limit of 500 on this parameter.
+          required: false
+          type: integer
+          default: 20
+          format: int32
+      responses:
+        '200':
+          description: Models found and are listed in the response body
+        '204':
+          description: >-
+            No content: The request succeeded, but there are no models matching
+            your search criteria.
+        '500':
+          description: Internal server error - this request cannot be served.
+  /model/featured:
+    get:
+      tags:
+        - model
+      summary: Finds all Models
+      description: >-
+        Finds featured Models from Jaqpot database. The response will list all
+        models and will return either a URI list of a list of JSON model
+        objects. In the latter case, only the IDs, metadata, ontological classes
+        and reliability of the models will be returned. Use the parameters start
+        and max to get paginated results.
+      operationId: listFeaturedModels
+      produces:
+        - application/json
+        - text/uri-list
+      parameters:
+        - name: subjectid
+          in: header
+          description: Authorization token
+          required: false
+          type: string
+        - name: start
+          in: query
+          description: start
+          required: false
+          type: integer
+          default: 0
+          format: int32
+        - name: max
+          in: query
+          description: max - the server imposes an upper limit of 500 on this parameter.
+          required: false
+          type: integer
+          default: 20
+          format: int32
+      responses:
+        '200':
+          description: Models found and are listed in the response body
+        '204':
+          description: >-
+            No content: The request succeeded, but there are no models matching
+            your search criteria.
+        '500':
+          description: Internal server error - this request cannot be served.
+  '/model/{id}':
+    get:
+      tags:
+        - model
+      summary: Finds Model by Id
+      description: Finds specified Model
+      operationId: getModel
+      produces:
+        - application/json
+        - text/uri-list
+        - application/ld+json
+      parameters:
+        - name: id
+          in: path
+          required: true
+          type: string
+        - name: subjectid
+          in: header
+          description: Clients need to authenticate in order to access models
+          required: false
+          type: string
+      responses:
+        '200':
+          description: successful operation
+          schema:
+            $ref: '#/definitions/Model'
+    post:
+      tags:
+        - model
+      summary: Creates Prediction
+      description: Creates Prediction
+      operationId: makePrediction
+      consumes:
+        - application/x-www-form-urlencoded
+      produces:
+        - application/json
+      parameters:
+        - name: dataset_uri
+          in: formData
+          required: true
+          type: string
+        - name: visible
+          in: formData
+          required: false
+          type: boolean
+        - name: id
+          in: path
+          required: true
+          type: string
+        - name: subjectid
+          in: header
+          required: false
+          type: string
+      responses:
+        '200':
+          description: successful operation
+          schema:
+            $ref: '#/definitions/Task'
+    delete:
+      tags:
+        - model
+      summary: Deletes a particular Model resource
+      description: >-
+        Deletes a Model of a given ID. The method is idempondent, that is it can
+        be used more than once without triggering an exception/error. If the
+        Model does not exist, the method will return without errors.
+        Authentication and authorization requirements apply, so clients that are
+        not authenticated with a valid token or do not have sufficient
+        priviledges will not be able to delete Models using this method.
+      operationId: deleteModel
+      produces:
+        - application/json
+        - text/uri-list
+      parameters:
+        - name: subjectid
+          in: header
+          description: >-
+            Clients need to authenticate in order to create resources on the
+            server
+          required: false
+          type: string
+        - name: id
+          in: path
+          description: ID of the Model.
+          required: true
+          type: string
+      responses:
+        '200':
+          description: Model entry was deleted successfully (if found).
+        '401':
+          description: You are not authorized to delete this resource
+        '403':
+          description: >-
+            This request is forbidden (e.g., no authentication token is
+            provided)
+        '500':
+          description: Internal server error - this request cannot be served.
+  '/model/{id}/dependent':
+    get:
+      tags:
+        - model
+      summary: Lists the dependent features of a Model
+      description: >-
+        Lists the dependent features of a Model identified by its ID. The result
+        is available as a URI list.
+      operationId: listModelDependentFeatures
+      produces:
+        - text/uri-list
+      parameters:
+        - name: id
+          in: path
+          required: true
+          type: string
+        - name: subjectid
+          in: header
+          description: Clients need to authenticate in order to access models
+          required: false
+          type: string
+      responses:
+        '200':
+          description: >-
+            Model is found and its independent features are listed in the
+            response body.
+        '401':
+          description: You are not authorized to access this model
+        '403':
+          description: >-
+            This request is forbidden (e.g., no authentication token is
+            provided)
+        '404':
+          description: This model was not found.
+        '500':
+          description: Internal server error - this request cannot be served.
+  '/model/{id}/independent':
+    get:
+      tags:
+        - model
+      summary: Lists the independent features of a Model
+      description: >-
+        Lists the independent features of a Model. The result is available as a
+        URI list.
+      operationId: listModelIndependentFeatures
+      produces:
+        - text/uri-list
+      parameters:
+        - name: id
+          in: path
+          required: true
+          type: string
+        - name: subjectid
+          in: header
+          description: Clients need to authenticate in order to access models
+          required: false
+          type: string
+      responses:
+        '200':
+          description: >-
+            Model is found and its independent features are listed in the
+            response body.
+        '401':
+          description: You are not authorized to access this model
+        '403':
+          description: >-
+            This request is forbidden (e.g., no authentication token is
+            provided)
+        '404':
+          description: This model was not found.
+        '500':
+          description: Internal server error - this request cannot be served.
+  '/model/{id}/pmml':
+    get:
+      tags:
+        - model
+      summary: Finds Model by Id
+      description: Finds specified Model
+      operationId: getModelPmml
+      produces:
+        - application/xml
+      parameters:
+        - name: id
+          in: path
+          required: true
+          type: string
+        - name: subjectid
+          in: header
+          description: Clients need to authenticate in order to access models
+          required: false
+          type: string
+      responses:
+        '200':
+          description: Model is found
+        '401':
+          description: You are not authorized to access this model
+        '403':
+          description: >-
+            This request is forbidden (e.g., no authentication token is
+            provided)
+        '404':
+          description: This model was not found.
+        '500':
+          description: Internal server error - this request cannot be served.
+  '/model/{id}/predicted':
+    get:
+      tags:
+        - model
+      summary: Lists the dependent features of a Model
+      description: >-
+        Lists the predicted features of a Model identified by its ID. The result
+        is available as a URI list.
+      operationId: listModelPredictedFeatures
+      produces:
+        - text/uri-list
+      parameters:
+        - name: id
+          in: path
+          required: true
+          type: string
+        - name: subjectid
+          in: header
+          description: Clients need to authenticate in order to access models
+          required: false
+          type: string
+      responses:
+        '200':
+          description: >-
+            Model is found and its independent features are listed in the
+            response body.
+        '401':
+          description: You are not authorized to access this model
+        '403':
+          description: >-
+            This request is forbidden (e.g., no authentication token is
+            provided)
+        '404':
+          description: This model was not found.
+        '500':
+          description: Internal server error - this request cannot be served.
+  '/model/{id}/required':
+    get:
+      tags:
+        - model
+      summary: Lists the required features of a Model
+      description: >-
+        Lists the required features of a Model identified by its ID. The result
+        is available as a URI list.
+      operationId: listModelRequiredFeatures
+      produces:
+        - application/json
+      parameters:
+        - name: id
+          in: path
+          required: true
+          type: string
+        - name: subjectId
+          in: header
+          required: false
+          type: string
+      responses:
+        '200':
+          description: successful operation
+          schema:
+            type: array
+            items:
+              type: string
+  /report:
+    get:
+      tags:
+        - report
+      summary: Retrieves Reports of User
+      description: ''
+      operationId: getReports
+      produces:
+        - application/json
+      parameters:
+        - name: subjectid
+          in: header
+          description: Authorization token
+          required: false
+          type: string
+        - name: start
+          in: query
+          description: start
+          required: false
+          type: integer
+          default: 0
+          format: int32
+        - name: max
+          in: query
+          description: max - the server imposes an upper limit of 500 on this parameter.
+          required: false
+          type: integer
+          default: 20
+          format: int32
+      responses:
+        default:
+          description: successful operation
+  '/report/{id}':
+    get:
+      tags:
+        - report
+      summary: Retrieves Report by id
+      description: ''
+      operationId: getReport
+      produces:
+        - application/json
+      parameters:
+        - name: subjectid
+          in: header
+          description: Authorization token
+          required: false
+          type: string
+        - name: id
+          in: path
+          required: true
+          type: string
+      responses:
+        default:
+          description: successful operation
+    delete:
+      tags:
+        - report
+      summary: Removes Report by id
+      description: ''
+      operationId: removeReport
+      produces:
+        - application/json
+      parameters:
+        - name: subjectid
+          in: header
+          description: Authorization token
+          required: false
+          type: string
+        - name: id
+          in: path
+          required: true
+          type: string
+      responses:
+        default:
+          description: successful operation
+    patch:
+      tags:
+        - report
+      summary: Modifies a particular Report resource
+      description: >-
+        Modifies (applies a patch on) a Report resource of a given ID. This
+        implementation of PATCH follows the RFC 6902 proposed standard. See
+        https://tools.ietf.org/rfc/rfc6902.txt for details.
+      operationId: modifyReport
+      consumes:
+        - application/json-patch+json
+      produces:
+        - application/json
+        - text/uri-list
+      parameters:
+        - name: subjectid
+          in: header
+          description: >-
+            Clients need to authenticate in order to create resources on the
+            server
+          required: false
+          type: string
+        - name: id
+          in: path
+          description: ID of an existing Report.
+          required: true
+          type: string
+        - in: body
+          name: body
+          description: The patch in JSON according to the RFC 6902 specs
+          required: true
+          schema:
+            type: string
+            default: '[ { "op": "add", "path": "/key", "value": "foo" } ]'
+      responses:
+        '200':
+          description: Report entry was modified successfully.
+        '401':
+          description: >-
+            You are not authorized to modify this resource (e.g., no
+            authentication token is provided)
+        '403':
+          description: >-
+            This request is forbidden (e.g., you don't have permission from the
+            owner)
+        '404':
+          description: No such Report - the patch will not be applied
+        '500':
+          description: Internal server error - this request cannot be served.
+  '/report/{id}/pdf':
+    get:
+      tags:
+        - report
+      summary: Creates PDF from report
+      description: ''
+      operationId: createPDF
+      produces:
+        - application/json; charset=UTF-8
+      parameters:
+        - name: subjectid
+          in: header
+          description: Authorization token
+          required: false
+          type: string
+        - name: id
+          in: path
+          required: true
+          type: string
+      responses:
+        default:
+          description: successful operation
+  /task:
+    get:
+      tags:
+        - task
+      summary: Finds all Tasks
+      description: >-
+        Finds all Tasks from Jaqpot Dataset. One may specify various search
+        criteria such as the task creator of the task status.
+      operationId: listTasks
+      produces:
+        - application/json
+        - text/uri-list
+      parameters:
+        - name: subjectid
+          in: header
+          description: Authorization token
+          required: false
+          type: string
+        - name: status
+          in: query
+          description: Status of the task
+          required: false
+          type: string
+          enum:
+            - RUNNING
+            - QUEUED
+            - COMPLETED
+            - ERROR
+            - CANCELLED
+            - REJECTED
+        - name: start
+          in: query
+          description: start
+          required: false
+          type: integer
+          default: 0
+          format: int32
+        - name: max
+          in: query
+          description: max - the server imposes an upper limit of 500 on this parameter.
+          required: false
+          type: integer
+          default: 10
+          format: int32
+      responses:
+        '200':
+          description: Success; the list of tasks is found in the response
+        '500':
+          description: Internal server error - this request cannot be served.
+  '/task/{id}':
+    get:
+      tags:
+        - task
+      summary: Finds Task by Id
+      description: Finds specified Task
+      operationId: getTask
+      produces:
+        - application/json
+        - text/uri-list
+      parameters:
+        - name: subjectid
+          in: header
+          description: Authorization token
+          required: false
+          type: string
+        - name: id
+          in: path
+          description: ID of the task to be retrieved
+          required: true
+          type: string
+      responses:
+        '200':
+          description: Task is found
+        '201':
+          description: Task is created (see content - redirects to other task)
+        '202':
+          description: Task is accepted (still running)
+        '404':
+          description: This task was not found.
+        '500':
+          description: Internal server error - this request cannot be served.
+    delete:
+      tags:
+        - task
+      summary: Deletes a Task of given ID
+      description: >-
+        Deletes a Task given its ID in the URI. When the DELETE method is
+        applied, the task is interrupted and tagged as CANCELLED. Note that this
+        method does not return a response on success. If the task does not
+        exist, an error report will be returned to the client accompanied by an
+        HTTP status code 404. Note also that authentication and authorization
+        restrictions apply, so clients need to be authenticated with a valid
+        token and have appropriate rights to be able to successfully apply this
+        method.
+      operationId: deleteTask
+      produces:
+        - application/json
+      parameters:
+        - name: id
+          in: path
+          description: ID of the task which is to be cancelled.
+          required: true
+          type: string
+        - name: subjectid
+          in: header
+          required: false
+          type: string
+      responses:
+        '200':
+          description: Task not found
+        '401':
+          description: >-
+            Wrong, missing or insufficient credentials. Error report is
+            produced.
+        '403':
+          description: This is a forbidden operation (do not attempt to repeat it).
+        '500':
+          description: Internal server error - this request cannot be served.
+  '/task/{id}/poll':
+    get:
+      tags:
+        - task
+      summary: Poll Task by Id
+      description: Implements long polling
+      operationId: poll
+      parameters:
+        - name: subjectid
+          in: header
+          description: Authorization token
+          required: false
+          type: string
+        - name: id
+          in: path
+          required: true
+          type: string
+      responses:
+        '200':
+          description: successful operation
+          schema:
+            $ref: '#/definitions/Task'
+  /user:
+    get:
+      tags:
+        - user
+      summary: Lists all Users (admins only)
+      description: >-
+        Lists all Users of Jaqpot Quattro. This operation can only be performed
+        by the system administrators.
+      operationId: listUsers
+      produces:
+        - application/json
+        - text/uri-list
+      parameters:
+        - name: subjectid
+          in: header
+          description: Clients need to authenticate in order to access models
+          required: false
+          type: string
+        - name: start
+          in: query
+          description: start
+          required: false
+          type: integer
+          default: 0
+          format: int32
+        - name: max
+          in: query
+          description: max
+          required: false
+          type: integer
+          default: 10
+          format: int32
+      responses:
+        '200':
+          description: Users found and are listed in the response body
+        '401':
+          description: You are not authorized to access this user
+        '403':
+          description: >-
+            This request is forbidden (e.g., no authentication token is
+            provided)
+        '500':
+          description: Internal server error - this request cannot be served.
+  '/user/{id}':
+    get:
+      tags:
+        - user
+      summary: Finds User by Id
+      description: Finds specified user
+      operationId: getUser
+      produces:
+        - application/json
+        - text/uri-list
+      parameters:
+        - name: id
+          in: path
+          required: true
+          type: string
+        - name: subjectid
+          in: header
+          description: Clients need to authenticate in order to access this resource
+          required: false
+          type: string
+      responses:
+        '200':
+          description: User is found
+        '401':
+          description: You are not authorized to access this user
+        '403':
+          description: >-
+            This request is forbidden (e.g., no authentication token is
+            provided)
+        '404':
+          description: This user was not found.
+        '500':
+          description: Internal server error - this request cannot be served.
+  '/user/{id}/quota':
+    get:
+      tags:
+        - user
+      summary: Retrieves user's quota
+      description: >-
+        Returns user's quota given the user's ID. Authenicated users can access
+        only their own quota. Jaqpot administrators can access the quota of all
+        Jaqpot users.
+      operationId: getUserQuota
+      produces:
+        - application/json
+      parameters:
+        - name: id
+          in: path
+          required: true
+          type: string
+        - name: subjectid
+          in: header
+          description: Clients need to authenticate in order to access this resource
+          required: false
+          type: string
+      responses:
+        '200':
+          description: User is found and quota are retrieved
+        '401':
+          description: You are not authorized to access this user's quota
+        '403':
+          description: >-
+            This request is forbidden (e.g., no authentication token is
+            provided)
+        '404':
+          description: This user was not found.
+        '500':
+          description: Internal server error - this request cannot be served.
+  /validation/test_set_validation:
+    post:
+      tags:
+        - validation
+      consumes:
+        - application/x-www-form-urlencoded
+      summary: Creates Validation Report
+      description: Creates Validation Report
+      operationId: externalValidateAlgorithm
+      produces:
+        - application/json
+      parameters:
+        - name: model_uri
+          in: formData
+          required: false
+          type: string
+        - name: test_dataset_uri
+          in: formData
+          required: false
+          type: string
+        - name: subjectId
+          in: header
+          required: false
+          type: string
+      responses:
+        '200':
+          description: successful operation
+          schema:
+            $ref: '#/definitions/Task'
+  /validation/training_test_cross:
+    post:
+      tags:
+        - validation
+      consumes:
+        - application/x-www-form-urlencoded
+      summary: Creates Validation Report
+      description: Creates Validation Report
+      operationId: crossValidateAlgorithm
+      produces:
+        - application/json
+      parameters:
+        - name: algorithm_uri
+          in: formData
+          required: false
+          type: string
+        - name: training_dataset_uri
+          in: formData
+          required: false
+          type: string
+        - name: algorithm_params
+          in: formData
+          required: false
+          type: string
+        - name: prediction_feature
+          in: formData
+          required: false
+          type: string
+        - name: transformations
+          in: formData
+          required: false
+          type: string
+          default: >-
+            http://app.jaqpot.org:8080/jaqpot/services/pmml/corona-standard-transformations
+        - name: scaling
+          in: formData
+          required: false
+          type: string
+          default: 'http://app.jaqpot.org:8080/jaqpot/services/algorithm/standarization'
+        - name: folds
+          in: formData
+          required: false
+          type: integer
+          format: int32
+        - name: stratify
+          in: formData
+          required: false
+          type: string
+        - name: seed
+          in: formData
+          required: false
+          type: integer
+          format: int32
+        - name: subjectId
+          in: header
+          required: false
+          type: string
+      responses:
+        '200':
+          description: successful operation
+          schema:
+            $ref: '#/definitions/Task'
+  /validation/training_test_split:
+    post:
+      tags:
+        - validation
+      consumes:
+        - application/x-www-form-urlencoded
+      summary: Creates Validation Report
+      description: Creates Validation Report
+      operationId: splitValidateAlgorithm
+      produces:
+        - application/json
+      parameters:
+        - name: algorithm_uri
+          in: formData
+          required: false
+          type: string
+        - name: training_dataset_uri
+          in: formData
+          required: false
+          type: string
+        - name: algorithm_params
+          in: formData
+          required: false
+          type: string
+        - name: prediction_feature
+          in: formData
+          required: false
+          type: string
+        - name: transformations
+          in: formData
+          required: false
+          type: string
+          default: >-
+            http://app.jaqpot.org:8080/jaqpot/services/pmml/corona-standard-transformations
+        - name: scaling
+          in: formData
+          required: false
+          type: string
+          default: 'http://app.jaqpot.org:8080/jaqpot/services/algorithm/standarization'
+        - name: split_ratio
+          in: formData
+          required: true
+          type: number
+          format: double
+        - name: stratify
+          in: formData
+          required: false
+          type: string
+        - name: seed
+          in: formData
+          required: false
+          type: integer
+          format: int32
+        - name: subjectId
+          in: header
+          required: false
+          type: string
+      responses:
+        '200':
+          description: successful operation
+          schema:
+            $ref: '#/definitions/Task'
+securityDefinitions:
+  subjectid:
+    type: apiKey
+    name: subjectid
+    in: header
+definitions:
+  Task:
+    type: object
+    properties:
+      meta:
+        $ref: '#/definitions/MetaInfo'
+      ontologicalClasses:
+        type: array
+        uniqueItems: true
+        items:
+          type: string
+      visible:
+        type: boolean
+        default: false
+      temporary:
+        type: boolean
+        default: false
+      featured:
+        type: boolean
+        default: false
+      resultUri:
+        type: string
+      result:
+        type: string
+      percentageCompleted:
+        type: number
+        format: float
+      errorReport:
+        $ref: '#/definitions/ErrorReport'
+      httpStatus:
+        type: integer
+        format: int32
+      duration:
+        type: integer
+        format: int64
+      type:
+        type: string
+        enum:
+          - TRAINING
+          - PREDICTION
+          - PREPARATION
+          - VALIDATION
+      _id:
+        type: string
+      status:
+        type: string
+        enum:
+          - RUNNING
+          - COMPLETED
+          - CANCELLED
+          - ERROR
+          - REJECTED
+          - QUEUED
+    xml:
+      name: Task
+  Dataset:
+    type: object
+    properties:
+      meta:
+        $ref: '#/definitions/MetaInfo'
+      ontologicalClasses:
+        type: array
+        uniqueItems: true
+        items:
+          type: string
+      visible:
+        type: boolean
+        default: false
+      temporary:
+        type: boolean
+        default: false
+      featured:
+        type: boolean
+        default: false
+      datasetURI:
+        type: string
+      byModel:
+        type: string
+      dataEntry:
+        type: array
+        items:
+          $ref: '#/definitions/DataEntry'
+      features:
+        type: array
+        uniqueItems: true
+        items:
+          $ref: '#/definitions/FeatureInfo'
+      totalRows:
+        type: integer
+        format: int32
+      totalColumns:
+        type: integer
+        format: int32
+      descriptors:
+        type: array
+        uniqueItems: true
+        items:
+          type: string
+          enum:
+            - EXPERIMENTAL
+            - IMAGE
+            - GO
+            - MOPAC
+            - CDK
+            - PREDICTED
+      _id:
+        type: string
+  MetaInfo:
+    type: object
+    properties:
+      identifiers:
+        type: array
+        uniqueItems: true
+        items:
+          type: string
+      comments:
+        type: array
+        items:
+          type: string
+      descriptions:
+        type: array
+        uniqueItems: true
+        items:
+          type: string
+      titles:
+        type: array
+        uniqueItems: true
+        items:
+          type: string
+      subjects:
+        type: array
+        uniqueItems: true
+        items:
+          type: string
+      publishers:
+        type: array
+        uniqueItems: true
+        items:
+          type: string
+      creators:
+        type: array
+        uniqueItems: true
+        items:
+          type: string
+      contributors:
+        type: array
+        uniqueItems: true
+        items:
+          type: string
+      audiences:
+        type: array
+        uniqueItems: true
+        items:
+          type: string
+      rights:
+        type: array
+        uniqueItems: true
+        items:
+          type: string
+      sameAs:
+        type: array
+        uniqueItems: true
+        items:
+          type: string
+      seeAlso:
+        type: array
+        uniqueItems: true
+        items:
+          type: string
+      hasSources:
+        type: array
+        uniqueItems: true
+        items:
+          type: string
+      doi:
+        type: array
+        uniqueItems: true
+        items:
+          type: string
+      date:
+        type: string
+        format: date-time
+  FeatureInfo:
+    type: object
+    properties:
+      name:
+        type: string
+      units:
+        type: string
+      conditions:
+        type: object
+        additionalProperties:
+          type: object
+      category:
+        type: string
+        enum:
+          - EXPERIMENTAL
+          - IMAGE
+          - GO
+          - MOPAC
+          - CDK
+          - PREDICTED
+      uri:
+        type: string
+  Algorithm:
+    type: object
+    properties:
+      meta:
+        $ref: '#/definitions/MetaInfo'
+      ontologicalClasses:
+        type: array
+        uniqueItems: true
+        items:
+          type: string
+      visible:
+        type: boolean
+        default: false
+      temporary:
+        type: boolean
+        default: false
+      featured:
+        type: boolean
+        default: false
+      parameters:
+        type: array
+        uniqueItems: true
+        items:
+          $ref: '#/definitions/Parameter'
+      ranking:
+        type: integer
+        format: int32
+      trainingService:
+        type: string
+      predictionService:
+        type: string
+      reportService:
+        type: string
+      _id:
+        type: string
+  Feature:
+    type: object
+    properties:
+      meta:
+        $ref: '#/definitions/MetaInfo'
+      ontologicalClasses:
+        type: array
+        uniqueItems: true
+        items:
+          type: string
+      visible:
+        type: boolean
+        default: false
+      temporary:
+        type: boolean
+        default: false
+      featured:
+        type: boolean
+        default: false
+      units:
+        type: string
+      predictorFor:
+        type: string
+      admissibleValues:
+        type: array
+        uniqueItems: true
+        items:
+          type: string
+      _id:
+        type: string
+  ErrorReport:
+    type: object
+    properties:
+      meta:
+        $ref: '#/definitions/MetaInfo'
+      ontologicalClasses:
+        type: array
+        uniqueItems: true
+        items:
+          type: string
+      visible:
+        type: boolean
+        default: false
+      temporary:
+        type: boolean
+        default: false
+      featured:
+        type: boolean
+        default: false
+      code:
+        type: string
+        description: Error code
+      actor:
+        type: string
+        description: Who is to blame
+      message:
+        type: string
+        description: Short error message
+      details:
+        type: string
+        description: Details to be used for debugging.
+      httpStatus:
+        type: integer
+        format: int32
+        description: Accompanying HTTP status.
+      trace:
+        description: Trace error report.
+        $ref: '#/definitions/ErrorReport'
+      _id:
+        type: string
+    description: Error report for various exceptions in the Jaqpot Framework
+  DataEntry:
+    type: object
+    properties:
+      compound:
+        $ref: '#/definitions/Substance'
+      values:
+        type: object
+        additionalProperties:
+          type: object
+  Model:
+    type: object
+    properties:
+      meta:
+        $ref: '#/definitions/MetaInfo'
+      ontologicalClasses:
+        type: array
+        uniqueItems: true
+        items:
+          type: string
+      visible:
+        type: boolean
+        default: false
+      temporary:
+        type: boolean
+        default: false
+      featured:
+        type: boolean
+        default: false
+      dependentFeatures:
+        type: array
+        items:
+          type: string
+      independentFeatures:
+        type: array
+        items:
+          type: string
+      predictedFeatures:
+        type: array
+        items:
+          type: string
+      reliability:
+        type: integer
+        format: int32
+      datasetUri:
+        type: string
+      parameters:
+        type: object
+        additionalProperties:
+          type: object
+      algorithm:
+        $ref: '#/definitions/Algorithm'
+      actualModel:
+        type: object
+      pmmlModel:
+        type: object
+      additionalInfo:
+        type: object
+      pmmlTransformations:
+        type: string
+      doaModel:
+        type: string
+      transformationModels:
+        type: array
+        items:
+          type: string
+      linkedModels:
+        type: array
+        items:
+          type: string
+      _id:
+        type: string
+    xml:
+      name: Model
+  AuthToken:
+    type: object
+    properties:
+      userName:
+        type: string
+      authToken:
+        type: string
+  Parameter:
+    type: object
+    properties:
+      meta:
+        $ref: '#/definitions/MetaInfo'
+      ontologicalClasses:
+        type: array
+        uniqueItems: true
+        items:
+          type: string
+      visible:
+        type: boolean
+        default: false
+      temporary:
+        type: boolean
+        default: false
+      featured:
+        type: boolean
+        default: false
+      name:
+        type: string
+      value:
+        type: object
+      scope:
+        type: string
+        enum:
+          - OPTIONAL
+          - MANDATORY
+      allowedValues:
+        type: array
+        items:
+          type: object
+      minValue:
+        type: object
+      maxValue:
+        type: object
+      minArraySize:
+        type: integer
+        format: int32
+      maxArraySize:
+        type: integer
+        format: int32
+      description:
+        type: string
+      _id:
+        type: string
+  Substance:
+    type: object
+    properties:
+      name:
+        type: string
+      ownerUUID:
+        type: string
+      URI:
+        type: string
