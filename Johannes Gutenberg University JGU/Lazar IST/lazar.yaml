@@ -1,0 +1,807 @@
+swagger: '2.0'
+info:
+  description: >
+    REST API webservice for lazar and nano-lazar. 
+
+    *lazar* (lazy structure–activity relationships) is a modular framework for
+    predictive toxicology. With activated Authentication & Authorization,
+    subjectid authorization token are obligatory for designated services.
+  version: 1.1.0
+  title: Lazar & Nano-Lazar REST Service
+  contact:
+    name: in silico toxicology gmbh
+    email: service@in-silico.ch
+    url: 'https://in-silico.ch'
+  license:
+    name: GNU GENERAL PUBLIC LICENSE
+    url: 'https://github.com/opentox/lazar-rest/blob/master/LICENSE'
+host: api.in-silico.ch
+externalDocs:
+  description: |
+    See also *lazar-rest* documentation on Github
+  url: 'https://github.com/opentox/lazar-rest'
+basePath: /
+schemes:
+  - https
+paths:
+  /model:
+    get:
+      tags:
+        - model
+      description: Get a list of all prediction models
+      parameters:
+        - name: Accept
+          in: header
+          description: requested Content-Type
+          required: true
+          type: string
+          enum:
+            - text/uri-list
+            - application/json
+        - $ref: '#/parameters/subjectid'
+      produces:
+        - text/uri-list
+        - application/json
+      responses:
+        '200':
+          $ref: '#/responses/200'
+        '400':
+          $ref: '#/responses/400'
+        '401':
+          $ref: '#/responses/401'
+        '404':
+          $ref: '#/responses/404'
+        '500':
+          $ref: '#/responses/500'
+  '/model/{id}':
+    get:
+      tags:
+        - model
+      description: Get model representation
+      parameters:
+        - name: Accept
+          in: header
+          description: requested Content-Type
+          required: true
+          type: string
+          enum:
+            - application/json
+        - $ref: '#/parameters/id'
+        - $ref: '#/parameters/subjectid'
+      produces:
+        - application/json
+      responses:
+        '200':
+          $ref: '#/responses/200'
+        '400':
+          $ref: '#/responses/400'
+        '401':
+          $ref: '#/responses/401'
+        '403':
+          $ref: '#/responses/403'
+        '404':
+          $ref: '#/responses/404'
+    post:
+      tags:
+        - model
+      description: Predict a compound or a nanoparticle
+      consumes:
+        - multipart/form-data
+      parameters:
+        - name: identifier
+          in: formData
+          description: >-
+            SMILES identifier or Nanoparticle URI or comma separated list of
+            SMILES  identifiers or Nanoparticle URI
+          required: true
+          type: string
+        - $ref: '#/parameters/id'
+        - $ref: '#/parameters/subjectid'
+      produces:
+        - application/json
+      responses:
+        '200':
+          $ref: '#/responses/200'
+        '400':
+          $ref: '#/responses/400'
+        '401':
+          $ref: '#/responses/401'
+        '403':
+          $ref: '#/responses/403'
+        '404':
+          $ref: '#/responses/404'
+  /report:
+    get:
+      tags:
+        - report
+      description: Get a list of QMRF reports
+      parameters:
+        - name: Accept
+          in: header
+          description: requested Content-Type
+          required: true
+          type: string
+          enum:
+            - text/uri-list
+            - application/json
+        - $ref: '#/parameters/subjectid'
+      produces:
+        - text/uri-list
+        - application/json
+      responses:
+        '200':
+          $ref: '#/responses/200'
+        '400':
+          $ref: '#/responses/400'
+        '401':
+          $ref: '#/responses/401'
+        '404':
+          $ref: '#/responses/404'
+        '500':
+          $ref: '#/responses/500'
+  '/report/{id}':
+    get:
+      tags:
+        - report
+      description: Get a QMRF report prototype
+      parameters:
+        - name: Accept
+          in: header
+          description: requested Content-Type
+          required: true
+          type: string
+          enum:
+            - application/xml
+        - $ref: '#/parameters/id'
+        - $ref: '#/parameters/subjectid'
+      produces:
+        - application/xml
+      responses:
+        '200':
+          $ref: '#/responses/200'
+        '400':
+          $ref: '#/responses/400'
+        '401':
+          $ref: '#/responses/401'
+        '403':
+          $ref: '#/responses/403'
+        '404':
+          $ref: '#/responses/404'
+  /dataset:
+    get:
+      tags:
+        - dataset
+      description: Get a list of all datasets
+      parameters:
+        - name: Accept
+          in: header
+          description: requested Content-Type
+          required: true
+          type: string
+          enum:
+            - text/uri-list
+            - application/json
+        - $ref: '#/parameters/subjectid'
+      produces:
+        - text/uri-list
+        - application/json
+      responses:
+        '200':
+          $ref: '#/responses/200'
+        '400':
+          $ref: '#/responses/400'
+        '401':
+          $ref: '#/responses/401'
+        '404':
+          $ref: '#/responses/404'
+        '500':
+          $ref: '#/responses/500'
+  '/dataset/{id}':
+    get:
+      tags:
+        - dataset
+      description: Get dataset representation
+      parameters:
+        - name: Accept
+          in: header
+          description: requested Content-Type
+          required: true
+          type: string
+          enum:
+            - application/json
+            - text/csv
+        - $ref: '#/parameters/id'
+        - $ref: '#/parameters/subjectid'
+      produces:
+        - application/json
+        - text/csv
+      responses:
+        '200':
+          $ref: '#/responses/200'
+        '400':
+          $ref: '#/responses/400'
+        '401':
+          $ref: '#/responses/401'
+        '403':
+          $ref: '#/responses/403'
+        '404':
+          $ref: '#/responses/404'
+  '/dataset/{id}/{attribute}':
+    get:
+      tags:
+        - dataset
+      description: Get dataset representation
+      parameters:
+        - name: Accept
+          in: header
+          description: requested Content-Type
+          required: true
+          type: string
+          enum:
+            - application/json
+        - name: attribute
+          in: path
+          description: requested attribute
+          required: true
+          type: string
+          enum:
+            - compounds
+            - nanoparticles
+            - substances
+            - features
+        - $ref: '#/parameters/id'
+        - $ref: '#/parameters/subjectid'
+      produces:
+        - application/json
+      responses:
+        '200':
+          $ref: '#/responses/200'
+        '400':
+          $ref: '#/responses/400'
+        '401':
+          $ref: '#/responses/401'
+        '403':
+          $ref: '#/responses/403'
+        '404':
+          $ref: '#/responses/404'
+  /substance:
+    get:
+      tags:
+        - substance
+      description: Get a list of all substances
+      parameters:
+        - name: Accept
+          in: header
+          description: requested Content-Type
+          required: true
+          type: string
+          enum:
+            - text/uri-list
+            - application/json
+        - $ref: '#/parameters/subjectid'
+      produces:
+        - text/uri-list
+        - application/json
+      responses:
+        '200':
+          $ref: '#/responses/200'
+        '400':
+          $ref: '#/responses/400'
+        '401':
+          $ref: '#/responses/401'
+        '404':
+          $ref: '#/responses/404'
+        '500':
+          $ref: '#/responses/500'
+  '/substance/{id}':
+    get:
+      tags:
+        - substance
+      description: Get substance representation
+      parameters:
+        - name: Accept
+          in: header
+          description: requested Content-Type
+          required: true
+          type: string
+          enum:
+            - application/json
+        - $ref: '#/parameters/id'
+        - $ref: '#/parameters/subjectid'
+      produces:
+        - application/json
+      responses:
+        '200':
+          $ref: '#/responses/200'
+        '400':
+          $ref: '#/responses/400'
+        '401':
+          $ref: '#/responses/401'
+        '403':
+          $ref: '#/responses/403'
+        '404':
+          $ref: '#/responses/404'
+  /nanoparticle:
+    get:
+      tags:
+        - nanoparticle
+      description: Get a list of all nanoparticles
+      parameters:
+        - name: Accept
+          in: header
+          description: requested Content-Type
+          required: true
+          type: string
+          enum:
+            - text/uri-list
+            - application/json
+        - $ref: '#/parameters/subjectid'
+      produces:
+        - text/uri-list
+        - application/json
+      responses:
+        '200':
+          $ref: '#/responses/200'
+        '400':
+          $ref: '#/responses/400'
+        '401':
+          $ref: '#/responses/401'
+        '404':
+          $ref: '#/responses/404'
+        '500':
+          $ref: '#/responses/500'
+  '/nanoparticle/{id}':
+    get:
+      tags:
+        - nanoparticle
+      description: Get nanoparticle representation
+      parameters:
+        - name: Accept
+          in: header
+          description: requested Content-Type
+          required: true
+          type: string
+          enum:
+            - application/json
+        - $ref: '#/parameters/id'
+        - $ref: '#/parameters/subjectid'
+      produces:
+        - application/json
+      responses:
+        '200':
+          $ref: '#/responses/200'
+        '400':
+          $ref: '#/responses/400'
+        '401':
+          $ref: '#/responses/401'
+        '403':
+          $ref: '#/responses/403'
+        '404':
+          $ref: '#/responses/404'
+  /feature:
+    get:
+      tags:
+        - feature
+      description: Get a list of all features
+      parameters:
+        - name: Accept
+          in: header
+          description: requested Content-Type
+          required: true
+          type: string
+          enum:
+            - text/uri-list
+            - application/json
+      produces:
+        - text/uri-list
+        - application/json
+      responses:
+        '200':
+          $ref: '#/responses/200'
+        '400':
+          $ref: '#/responses/400'
+        '401':
+          $ref: '#/responses/401'
+        '404':
+          $ref: '#/responses/404'
+        '500':
+          $ref: '#/responses/500'
+  '/feature/{id}':
+    get:
+      tags:
+        - feature
+      description: Get feature representation
+      parameters:
+        - name: Accept
+          in: header
+          description: requested Content-Type
+          required: true
+          type: string
+          enum:
+            - application/json
+        - $ref: '#/parameters/id'
+      produces:
+        - application/json
+      responses:
+        '200':
+          $ref: '#/responses/200'
+        '400':
+          $ref: '#/responses/400'
+        '401':
+          $ref: '#/responses/401'
+        '403':
+          $ref: '#/responses/403'
+        '404':
+          $ref: '#/responses/404'
+  /validation:
+    get:
+      tags:
+        - validation
+      description: Get a list of all validation types
+      parameters:
+        - name: Accept
+          in: header
+          description: requested Content-Type
+          required: true
+          type: string
+          enum:
+            - text/uri-list
+            - application/json
+      produces:
+        - text/uri-list
+        - application/json
+      responses:
+        '200':
+          $ref: '#/responses/200'
+        '400':
+          $ref: '#/responses/400'
+        '401':
+          $ref: '#/responses/401'
+        '404':
+          $ref: '#/responses/404'
+        '500':
+          $ref: '#/responses/500'
+  '/validation/{validationtype}':
+    get:
+      tags:
+        - validation
+      description: Get all validations of a validation type
+      parameters:
+        - name: Accept
+          in: header
+          description: requested Content-Type
+          required: true
+          type: string
+          enum:
+            - text/uri-list
+            - application/json
+        - $ref: '#/parameters/valtype'
+        - $ref: '#/parameters/subjectid'
+      produces:
+        - text/uri-list
+        - application/json
+      responses:
+        '200':
+          $ref: '#/responses/200'
+        '400':
+          $ref: '#/responses/400'
+        '401':
+          $ref: '#/responses/401'
+        '403':
+          $ref: '#/responses/403'
+        '404':
+          $ref: '#/responses/404'
+  '/validation/{validationtype}/{id}':
+    get:
+      tags:
+        - validation
+      description: Get validation representation
+      parameters:
+        - name: Accept
+          in: header
+          description: requested Content-Type
+          required: true
+          type: string
+          enum:
+            - application/json
+        - $ref: '#/parameters/valtype'
+        - $ref: '#/parameters/id'
+        - $ref: '#/parameters/subjectid'
+      produces:
+        - application/json
+      responses:
+        '200':
+          $ref: '#/responses/200'
+        '400':
+          $ref: '#/responses/400'
+        '401':
+          $ref: '#/responses/401'
+        '403':
+          $ref: '#/responses/403'
+        '404':
+          $ref: '#/responses/404'
+  /compound/descriptor:
+    get:
+      tags:
+        - compound
+        - descriptor
+      description: Get a list of all descriptors
+      parameters:
+        - name: Accept
+          in: header
+          description: requested Content-Type
+          required: true
+          type: string
+          enum:
+            - text/plain
+            - application/json
+      produces:
+        - text/plain
+        - application/json
+      responses:
+        '200':
+          $ref: '#/responses/200'
+        '400':
+          $ref: '#/responses/400'
+        '401':
+          $ref: '#/responses/401'
+        '404':
+          $ref: '#/responses/404'
+        '500':
+          $ref: '#/responses/500'
+    post:
+      tags:
+        - compound
+        - descriptor
+      summary: Descriptor calculation
+      description: >-
+        Calculate descriptors for a single compound as SMILES string <br> 
+        <strong>curl example:</strong> <pre>curl -Lk -X POST -i  -H
+        "Accept:application/json" -F "identifier=O=C1NC(=O)NC=C1" -F
+        "descriptor=Openbabel.MW,JoeLib.LogP"
+        https://api.in-silico.ch/compound/descriptor </pre>.
+      consumes:
+        - multipart/form-data
+      parameters:
+        - name: Accept
+          in: header
+          description: requested Content-Type
+          required: true
+          type: string
+          enum:
+            - text/csv
+            - application/json
+          default: text/csv
+        - name: identifier
+          in: formData
+          description: SMILES identifier
+          required: true
+          type: string
+        - name: descriptor
+          in: formData
+          description: array of descriptors
+          required: true
+          type: array
+          items:
+            type: string
+        - $ref: '#/parameters/subjectid'
+      produces:
+        - text/csv
+        - application/json
+      responses:
+        '200':
+          $ref: '#/responses/200'
+        '400':
+          $ref: '#/responses/400'
+        '401':
+          $ref: '#/responses/401'
+        '404':
+          $ref: '#/responses/404'
+        '500':
+          $ref: '#/responses/500'
+  '/compound/descriptor/{descriptor}':
+    get:
+      tags:
+        - compound
+        - descriptor
+      description: Get a list of a descriptors
+      parameters:
+        - name: Accept
+          in: header
+          description: requested Content-Type
+          required: true
+          type: string
+          enum:
+            - text/plain
+            - application/json
+        - name: descriptor
+          in: path
+          description: descriptor name or ID
+          required: true
+          type: string
+      produces:
+        - text/plain
+        - application/json
+      responses:
+        '200':
+          $ref: '#/responses/200'
+        '400':
+          $ref: '#/responses/400'
+        '401':
+          $ref: '#/responses/401'
+        '404':
+          $ref: '#/responses/404'
+        '500':
+          $ref: '#/responses/500'
+  '/compound/{InChI}':
+    get:
+      tags:
+        - compound
+      description: Get compound representation
+      parameters:
+        - $ref: '#/parameters/InChI'
+        - name: Accept
+          in: header
+          description: requested Content-type
+          required: true
+          type: string
+          enum:
+            - application/json
+            - chemical/x-daylight-smiles
+            - chemical/x-inchi
+            - chemical/x-mdl-sdfile
+            - chemical/x-mdl-molfile
+            - image/png
+            - image/svg+xml
+            - text/plain
+      produces:
+        - application/json
+        - chemical/x-daylight-smiles
+        - chemical/x-inchi
+        - chemical/x-mdl-sdfile
+        - chemical/x-mdl-molfile
+        - image/png
+        - image/svg+xml
+        - text/plain
+      responses:
+        '200':
+          $ref: '#/responses/200'
+        '400':
+          $ref: '#/responses/400'
+  /api/api.json:
+    get:
+      tags:
+        - api
+      description: Get swagger api in JSON
+      produces:
+        - application/json
+      responses:
+        '200':
+          $ref: '#/responses/200'
+        '400':
+          $ref: '#/responses/400'
+        '500':
+          $ref: '#/responses/500'
+  /aa/authenticate:
+    post:
+      tags:
+        - authentication
+      summary: Get token
+      description: >-
+        Authentication against OpenSSO. Returns authentication token. Requires
+        Username and Password.
+      operationId: login
+      consumes:
+        - text/plain
+        - multipart/form-data
+      produces:
+        - text/plain
+      parameters:
+        - in: formData
+          name: username
+          description: username
+          required: true
+          type: string
+        - in: formData
+          name: password
+          description: password
+          required: true
+          type: string
+          format: password
+      responses:
+        '200':
+          $ref: '#/responses/200'
+        '400':
+          $ref: '#/responses/400'
+        '401':
+          $ref: '#/responses/401'
+  /aa/logout:
+    post:
+      description: Devalidates a token. Requires Subjectid.
+      summary: Destroy token
+      operationId: logout
+      tags:
+        - authentication
+      consumes:
+        - text/plain
+        - multipart/form-data
+      produces:
+        - text/plain
+      parameters:
+        - in: formData
+          name: subjectid
+          description: subjectid
+          required: true
+          type: string
+      responses:
+        '200':
+          $ref: '#/responses/200'
+        '400':
+          $ref: '#/responses/400'
+        '401':
+          $ref: '#/responses/401'
+parameters:
+  id:
+    name: id
+    in: path
+    description: id
+    required: true
+    type: string
+  InChI:
+    name: InChI
+    in: path
+    description: InChI String
+    required: true
+    type: string
+  valtype:
+    name: validationtype
+    in: path
+    description: validation type
+    required: true
+    type: string
+  subjectid:
+    in: header
+    name: subjectid
+    description: authorization token
+    required: false
+    type: string
+responses:
+  '200':
+    schema:
+      type: string
+    description: OK
+  '400':
+    description: Bad Request
+  '401':
+    description: Unauthorized
+  '403':
+    description: Forbidden
+  '404':
+    description: Resource Not Found
+  '500':
+    description: Server Error
+tags:
+  - name: algorithm
+    description: Algorithm
+  - name: api
+    description: Swagger API representation in JSON
+  - name: authentication
+    description: minimal Authentication service
+  - name: descriptor
+    description: Descriptor
+  - name: feature
+    description: Feature
+  - name: model
+    description: Lazar Model Service
+  - name: dataset
+    description: Dataset
+  - name: validation
+    description: Validation
+  - name: report
+    description: QMRF Reporting
+  - name: compound
+    description: Compound
+  - name: substance
+    description: Substance
+  - name: nanoparticle
+    description: Nanoparticle
