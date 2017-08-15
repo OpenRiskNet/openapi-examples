@@ -30,14 +30,6 @@ paths:
         - model
       description: Get a list of all prediction models
       parameters:
-        - name: Accept
-          in: header
-          description: requested Content-Type
-          required: true
-          type: string
-          enum:
-            - text/uri-list
-            - application/json
         - $ref: '#/parameters/subjectid'
       produces:
         - text/uri-list
@@ -58,18 +50,11 @@ paths:
       tags:
         - model
       description: Get model representation
-      parameters:
-        - name: Accept
-          in: header
-          description: requested Content-Type
-          required: true
-          type: string
-          enum:
-            - application/json
-        - $ref: '#/parameters/id'
-        - $ref: '#/parameters/subjectid'
       produces:
         - application/json
+      parameters:
+        - $ref: '#/parameters/id'
+        - $ref: '#/parameters/subjectid'
       responses:
         '200':
           $ref: '#/responses/200'
@@ -116,14 +101,6 @@ paths:
         - report
       description: Get a list of QMRF reports
       parameters:
-        - name: Accept
-          in: header
-          description: requested Content-Type
-          required: true
-          type: string
-          enum:
-            - text/uri-list
-            - application/json
         - $ref: '#/parameters/subjectid'
       produces:
         - text/uri-list
@@ -143,15 +120,8 @@ paths:
     get:
       tags:
         - report
-      description: Get a QMRF report prototype
+      description: Get QMRF for prediction model
       parameters:
-        - name: Accept
-          in: header
-          description: requested Content-Type
-          required: true
-          type: string
-          enum:
-            - application/xml
         - $ref: '#/parameters/id'
         - $ref: '#/parameters/subjectid'
       produces:
@@ -173,14 +143,6 @@ paths:
         - dataset
       description: Get a list of all datasets
       parameters:
-        - name: Accept
-          in: header
-          description: requested Content-Type
-          required: true
-          type: string
-          enum:
-            - text/uri-list
-            - application/json
         - $ref: '#/parameters/subjectid'
       produces:
         - text/uri-list
@@ -202,14 +164,6 @@ paths:
         - dataset
       description: Get dataset representation
       parameters:
-        - name: Accept
-          in: header
-          description: requested Content-Type
-          required: true
-          type: string
-          enum:
-            - application/json
-            - text/csv
         - $ref: '#/parameters/id'
         - $ref: '#/parameters/subjectid'
       produces:
@@ -226,19 +180,14 @@ paths:
           $ref: '#/responses/403'
         '404':
           $ref: '#/responses/404'
+        '500':
+          $ref: '#/responses/500'
   '/dataset/{id}/{attribute}':
     get:
       tags:
         - dataset
       description: Get dataset representation
       parameters:
-        - name: Accept
-          in: header
-          description: requested Content-Type
-          required: true
-          type: string
-          enum:
-            - application/json
         - name: attribute
           in: path
           description: requested attribute
@@ -264,20 +213,14 @@ paths:
           $ref: '#/responses/403'
         '404':
           $ref: '#/responses/404'
+        '500':
+          $ref: '#/responses/500'
   /substance:
     get:
       tags:
         - substance
       description: Get a list of all substances
       parameters:
-        - name: Accept
-          in: header
-          description: requested Content-Type
-          required: true
-          type: string
-          enum:
-            - text/uri-list
-            - application/json
         - $ref: '#/parameters/subjectid'
       produces:
         - text/uri-list
@@ -299,13 +242,6 @@ paths:
         - substance
       description: Get substance representation
       parameters:
-        - name: Accept
-          in: header
-          description: requested Content-Type
-          required: true
-          type: string
-          enum:
-            - application/json
         - $ref: '#/parameters/id'
         - $ref: '#/parameters/subjectid'
       produces:
@@ -321,20 +257,14 @@ paths:
           $ref: '#/responses/403'
         '404':
           $ref: '#/responses/404'
+        '500':
+          $ref: '#/responses/500'
   /nanoparticle:
     get:
       tags:
         - nanoparticle
       description: Get a list of all nanoparticles
       parameters:
-        - name: Accept
-          in: header
-          description: requested Content-Type
-          required: true
-          type: string
-          enum:
-            - text/uri-list
-            - application/json
         - $ref: '#/parameters/subjectid'
       produces:
         - text/uri-list
@@ -356,13 +286,6 @@ paths:
         - nanoparticle
       description: Get nanoparticle representation
       parameters:
-        - name: Accept
-          in: header
-          description: requested Content-Type
-          required: true
-          type: string
-          enum:
-            - application/json
         - $ref: '#/parameters/id'
         - $ref: '#/parameters/subjectid'
       produces:
@@ -378,20 +301,15 @@ paths:
           $ref: '#/responses/403'
         '404':
           $ref: '#/responses/404'
+        '500':
+          $ref: '#/responses/500'
   /feature:
     get:
       tags:
         - feature
-      description: Get a list of all features
+      description: Get a list of ids for all features
       parameters:
-        - name: Accept
-          in: header
-          description: requested Content-Type
-          required: true
-          type: string
-          enum:
-            - text/uri-list
-            - application/json
+        - $ref: '#/parameters/subjectid'
       produces:
         - text/uri-list
         - application/json
@@ -412,14 +330,8 @@ paths:
         - feature
       description: Get feature representation
       parameters:
-        - name: Accept
-          in: header
-          description: requested Content-Type
-          required: true
-          type: string
-          enum:
-            - application/json
         - $ref: '#/parameters/id'
+        - $ref: '#/parameters/subjectid'
       produces:
         - application/json
       responses:
@@ -433,20 +345,15 @@ paths:
           $ref: '#/responses/403'
         '404':
           $ref: '#/responses/404'
+        '500':
+          $ref: '#/responses/500'
   /validation:
     get:
       tags:
         - validation
       description: Get a list of all validation types
       parameters:
-        - name: Accept
-          in: header
-          description: requested Content-Type
-          required: true
-          type: string
-          enum:
-            - text/uri-list
-            - application/json
+        - $ref: '#/parameters/subjectid'
       produces:
         - text/uri-list
         - application/json
@@ -467,14 +374,6 @@ paths:
         - validation
       description: Get all validations of a validation type
       parameters:
-        - name: Accept
-          in: header
-          description: requested Content-Type
-          required: true
-          type: string
-          enum:
-            - text/uri-list
-            - application/json
         - $ref: '#/parameters/valtype'
         - $ref: '#/parameters/subjectid'
       produces:
@@ -491,19 +390,14 @@ paths:
           $ref: '#/responses/403'
         '404':
           $ref: '#/responses/404'
+        '500':
+          $ref: '#/responses/500'
   '/validation/{validationtype}/{id}':
     get:
       tags:
         - validation
       description: Get validation representation
       parameters:
-        - name: Accept
-          in: header
-          description: requested Content-Type
-          required: true
-          type: string
-          enum:
-            - application/json
         - $ref: '#/parameters/valtype'
         - $ref: '#/parameters/id'
         - $ref: '#/parameters/subjectid'
@@ -520,6 +414,8 @@ paths:
           $ref: '#/responses/403'
         '404':
           $ref: '#/responses/404'
+        '500':
+          $ref: '#/responses/500'
   /compound/descriptor:
     get:
       tags:
@@ -527,16 +423,9 @@ paths:
         - descriptor
       description: Get a list of all descriptors
       parameters:
-        - name: Accept
-          in: header
-          description: requested Content-Type
-          required: true
-          type: string
-          enum:
-            - text/plain
-            - application/json
+        - $ref: '#/parameters/subjectid'
       produces:
-        - text/plain
+        - text/plain; charset=utf-8
         - application/json
       responses:
         '200':
@@ -563,15 +452,6 @@ paths:
       consumes:
         - multipart/form-data
       parameters:
-        - name: Accept
-          in: header
-          description: requested Content-Type
-          required: true
-          type: string
-          enum:
-            - text/csv
-            - application/json
-          default: text/csv
         - name: identifier
           in: formData
           description: SMILES identifier
@@ -606,21 +486,14 @@ paths:
         - descriptor
       description: Get a list of a descriptors
       parameters:
-        - name: Accept
-          in: header
-          description: requested Content-Type
-          required: true
-          type: string
-          enum:
-            - text/plain
-            - application/json
         - name: descriptor
           in: path
           description: descriptor name or ID
           required: true
           type: string
+        - $ref: '#/parameters/subjectid'
       produces:
-        - text/plain
+        - text/plain; charset=utf-8
         - application/json
       responses:
         '200':
@@ -640,20 +513,7 @@ paths:
       description: Get compound representation
       parameters:
         - $ref: '#/parameters/InChI'
-        - name: Accept
-          in: header
-          description: requested Content-type
-          required: true
-          type: string
-          enum:
-            - application/json
-            - chemical/x-daylight-smiles
-            - chemical/x-inchi
-            - chemical/x-mdl-sdfile
-            - chemical/x-mdl-molfile
-            - image/png
-            - image/svg+xml
-            - text/plain
+        - $ref: '#/parameters/subjectid'
       produces:
         - application/json
         - chemical/x-daylight-smiles
@@ -692,10 +552,10 @@ paths:
         Username and Password.
       operationId: login
       consumes:
-        - text/plain
+        - text/plain; charset=utf-8
         - multipart/form-data
       produces:
-        - text/plain
+        - text/plain; charset=utf-8
       parameters:
         - in: formData
           name: username
@@ -715,6 +575,8 @@ paths:
           $ref: '#/responses/400'
         '401':
           $ref: '#/responses/401'
+        '500':
+          $ref: '#/responses/500'
   /aa/logout:
     post:
       description: Devalidates a token. Requires Subjectid.
@@ -723,10 +585,10 @@ paths:
       tags:
         - authentication
       consumes:
-        - text/plain
+        - text/plain; charset=utf-8
         - multipart/form-data
       produces:
-        - text/plain
+        - text/plain; charset=utf-8
       parameters:
         - in: formData
           name: subjectid
@@ -740,6 +602,8 @@ paths:
           $ref: '#/responses/400'
         '401':
           $ref: '#/responses/401'
+        '500':
+          $ref: '#/responses/500'
 parameters:
   id:
     name: id
@@ -765,10 +629,14 @@ parameters:
     description: authorization token
     required: false
     type: string
+  subjectidRequired:
+    in: header
+    name: subjectid
+    description: authorization token
+    required: true
+    type: string
 responses:
   '200':
-    schema:
-      type: string
     description: OK
   '400':
     description: Bad Request
@@ -781,27 +649,27 @@ responses:
   '500':
     description: Server Error
 tags:
-  - name: algorithm
-    description: Algorithm
   - name: api
     description: Swagger API representation in JSON
+  - name: algorithm
+    description: Algorithm
   - name: authentication
     description: minimal Authentication service
+  - name: compound
+    description: Compound
+  - name: dataset
+    description: Dataset
   - name: descriptor
     description: Descriptor
   - name: feature
     description: Feature
   - name: model
     description: Lazar Model Service
-  - name: dataset
-    description: Dataset
-  - name: validation
-    description: Validation
-  - name: report
-    description: QMRF Reporting
-  - name: compound
-    description: Compound
-  - name: substance
-    description: Substance
   - name: nanoparticle
     description: Nanoparticle
+  - name: report
+    description: QMRF Reporting
+  - name: substance
+    description: Substance
+  - name: validation
+    description: Validation
