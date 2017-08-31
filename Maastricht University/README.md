@@ -2,11 +2,11 @@
 
 ## WikiPathways
 
-Interactive OpenAPI UI is available at http://webservice.wikipathways.org/ with the Swagger JSON at http://webservice.wikipathways.org/index.php?swagger
+Interactive OpenAPI UI is available at http://webservice.wikipathways.org/ with the OpenAPI JSON at http://webservice.wikipathways.org/index.php?swagger
 
 ## BridgeDb
 
-Interactive OpenAPI UI is available at http://webservice.bridgedb.org/ with the Swagger JSON at http://www.bridgedb.org/swagger/swagger.json
+Interactive OpenAPI UI is available at http://webservice.bridgedb.org/ with the OpenAPI JSON at http://www.bridgedb.org/swagger/swagger.json
 
 ## Other options
 
