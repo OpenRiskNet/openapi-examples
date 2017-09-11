@@ -1,0 +1,1054 @@
+---
+swagger: "2.0"
+info:
+  description: "CPSign prediction service for predicting assay values from compounds.\
+    \ CPSign is a tool for modeling in cheminformatics using Conformal Prediction\
+    \ (CP) with the Signatures molecular descriptor and Support Vector Machines (SVM)."
+  version: "0.3.0"
+  title: "CPSign REST Service"
+  termsOfService: ""
+  contact:
+    email: "info@genettasoft.com"
+  license:
+    name: ""
+    url: ""
+host: "cpsign-rest.130.238.55.60.xip.io"
+basePath: "v3"
+tags:
+- name: "Models"
+- name: "Algorithms"
+- name: "Datasets"
+- name: "Tasks"
+- name: "Licenses"
+schemes:
+- "http"
+produces:
+- "application/json"
+paths:
+  /acp/classification:
+    post:
+      tags:
+      - "Algorithms"
+      summary: "Train a ACP Classification predictor"
+      description: "Train an Aggregated Conformal Predictor for Classification problems"
+      operationId: "acpClassificationPost"
+      consumes:
+      - "multipart/form-data"
+      produces:
+      - "application/json"
+      parameters:
+      - name: "dataset"
+        in: "formData"
+        description: "Dataset URI or id from /dataset endpoint"
+        required: true
+        type: "string"
+      - name: "property"
+        in: "formData"
+        description: "Property to train model after"
+        required: false
+        type: "string"
+      - name: "labels"
+        in: "formData"
+        description: "Classification labels"
+        required: true
+        type: "array"
+        items:
+          type: "string"
+        collectionFormat: "multi"
+      - name: "modelName"
+        in: "formData"
+        description: "Model name"
+        required: true
+        type: "string"
+      - name: "modelVersion"
+        in: "formData"
+        description: "Model version"
+        required: true
+        type: "string"
+        default: "0.0.1"
+      - name: "modelCategory"
+        in: "formData"
+        description: "Model category"
+        required: true
+        type: "string"
+        default: "classification"
+      - name: "encryptLicense"
+        in: "formData"
+        description: "Encryption License ID (if model should be encrypted for a specific\
+          \ license)"
+        required: false
+        type: "string"
+      - name: "nrModels"
+        in: "formData"
+        description: "Number of Aggregated model to train"
+        required: false
+        type: "integer"
+        default: 10
+        format: "int32"
+      - name: "calibrationRatio"
+        in: "formData"
+        description: "The ratio of training examples that should be in calibration\
+          \ set"
+        required: false
+        type: "number"
+        default: 0.2
+        format: "double"
+      - name: "liblinear"
+        in: "formData"
+        description: "The SVM implementation"
+        required: false
+        type: "string"
+        default: "liblinear"
+        enum:
+        - "liblinear"
+        - "libsvm"
+      - name: "svmCost"
+        in: "formData"
+        description: "The SVM Cost parameter"
+        required: false
+        type: "number"
+        default: 50.0
+        format: "double"
+      - name: "svmGamma"
+        in: "formData"
+        description: "The SVM Gamma parameter"
+        required: false
+        type: "number"
+        default: 0.002
+        format: "double"
+      - name: "svmEpsilon"
+        in: "formData"
+        description: "The SVM Epsilon parameter"
+        required: false
+        type: "number"
+        default: 0.001
+        format: "double"
+      - name: "startHeight"
+        in: "formData"
+        description: "The start height of signatures generation"
+        required: false
+        type: "integer"
+        default: 1
+        format: "int32"
+      - name: "stopHeight"
+        in: "formData"
+        description: "The stop height of signatures generation"
+        required: false
+        type: "integer"
+        default: 3
+        format: "int32"
+      responses:
+        401:
+          description: "Unauthorized"
+          schema:
+            $ref: "#/definitions/Error"
+        400:
+          description: "Bad Request"
+          schema:
+            $ref: "#/definitions/BadRequestError"
+        307:
+          description: "Asynchronous Task Accepted"
+        500:
+          description: "Server error"
+          schema:
+            $ref: "#/definitions/Error"
+  /acp/regression:
+    post:
+      tags:
+      - "Algorithms"
+      summary: "Train a ACP Regression predictor"
+      description: "Train an Aggregated Conformal Predictor for Regression problems"
+      operationId: "acpRegressionPost"
+      consumes:
+      - "multipart/form-data"
+      produces:
+      - "application/json"
+      parameters:
+      - name: "dataset"
+        in: "formData"
+        description: "Dataset URI or id from the /dataset endpoint"
+        required: true
+        type: "string"
+      - name: "property"
+        in: "formData"
+        description: "Property to train model after"
+        required: false
+        type: "string"
+      - name: "modelName"
+        in: "formData"
+        description: "Model name"
+        required: true
+        type: "string"
+      - name: "modelVersion"
+        in: "formData"
+        description: "Model version"
+        required: true
+        type: "string"
+        default: "0.0.1"
+      - name: "modelCategory"
+        in: "formData"
+        description: "Model category"
+        required: true
+        type: "string"
+        default: "regression"
+      - name: "encryptLicense"
+        in: "formData"
+        description: "Encryption License ID (if model should be encrypted for a specific\
+          \ license)"
+        required: false
+        type: "string"
+      - name: "nrModels"
+        in: "formData"
+        description: "Number of Aggregated model to train"
+        required: false
+        type: "integer"
+        default: 10
+        format: "int32"
+      - name: "calibrationRatio"
+        in: "formData"
+        description: "The ratio of training examples that should be in calibration\
+          \ set"
+        required: false
+        type: "number"
+        default: 0.2
+        format: "double"
+      - name: "svmImplementation"
+        in: "formData"
+        description: "The SVM implementation"
+        required: false
+        type: "string"
+        default: "liblinear"
+        enum:
+        - "liblinear"
+        - "libsvm"
+      - name: "svmCost"
+        in: "formData"
+        description: "The SVM Cost parameter"
+        required: false
+        type: "number"
+        default: 50.0
+        format: "double"
+      - name: "svmGamma"
+        in: "formData"
+        description: "The SVM Gamma parameter"
+        required: false
+        type: "number"
+        default: 0.002
+        format: "double"
+      - name: "svmEpsilon"
+        in: "formData"
+        description: "The SVM Epsilon parameter"
+        required: false
+        type: "number"
+        default: 0.001
+        format: "double"
+      - name: "startHeight"
+        in: "formData"
+        description: "The start height of signatures generation"
+        required: false
+        type: "integer"
+        default: 1
+        format: "int32"
+      - name: "stopHeight"
+        in: "formData"
+        description: "The stop height of signatures generation"
+        required: false
+        type: "integer"
+        default: 3
+        format: "int32"
+      responses:
+        401:
+          description: "Unauthorized"
+          schema:
+            $ref: "#/definitions/Error"
+        400:
+          description: "Bad Request"
+          schema:
+            $ref: "#/definitions/BadRequestError"
+        307:
+          description: "Asynchronous Task Accepted"
+        500:
+          description: "Server error"
+          schema:
+            $ref: "#/definitions/Error"
+  /datasets:
+    get:
+      tags:
+      - "Datasets"
+      summary: "List all datasets"
+      description: "Get a list of all available datasets"
+      operationId: "modelsGet"
+      produces:
+      - "application/json"
+      parameters: []
+      responses:
+        200:
+          description: "OK"
+          schema:
+            type: "array"
+            items:
+              $ref: "#/definitions/DatasetInfo"
+        401:
+          description: "Unauthorized"
+          schema:
+            $ref: "#/definitions/Error"
+        500:
+          description: "Server error"
+          schema:
+            $ref: "#/definitions/Error"
+    post:
+      tags:
+      - "Datasets"
+      summary: "Upload a new dataset"
+      description: "Upload a new dataset, either by uploading a file or giving a URI\
+        \ where the file can be uploaded from"
+      operationId: "datasetsPost"
+      consumes:
+      - "multipart/form-data"
+      - "application/x-www-form-urlencoded"
+      produces:
+      - "application/json"
+      parameters:
+      - name: "dataset"
+        in: "formData"
+        description: "Dataset to upload"
+        required: false
+        type: "file"
+      - name: "datasetUri"
+        in: "formData"
+        description: "URI that the datset can be read from"
+        required: false
+        type: "string"
+      - name: "datasetName"
+        in: "formData"
+        description: "Dataset name"
+        required: false
+        type: "string"
+      responses:
+        404:
+          description: "Dataset (from URI) not found"
+          schema:
+            $ref: "#/definitions/BadRequestError"
+        201:
+          description: "Dataset uploaded"
+          schema:
+            $ref: "#/definitions/DatasetInfo"
+        400:
+          description: "Bad request"
+          schema:
+            $ref: "#/definitions/BadRequestError"
+        500:
+          description: "Server error"
+          schema:
+            $ref: "#/definitions/Error"
+  /datasets/{id}:
+    get:
+      tags:
+      - "Datasets"
+      summary: "Download dataset"
+      description: "Sends a redirect-uri where the given dataset can be downloaded\
+        \ from"
+      operationId: "datasetsIdGet"
+      produces:
+      - "application/json"
+      - "application/plain"
+      - "application/octet-stream"
+      parameters:
+      - name: "id"
+        in: "path"
+        description: "The ID of the dataset to download"
+        required: true
+        type: "string"
+      responses:
+        503:
+          description: "Service not available"
+          schema:
+            $ref: "#/definitions/Error"
+        401:
+          description: "Unauthorized"
+          schema:
+            $ref: "#/definitions/Error"
+        400:
+          description: "Bad Request"
+          schema:
+            $ref: "#/definitions/BadRequestError"
+        307:
+          description: "Redirect to dataset uri"
+        500:
+          description: "Server error"
+          schema:
+            $ref: "#/definitions/Error"
+    delete:
+      tags:
+      - "Datasets"
+      summary: "Remove dataset"
+      description: "Remove the specified dataset"
+      operationId: "datasetsIdDelete"
+      produces:
+      - "application/json"
+      parameters:
+      - name: "id"
+        in: "path"
+        description: "The ID of the dataset to remove"
+        required: true
+        type: "string"
+      responses:
+        503:
+          description: "Service not available"
+          schema:
+            $ref: "#/definitions/Error"
+        204:
+          description: "Successfully removed dataset"
+        401:
+          description: "Unauthorized"
+          schema:
+            $ref: "#/definitions/Error"
+        400:
+          description: "Bad Request"
+          schema:
+            $ref: "#/definitions/BadRequestError"
+        500:
+          description: "Server error"
+          schema:
+            $ref: "#/definitions/Error"
+  /licenses:
+    get:
+      tags:
+      - "Licenses"
+      summary: "List all available licenses"
+      description: "Get a list of all available licenses"
+      operationId: "licensesGet"
+      produces:
+      - "application/json"
+      parameters: []
+      responses:
+        200:
+          description: "OK"
+          schema:
+            type: "array"
+            items:
+              $ref: "#/definitions/LicenseInfo"
+        401:
+          description: "Unauthorized"
+          schema:
+            $ref: "#/definitions/Error"
+        500:
+          description: "Server error"
+          schema:
+            $ref: "#/definitions/Error"
+    post:
+      tags:
+      - "Licenses"
+      summary: "Upload a license"
+      description: "Upload a license"
+      operationId: "licensesPost"
+      consumes:
+      - "multipart/form-data"
+      produces:
+      - "application/json"
+      parameters:
+      - name: "license"
+        in: "formData"
+        description: "License to upload"
+        required: false
+        type: "file"
+      - name: "licenseName"
+        in: "formData"
+        description: "License name"
+        required: false
+        type: "string"
+      responses:
+        201:
+          description: "License uploaded"
+          schema:
+            $ref: "#/definitions/LicenseInfo"
+        401:
+          description: "Unauthorized"
+          schema:
+            $ref: "#/definitions/Error"
+        500:
+          description: "Server error"
+          schema:
+            $ref: "#/definitions/Error"
+  /licenses/{id}:
+    get:
+      tags:
+      - "Licenses"
+      summary: "Download license"
+      description: "Sends a redirect-uri where the given license can be downloaded\
+        \ from"
+      operationId: "licensesIdGet"
+      produces:
+      - "application/json"
+      parameters:
+      - name: "id"
+        in: "path"
+        description: "The ID of the license to download"
+        required: true
+        type: "string"
+      responses:
+        404:
+          description: "License for specific URI not found"
+          schema:
+            $ref: "#/definitions/Error"
+        401:
+          description: "Unauthorized"
+          schema:
+            $ref: "#/definitions/Error"
+        307:
+          description: "Redirect to license uri"
+        500:
+          description: "Server error"
+          schema:
+            $ref: "#/definitions/Error"
+    delete:
+      tags:
+      - "Licenses"
+      summary: "Remove license"
+      description: "Remove a specific license"
+      operationId: "licensesIdDelete"
+      produces:
+      - "application/json"
+      parameters:
+      - name: "id"
+        in: "path"
+        description: "The ID of license to delete"
+        required: true
+        type: "string"
+      responses:
+        204:
+          description: "Successfully removed license"
+        404:
+          description: "License for specific URI not found"
+          schema:
+            $ref: "#/definitions/Error"
+        401:
+          description: "Unauthorized"
+          schema:
+            $ref: "#/definitions/Error"
+        500:
+          description: "Server error"
+          schema:
+            $ref: "#/definitions/Error"
+  /models:
+    get:
+      tags:
+      - "Models"
+      summary: ""
+      description: "Get a list of all available models"
+      operationId: "modelsGet"
+      produces:
+      - "application/json"
+      parameters: []
+      responses:
+        200:
+          description: "OK"
+          schema:
+            type: "array"
+            items:
+              $ref: "#/definitions/ModelInfo"
+        401:
+          description: "Unauthorized"
+          schema:
+            $ref: "#/definitions/Error"
+        500:
+          description: "Server error"
+          schema:
+            $ref: "#/definitions/Error"
+  /models/{id}:
+    get:
+      tags:
+      - "Models"
+      summary: "Download model"
+      description: "Sends a redirect-uri where the given license can be downloaded\
+        \ from"
+      operationId: "modelsIdGet"
+      produces:
+      - "application/json"
+      parameters:
+      - name: "id"
+        in: "path"
+        description: "The ID of the model"
+        required: true
+        type: "string"
+      responses:
+        503:
+          description: "Service unavailable"
+          schema:
+            $ref: "#/definitions/Error"
+        404:
+          description: "Model for specific id not found"
+          schema:
+            $ref: "#/definitions/Error"
+        307:
+          description: "Redirect to model uri"
+    post:
+      tags:
+      - "Models"
+      summary: ""
+      description: "Apply a model to predict a dataset or compound"
+      operationId: "modelsIdPost"
+      produces:
+      - "application/json"
+      parameters:
+      - name: "id"
+        in: "path"
+        description: "The ID or URI of the model to use"
+        required: true
+        type: "string"
+      - name: "license"
+        in: "query"
+        description: "The ID or URI of the license to use (same as encrypted by if\
+          \ model is encrypted)"
+        required: true
+        type: "string"
+      - name: "smiles"
+        in: "query"
+        description: "Compound structure notation using SMILES notation"
+        required: true
+        type: "string"
+      - name: "confidence"
+        in: "query"
+        description: "The desired confidence of the prediction"
+        required: false
+        type: "number"
+        default: 0.8
+        format: "double"
+      responses:
+        503:
+          description: "Service not available"
+          schema:
+            $ref: "#/definitions/Error"
+        404:
+          description: "Model for specific id not found"
+          schema:
+            $ref: "#/definitions/BadRequestError"
+        200:
+          description: "OK"
+          schema:
+            $ref: "#/definitions/Prediction"
+        400:
+          description: "Bad Request"
+          schema:
+            $ref: "#/definitions/BadRequestError"
+        500:
+          description: "Prediction error"
+          schema:
+            $ref: "#/definitions/Error"
+    delete:
+      tags:
+      - "Models"
+      summary: ""
+      description: "Delete the chosen model"
+      operationId: "modelsIdDelete"
+      produces:
+      - "application/json"
+      parameters:
+      - name: "id"
+        in: "query"
+        description: "The ID of the model"
+        required: true
+        type: "string"
+      responses:
+        204:
+          description: "Model successfully removed"
+        404:
+          description: "Model for specific id not found"
+          schema:
+            $ref: "#/definitions/Error"
+        500:
+          description: "Server error"
+          schema:
+            $ref: "#/definitions/Error"
+  /tasks/{id}:
+    get:
+      tags:
+      - "Tasks"
+      summary: ""
+      description: "Get status of the task"
+      operationId: "tasksIdGet"
+      produces:
+      - "application/json"
+      parameters:
+      - name: "id"
+        in: "path"
+        description: "The Task ID to query"
+        required: true
+        type: "string"
+      responses:
+        202:
+          description: "Task is running"
+          schema:
+            $ref: "#/definitions/TaskInfo"
+        404:
+          description: "Task for id not found"
+          schema:
+            $ref: "#/definitions/Error"
+        201:
+          description: "Task has successfully finished"
+          schema:
+            $ref: "#/definitions/FinishedTask"
+        401:
+          description: "Unauthorized"
+          schema:
+            $ref: "#/definitions/Error"
+        502:
+          description: "Task has failed"
+          schema:
+            $ref: "#/definitions/Error"
+        500:
+          description: "Server error"
+          schema:
+            $ref: "#/definitions/Error"
+  /tcp/classification:
+    post:
+      tags:
+      - "Algorithms"
+      summary: "Precompute a TCP Classification problem"
+      description: "Precompute data for a Transductive Conformal Predictor for Classification\
+        \ problems"
+      operationId: "tcpClassificationPost"
+      produces:
+      - "application/json"
+      parameters:
+      - name: "dataset"
+        in: "formData"
+        description: "Dataset URI or id from /dataset endpoint"
+        required: true
+        type: "string"
+      - name: "labels"
+        in: "formData"
+        description: "Classification labels"
+        required: true
+        type: "array"
+        items:
+          type: "string"
+        collectionFormat: "multi"
+      - name: "property"
+        in: "formData"
+        description: "Property to train model after"
+        required: false
+        type: "string"
+      - name: "modelName"
+        in: "formData"
+        description: "Model name"
+        required: true
+        type: "string"
+      - name: "modelVersion"
+        in: "formData"
+        description: "Model version"
+        required: true
+        type: "string"
+        default: "0.0.1"
+      - name: "modelCategory"
+        in: "formData"
+        description: "Model category"
+        required: true
+        type: "string"
+        default: "classification"
+      - name: "encryptLicense"
+        in: "formData"
+        description: "Encryption License ID (if model should be encrypted for a specific\
+          \ license)"
+        required: false
+        type: "string"
+      - name: "svmCost"
+        in: "formData"
+        description: "The SVM Cost parameter"
+        required: false
+        type: "number"
+        default: 50.0
+        format: "double"
+      - name: "svmEpsilon"
+        in: "formData"
+        description: "The SVM Epsilon parameter"
+        required: false
+        type: "number"
+        default: 0.001
+        format: "double"
+      - name: "startHeight"
+        in: "formData"
+        description: "The start height of signatures generation"
+        required: false
+        type: "integer"
+        default: 1
+        format: "int32"
+      - name: "stopHeight"
+        in: "formData"
+        description: "The stop height of signatures generation"
+        required: false
+        type: "integer"
+        default: 3
+        format: "int32"
+      responses:
+        401:
+          description: "Unauthorized"
+          schema:
+            $ref: "#/definitions/Error"
+        400:
+          description: "Bad Request"
+          schema:
+            $ref: "#/definitions/BadRequestError"
+        307:
+          description: "Asynchronous Task Accepted"
+        500:
+          description: "Server error"
+          schema:
+            $ref: "#/definitions/Error"
+definitions:
+  Prediction:
+    type: "object"
+    required:
+    - "smiles"
+    properties:
+      smiles:
+        type: "string"
+        description: "Predicted lower range"
+      classificationResult:
+        type: "array"
+        description: "Predicted p-values for each label"
+        items:
+          $ref: "#/definitions/PValueMapping"
+      regressionResult:
+        description: "Predicted interval"
+        $ref: "#/definitions/PredictionRegressionResult"
+    description: "Prediction result"
+  PredictionRegressionResult:
+    type: "object"
+    required:
+    - "maxValue"
+    - "minValue"
+    properties:
+      minValue:
+        type: "number"
+        format: "double"
+        description: "Predicted lower range"
+      maxValue:
+        type: "number"
+        format: "double"
+        description: "Predicted upper range"
+    description: "predicted regression interval"
+  ModelInfo:
+    type: "object"
+    required:
+    - "id"
+    - "uri"
+    properties:
+      name:
+        type: "string"
+        description: "The model name"
+      id:
+        type: "string"
+        description: "The ID of the model"
+      uri:
+        type: "string"
+        format: "uri"
+        description: "The URI of the model"
+      creationTime:
+        type: "string"
+        format: "date-time"
+        description: "The creation time of the model"
+        readOnly: true
+      dataset:
+        type: "string"
+        description: "The dataset used for generating the model"
+      modelType:
+        type: "string"
+        description: "Model type, either classification or regression"
+      algorithmType:
+        type: "string"
+        description: "Algorithm type"
+      encryptLicense:
+        type: "string"
+        description: "License used for encrypting license (if any)"
+      startHeight:
+        type: "integer"
+        format: "int64"
+        description: "Start-height used in signatures generation"
+      stopHeight:
+        type: "integer"
+        format: "int64"
+        description: "Stop-height used in signatures generation"
+      version:
+        type: "string"
+        description: "Version of the model"
+      numberOfModels:
+        type: "integer"
+        format: "int64"
+        description: "Number of aggregated models"
+      property:
+        type: "string"
+        description: "Property used in modeling"
+      classificationLabels:
+        type: "array"
+        description: "Classification labels used (if any)"
+        items:
+          type: "string"
+      modelCategory:
+        type: "string"
+        description: "Model Category"
+      createdBy:
+        type: "string"
+        description: "Created by user"
+      calibrationRatio:
+        type: "number"
+        format: "double"
+        description: "Calibration ratio (if any)"
+    description: "Information about a model"
+  FinishedTask:
+    type: "object"
+    required:
+    - "id"
+    - "resultLocation"
+    properties:
+      id:
+        type: "string"
+        description: "The id of the task"
+      totalRuntime:
+        type: "number"
+        description: "Total runtime (milliseconds)"
+      resultLocation:
+        type: "string"
+        format: "uri"
+        description: "Location of the result of this task"
+    description: "Information about a finished Task"
+  LicenseInfo:
+    type: "object"
+    required:
+    - "allowEncryption"
+    - "expireDate"
+    - "filename"
+    - "id"
+    - "licenseType"
+    - "uploaded"
+    - "uri"
+    - "version"
+    properties:
+      expireDate:
+        type: "string"
+        format: "date-time"
+        description: "The expiration date and time of the license"
+      uploaded:
+        type: "string"
+        format: "date-time"
+        description: "When the license was uploaded to the server"
+      id:
+        type: "string"
+        description: "The ID of the license"
+      uri:
+        type: "string"
+        format: "uri"
+        description: "The URI of the license"
+      owner:
+        type: "string"
+        description: "The owner of the license"
+      filename:
+        type: "string"
+        description: "The filename of the license"
+      licenseType:
+        type: "string"
+        description: "The license type (PREDICT, STANDARD or PRO)"
+      allowEncryption:
+        type: "boolean"
+        description: "If the license allows encryption"
+        default: false
+      version:
+        type: "string"
+        description: "The version of the license"
+    description: "Information about a license"
+  TaskInfo:
+    type: "object"
+    required:
+    - "id"
+    properties:
+      id:
+        type: "string"
+        description: "The id of the task"
+      progress:
+        type: "number"
+        description: "Progress [0-100]%"
+      currentRuntime:
+        type: "number"
+        description: "How long the task has been running (milliseconds)"
+    description: "Information about a running Task"
+  DatasetInfo:
+    type: "object"
+    required:
+    - "creationTime"
+    - "id"
+    - "name"
+    - "numMolecules"
+    - "uri"
+    properties:
+      creationTime:
+        type: "string"
+        format: "date-time"
+        description: "The creation time of the dataset"
+      name:
+        type: "string"
+        description: "The dataset name"
+      id:
+        type: "string"
+        description: "The ID of the dataset"
+      uri:
+        type: "string"
+        format: "uri"
+        description: "The URI of the dataset"
+      numMolecules:
+        type: "integer"
+        format: "int64"
+        description: "Number of molecules contained in the dataset"
+    description: "Information about a model"
+  BadRequestError:
+    type: "object"
+    required:
+    - "code"
+    - "fields"
+    - "message"
+    properties:
+      code:
+        type: "integer"
+        format: "int32"
+        description: "HTTP status code"
+      message:
+        type: "string"
+        description: "Error message"
+      fields:
+        type: "array"
+        description: "Relevant field(s)"
+        items:
+          type: "string"
+    description: "BadRequestError"
+  PValueMapping:
+    type: "object"
+    required:
+    - "label"
+    - "pValue"
+    properties:
+      label:
+        type: "string"
+        description: "Label"
+      pValue:
+        type: "number"
+        format: "double"
+        description: "p-value (or null)"
+        minimum: 0.0
+        maximum: 1.0
+    description: "Mapping of label to predicted p-value"
+  Error:
+    type: "object"
+    required:
+    - "code"
+    - "message"
+    properties:
+      code:
+        type: "integer"
+        format: "int32"
+        description: "HTTP status code"
+      message:
+        type: "string"
+        description: "Error message"
+    description: "Error"
+externalDocs:
+  description: "More information"
+  url: "http://cpsign-docs.genettasoft.com/"
