@@ -1,0 +1,2706 @@
+swagger: '2.0'
+info:
+  contact:
+    email: webmaster.ega@crg.eu
+  description: Provides microservices api
+  license:
+    name: License
+    url: 'https://ega.crg.eu/rest-license'
+  termsOfService: 'https://ega.crg.eu/rest-terms'
+  title: Microservice API
+  version: '1.0'
+host: egatest.crg.eu
+basePath: /webportal/v1
+schemes:
+  - https
+parameters:
+  queryBy:
+    description: queryBy
+    in: query
+    name: queryby
+    required: false
+    type: string
+  queryId:
+    description: queryId
+    in: query
+    name: queryid
+    required: false
+    type: string
+  skipParam:
+    name: skip
+    in: query
+    description: Number of items to skip
+    required: false
+    type: integer
+    format: int32
+  limitParam:
+    name: limit
+    in: query
+    description: Maximum number of items to return (default 10)
+    required: false
+    type: integer
+    format: int32
+  sortParam:
+    name: sort
+    in: query
+    description: >- 
+      A collection of sort directives in the format ($propertyname,)+[asc|desc]?
+    required: false
+    type: string
+  startParam:
+    name: start
+    in: query
+    description: Number of items to skip
+    required: false
+    type: string
+  lengthParam:
+    name: length
+    in: query
+    description: Maximum number of items to return (default 10)
+    required: false
+    type: string
+  orderParam:
+    name: order
+    in: query
+    description: A sort directive in the format order[column]=[0-9]*&order[dir]=[asc|desc]?
+    required: false
+    type: string
+paths:
+  # Endpoints common to all APIs
+  # --- EGA specification
+  /cache:
+    delete:
+      consumes:
+        - application/json
+      produces:
+        - '*/*'
+      parameters:
+        - description: name of the cache to delete
+          in: query
+          name: cachetype
+          required: true
+          type: string
+      responses:
+        '200':
+          description: OK
+          schema:
+            $ref: '#/definitions/Base'
+        '204':
+          description: No Content
+        '401':
+          description: Unauthorized
+        '403':
+          description: Forbidden
+      tags:
+        - EGA common
+      deprecated: false
+      description: deleteCache
+      operationId: deleteCache
+      summary: Delete the specified cache
+  /error:
+    get:
+      consumes:
+        - application/json
+      produces:
+        - '*/*'
+      responses:
+        '200':
+          description: OK
+          schema:
+            $ref: '#/definitions/Base«string»'
+        '401':
+          description: Unauthorized
+        '403':
+          description: Forbidden
+        '404':
+          description: Not Found
+      tags:
+        - EGA common
+      deprecated: false
+      description: error
+      operationId: error
+      summary: error
+  /events:
+    post:
+      consumes:
+        - application/json
+      produces:
+        - '*/*'
+      parameters:
+        - in: body
+          name: body
+          required: true
+          schema:
+            $ref: '#/definitions/ServiceMessage'
+      responses:
+        '200':
+          description: OK
+          schema:
+            $ref: '#/definitions/Base'
+        '201':
+          description: Created
+        '401':
+          description: Unauthorized
+        '403':
+          description: Forbidden
+        '404':
+          description: Not Found
+      tags:
+        - common-spring
+      deprecated: false
+      description: Send an event to the service
+      operationId: receive
+      summary: Event
+  '/hello/{message}':
+    get:
+      consumes:
+        - application/json
+      produces:
+        - '*/*'
+      parameters:
+        - in: path
+          name: message
+          required: true
+          type: string
+      responses:
+        '200':
+          description: OK
+          schema:
+            $ref: '#/definitions/Base'
+        '401':
+          description: Unauthorized
+        '403':
+          description: Forbidden
+        '404':
+          description: Not Found
+      tags:
+        - common-spring
+      deprecated: false
+      description: hello
+      operationId: hello
+      summary: hello
+  /logs:
+    put:
+      consumes:
+        - application/json
+      produces:
+        - '*/*'
+      parameters:
+        - in: query
+          name: level
+          required: true
+          type: string
+      responses:
+        '200':
+          description: OK
+          schema:
+            $ref: '#/definitions/Base'
+        '201':
+          description: Created
+        '401':
+          description: Unauthorized
+        '403':
+          description: Forbidden
+        '404':
+          description: Not Found
+      tags:
+        - EGA common
+      deprecated: false
+      description: setLogLevel
+      operationId: setLogLevel
+      summary: Set log level
+  /logs/level:
+    get:
+      consumes:
+        - application/json
+      produces:
+        - '*/*'
+      responses:
+        '200':
+          description: OK
+          schema:
+            $ref: '#/definitions/Base'
+        '401':
+          description: Unauthorized
+        '403':
+          description: Forbidden
+        '404':
+          description: Not Found
+      tags:
+        - EGA common
+      deprecated: false
+      description: getLogLevel
+      operationId: getLogLevel
+      summary: Get log level
+  /logs/levels:
+    get:
+      consumes:
+        - application/json
+      produces:
+        - '*/*'
+      responses:
+        '200':
+          description: OK
+          schema:
+            $ref: '#/definitions/Base'
+        '401':
+          description: Unauthorized
+        '403':
+          description: Forbidden
+        '404':
+          description: Not Found
+      tags:
+        - EGA common
+      deprecated: false
+      description: getLogLevels
+      operationId: getLogLevels
+      summary: Get available levels
+  '/logs/{classname}':
+    put:
+      consumes:
+        - application/json
+      produces:
+        - '*/*'
+      parameters:
+        - in: path
+          name: classname
+          required: true
+          type: string
+        - in: query
+          name: level
+          required: true
+          type: string
+      responses:
+        '200':
+          description: OK
+          schema:
+            $ref: '#/definitions/Base'
+        '201':
+          description: Created
+        '401':
+          description: Unauthorized
+        '403':
+          description: Forbidden
+        '404':
+          description: Not Found
+      tags:
+        - EGA common
+      deprecated: false
+      description: setLogLevelForClass
+      operationId: setLogLevelForClass
+      summary: setLogLevelForClass
+  /metrics/ega/reset:
+    put:
+      consumes:
+        - application/json
+      produces:
+        - '*/*'
+      responses:
+        '200':
+          description: OK
+          schema:
+            $ref: '#/definitions/Base'
+        '201':
+          description: Created
+        '401':
+          description: Unauthorized
+        '403':
+          description: Forbidden
+        '404':
+          description: Not Found
+      tags:
+        - EGA common
+      deprecated: false
+      description: reset
+      operationId: reset
+      summary: Reset
+  /status:
+    get:
+      consumes:
+        - application/json
+      produces:
+        - '*/*'
+      responses:
+        '200':
+          description: OK
+          schema:
+            $ref: '#/definitions/Base'
+        '401':
+          description: Unauthorized
+        '403':
+          description: Forbidden
+        '404':
+          description: Not Found
+      tags:
+        - EGA common
+      deprecated: false
+      description: getStatus
+      operationId: getStatus
+      summary: Get status
+    put:
+      consumes:
+        - application/json
+      produces:
+        - '*/*'
+      parameters:
+        - in: query
+          name: value
+          required: true
+          type: string
+      responses:
+        '200':
+          description: OK
+          schema:
+            $ref: '#/definitions/Base'
+        '201':
+          description: Created
+        '401':
+          description: Unauthorized
+        '403':
+          description: Forbidden
+        '404':
+          description: Not Found
+      tags:
+        - common-spring
+      deprecated: false
+      description: setStatus
+      operationId: setStatus
+      summary: Set status
+  /status/commands:
+    get:
+      consumes:
+        - application/json
+      produces:
+        - '*/*'
+      responses:
+        '200':
+          description: OK
+          schema:
+            $ref: '#/definitions/Base'
+        '401':
+          description: Unauthorized
+        '403':
+          description: Forbidden
+        '404':
+          description: Not Found
+      tags:
+        - EGA common
+      deprecated: false
+      description: getCommands
+      operationId: getCommands
+      summary: Get commands
+  /status/states:
+    get:
+      consumes:
+        - application/json
+      produces:
+        - '*/*'
+      responses:
+        '200':
+          description: OK
+          schema:
+            $ref: '#/definitions/Base'
+        '401':
+          description: Unauthorized
+        '403':
+          description: Forbidden
+        '404':
+          description: Not Found
+      tags:
+        - EGA common
+      deprecated: false
+      description: getStatusStates
+      operationId: getStatusStates
+      summary: Get status states
+  /version:
+    get:
+      consumes:
+        - application/json
+      produces:
+        - '*/*'
+      responses:
+        '200':
+          description: OK
+          schema:
+            $ref: '#/definitions/Base«GitRepositoryState»'
+        '401':
+          description: Unauthorized
+        '403':
+          description: Forbidden
+        '404':
+          description: Not Found
+      tags:
+        - EGA common
+      deprecated: false
+      description: getServiceVersion
+      operationId: getServiceVersion
+      summary: getServiceVersion
+  /version/core:
+    get:
+      consumes:
+        - application/json
+      produces:
+        - '*/*'
+      responses:
+        '200':
+          description: OK
+          schema:
+            $ref: '#/definitions/Base«GitRepositoryState»'
+        '401':
+          description: Unauthorized
+        '403':
+          description: Forbidden
+        '404':
+          description: Not Found
+      tags:
+        - EGA common
+      deprecated: false
+      description: getCoreVersion
+      operationId: getCoreVersion
+      summary: getCoreVersion
+  /version/dependencies:
+    get:
+      consumes:
+        - application/json
+      produces:
+        - '*/*'
+      responses:
+        '200':
+          description: OK
+          schema:
+            $ref: '#/definitions/Base«MavenEntry»'
+        '401':
+          description: Unauthorized
+        '403':
+          description: Forbidden
+        '404':
+          description: Not Found
+      tags:
+        - EGA common
+      deprecated: false
+      description: getServiceDependencies
+      operationId: getServiceDependencies
+      summary: getServiceDependencies
+  # --- END - EGA specification
+  # --- Spring generated 
+  /autoconfig:
+    get:
+      consumes:
+        - application/json
+      deprecated: false
+      description: Displays an auto-configuration report showing all auto-configuration candidates and the reason why they ‘were’ or ‘were not’ applied.
+      operationId: autoconfig
+      produces:
+        - '*/*'
+      responses:
+        '200':
+          description: OK
+          schema:
+            type: object
+        '401':
+          description: Unauthorized
+        '403':
+          description: Forbidden
+        '404':
+          description: Not Found
+      summary: Displays an auto-configuration report
+      tags:
+        - common-spring
+  /beans:
+    get:
+      consumes:
+        - application/json
+      deprecated: false
+      description: Displays a complete list of all the Spring beans in your application.
+      operationId: beans
+      produces:
+        - '*/*'
+      responses:
+        '200':
+          description: OK
+          schema:
+            type: object
+        '401':
+          description: Unauthorized
+        '403':
+          description: Forbidden
+        '404':
+          description: Not Found
+      summary: Displays the list of Spring beans
+      tags:
+        - common-spring
+  /config:
+    get:
+      consumes:
+        - application/json
+      deprecated: false
+      description: Get information about the configuration of the service.
+      operationId: config
+      produces:
+        - '*/*'
+      responses:
+        '200':
+          description: OK
+          schema:
+            type: object
+        '401':
+          description: Unauthorized
+        '403':
+          description: Forbidden
+        '404':
+          description: Not Found
+      summary: Get service configuration information
+      tags:
+        - common-spring
+  '/config/{name}':
+    get:
+      consumes:
+        - application/json
+      deprecated: false
+      description: Get information about a configuration variable of this service.
+      operationId: config_name
+      parameters:
+        - description: name of the variable
+          in: path
+          name: name
+          required: true
+          type: string
+      produces:
+        - '*/*'
+      responses:
+        '200':
+          description: OK
+          schema:
+            type: string
+        '401':
+          description: Unauthorized
+        '403':
+          description: Forbidden
+        '404':
+          description: Not Found
+      summary: Get information about a configuration variable
+      tags:
+        - common-spring
+  /configprops:
+    get:
+      consumes:
+        - application/json
+      deprecated: false
+      description: Displays a collated list of all @ConfigurationProperties.
+      operationId: configprops
+      produces:
+        - '*/*'
+      responses:
+        '200':
+          description: OK
+          schema:
+            type: object
+        '401':
+          description: Unauthorized
+        '403':
+          description: Forbidden
+        '404':
+          description: Not Found
+      summary: Displays the list of all @ConfigurationProperties
+      tags:
+        - common-spring
+  /dump:
+    get:
+      consumes:
+        - application/json
+      deprecated: false
+      description: Performs a thread dump.
+      operationId: dump
+      produces:
+        - '*/*'
+      responses:
+        '200':
+          description: OK
+          schema:
+            type: object
+        '401':
+          description: Unauthorized
+        '403':
+          description: Forbidden
+        '404':
+          description: Not Found
+      summary: Performs a thread dump
+      tags:
+        - common-spring
+  /health:
+    get:
+      consumes:
+        - application/json
+      deprecated: false
+      description: Shows application health information.
+      operationId: health
+      produces:
+        - '*/*'
+      responses:
+        '200':
+          description: OK
+          schema:
+            type: object
+        '401':
+          description: Unauthorized
+        '403':
+          description: Forbidden
+        '404':
+          description: Not Found
+      summary: Shows health information
+      tags:
+        - common-spring
+  /info:
+    get:
+      consumes:
+        - application/json
+      deprecated: false
+      description: Displays arbitrary application info.
+      operationId: info
+      produces:
+        - '*/*'
+      responses:
+        '200':
+          description: OK
+          schema:
+            type: object
+        '401':
+          description: Unauthorized
+        '403':
+          description: Forbidden
+        '404':
+          description: Not Found
+      summary: Displays arbitrary application info
+      tags:
+        - common-spring
+  /mappings:
+    get:
+      consumes:
+        - application/json
+      deprecated: false
+      description: Displays a collated list of all @RequestMapping paths.
+      operationId: mappings
+      produces:
+        - '*/*'
+      responses:
+        '200':
+          description: OK
+          schema:
+            type: object
+        '401':
+          description: Unauthorized
+        '403':
+          description: Forbidden
+        '404':
+          description: Not Found
+      summary: Displays the list of all @RequestMapping paths
+      tags:
+        - common-spring
+  /metrics:
+    get:
+      consumes:
+        - application/json
+      deprecated: false
+      description: Shows ‘metrics’ information for the current application (e.g. count of 400 errors).
+      operationId: metrics
+      produces:
+        - '*/*'
+      responses:
+        '200':
+          description: OK
+          schema:
+            type: object
+        '401':
+          description: Unauthorized
+        '403':
+          description: Forbidden
+        '404':
+          description: Not Found
+      summary: Get metrics information
+      tags:
+        - common-spring
+  '/metrics/{name}':
+    get:
+      consumes:
+        - application/json
+      deprecated: false
+      description: Get the value of this metric
+      operationId: metrics_name
+      parameters:
+        - description: The name of the metric
+          in: path
+          name: name
+          required: true
+          type: string
+      produces:
+        - '*/*'
+      responses:
+        '200':
+          description: OK
+          schema:
+            type: object
+        '401':
+          description: Unauthorized
+        '403':
+          description: Forbidden
+        '404':
+          description: Not Found
+      summary: Get metric
+      tags:
+        - common-spring
+  /trace:
+    get:
+      consumes:
+        - application/json
+      deprecated: false
+      description: Displays trace information (by default the last 100 HTTP requests).
+      operationId: trace
+      produces:
+        - '*/*'
+      responses:
+        '200':
+          description: OK
+          schema:
+            type: object
+        '401':
+          description: Unauthorized
+        '403':
+          description: Forbidden
+        '404':
+          description: Not Found
+      summary: Displays trace information
+      tags:
+        - common-spring
+  # --- END - Spring generated
+  # END - Endpoints common to all APIs
+  /api/dacs:
+    get:
+      consumes:
+        - application/json
+      produces:
+        - '*/*'
+      parameters:
+        - $ref: '#/parameters/orderParam'
+        - $ref: '#/parameters/startParam'
+        - $ref: '#/parameters/lengthParam'
+      responses:
+        '200':
+          description: OK
+          schema:
+            $ref: '#/definitions/BasicDTO«DacBasicDTO»'
+        '401':
+          description: Unauthorized
+        '403':
+          description: Forbidden
+        '404':
+          description: Not Found
+      tags:
+        - dacs
+      deprecated: false
+      description: Get all released DACs.
+      operationId: findAllDacs
+      summary: Get released DACs
+  /api/dacs/count:
+    get:
+      consumes:
+        - application/json
+      produces:
+        - '*/*'
+      responses:
+        '200':
+          description: OK
+          schema:
+            format: int32
+            type: integer
+        '401':
+          description: Unauthorized
+        '403':
+          description: Forbidden
+        '404':
+          description: Not Found
+      tags:
+        - dacs
+      deprecated: false
+      description: Count DACs.
+      operationId: countDacs
+      summary: Count DACs
+  '/api/dacs/{id}':
+    get:
+      consumes:
+        - application/json
+      produces:
+        - '*/*'
+      parameters:
+        - description: DAC id
+          in: path
+          name: id
+          required: true
+          type: string
+      responses:
+        '200':
+          description: OK
+          schema:
+            $ref: '#/definitions/DacDTO'
+        '401':
+          description: Unauthorized
+        '403':
+          description: Forbidden
+        '404':
+          description: Not Found
+      tags:
+        - dacs
+      deprecated: false
+      description: Get DAC by Id.
+      operationId: findDacById
+      summary: Get DAC
+  '/api/dacs/{id}/datasets':
+    get:
+      consumes:
+        - application/json
+      produces:
+        - '*/*'
+      parameters:
+        - description: DAC id
+          in: path
+          name: id
+          required: true
+          type: string
+      responses:
+        '200':
+          description: OK
+          schema:
+            items:
+              $ref: '#/definitions/DatasetBasicDTO'
+            type: array
+            uniqueItems: false
+        '401':
+          description: Unauthorized
+        '403':
+          description: Forbidden
+        '404':
+          description: Not Found
+      tags:
+        - dacs
+      deprecated: false
+      description: Find all datasets linked to this DAC
+      operationId: findDatasetsByDac
+      summary: Find datasets by DAC
+  /api/datasets:
+    get:
+      consumes:
+        - application/json
+      produces:
+        - '*/*'
+      parameters:
+        - $ref: '#/parameters/orderParam'
+        - $ref: '#/parameters/startParam'
+        - $ref: '#/parameters/lengthParam'
+      responses:
+        '200':
+          description: OK
+          schema:
+            $ref: '#/definitions/BasicDTO«DatasetBasicDTO»'
+        '401':
+          description: Unauthorized
+        '403':
+          description: Forbidden
+        '404':
+          description: Not Found
+      tags:
+        - datasets
+      deprecated: false
+      description: Get all released datasets.
+      operationId: findAllDatasets
+      summary: Get released datasets
+  '/api/datasets/{id}':
+    get:
+      consumes:
+        - application/json
+      produces:
+        - '*/*'
+      parameters:
+        - description: dataset Id
+          in: path
+          name: id
+          required: true
+          type: string
+      responses:
+        '200':
+          description: OK
+          schema:
+            $ref: '#/definitions/DatasetDTO'
+        '401':
+          description: Unauthorized
+        '403':
+          description: Forbidden
+        '404':
+          description: Not Found
+      tags:
+        - datasets
+      deprecated: false
+      description: Get released dataset
+      operationId: findDatasetById
+      summary: Get released dataset
+  /api/studies:
+    get:
+      consumes:
+        - application/json
+      produces:
+        - '*/*'
+      parameters:
+        - $ref: '#/parameters/orderParam'
+        - $ref: '#/parameters/startParam'
+        - $ref: '#/parameters/lengthParam'
+      responses:
+        '200':
+          description: OK
+          schema:
+            $ref: '#/definitions/BasicDTO«StudyBasicDTO»'
+        '401':
+          description: Unauthorized
+        '403':
+          description: Forbidden
+        '404':
+          description: Not Found
+      tags:
+        - studies
+      deprecated: false
+      description: Get all released studies.
+      operationId: findAllStudies
+      summary: Get released studies
+  '/api/studies/{id}':
+    get:
+      consumes:
+        - application/json
+      produces:
+        - '*/*'
+      parameters:
+        - description: study id
+          in: path
+          name: id
+          required: true
+          type: string
+      responses:
+        '200':
+          description: OK
+          schema:
+            $ref: '#/definitions/StudyDTO'
+        '401':
+          description: Unauthorized
+        '403':
+          description: Forbidden
+        '404':
+          description: Not Found
+      tags:
+        - studies
+      deprecated: false
+      description: Get study by Id.
+      operationId: findStudyById
+      summary: Get study
+  '/citations/articles/{id}/citations':
+    get:
+      consumes:
+        - application/json
+      produces:
+        - '*/*'
+      parameters:
+        - description: article Id
+          in: path
+          name: id
+          required: true
+          type: string
+        - $ref: '#/parameters/sortParam'
+        - $ref: '#/parameters/skipParam'
+        - $ref: '#/parameters/limitParam'
+      responses:
+        '200':
+          description: OK
+          schema:
+            $ref: '#/definitions/Base«PublicationDTO»'
+        '401':
+          description: Unauthorized
+        '403':
+          description: Forbidden
+        '404':
+          description: Not Found
+      tags:
+        - citations
+      deprecated: false
+      description: Get all citations of this article.
+      operationId: listCitationsByArticle
+      summary: Get citations by article
+  '/citations/articles/{id}/studies':
+    get:
+      consumes:
+        - application/json
+      produces:
+        - '*/*'
+      parameters:
+        - description: article Id
+          in: path
+          name: id
+          required: true
+          type: string
+        - $ref: '#/parameters/sortParam'
+        - $ref: '#/parameters/skipParam'
+        - $ref: '#/parameters/limitParam'
+      responses:
+        '200':
+          description: OK
+          schema:
+            $ref: '#/definitions/Base«string»'
+        '401':
+          description: Unauthorized
+        '403':
+          description: Forbidden
+        '404':
+          description: Not Found
+      tags:
+        - citations
+      deprecated: false
+      description: Get EGA stable Id of all studies linked to this article.
+      operationId: listStudiesByArticle
+      summary: Get studies by article
+  '/citations/studies/{id}/articles':
+    get:
+      consumes:
+        - application/json
+      produces:
+        - '*/*'
+      parameters:
+        - description: study Id
+          in: path
+          name: id
+          required: true
+          type: string
+        - $ref: '#/parameters/sortParam'
+        - $ref: '#/parameters/skipParam'
+        - $ref: '#/parameters/limitParam'
+      responses:
+        '200':
+          description: OK
+          schema:
+            $ref: '#/definitions/Base«PublicationDTO»'
+        '401':
+          description: Unauthorized
+        '403':
+          description: Forbidden
+        '404':
+          description: Not Found
+      tags:
+        - citations
+      deprecated: false
+      description: Get all articles linked to this study.
+      operationId: listArticlesByStudy
+      summary: Get articles by study
+  /metadata/analyses:
+    get:
+      consumes:
+        - application/json
+      produces:
+        - '*/*'
+      parameters:
+        - description: queryBy
+          in: query
+          name: queryby
+          required: false
+          type: string
+        - description: queryId
+          in: query
+          name: queryid
+          required: false
+          type: string
+        - $ref: '#/parameters/sortParam'
+        - $ref: '#/parameters/skipParam'
+        - $ref: '#/parameters/limitParam'
+      responses:
+        '200':
+          description: OK
+          schema:
+            $ref: '#/definitions/Base«AnalysisData»'
+        '401':
+          description: Unauthorized
+        '403':
+          description: Forbidden
+        '404':
+          description: Not Found
+      tags:
+        - metadata
+      deprecated: false
+      description: Get all analyses.
+      operationId: listAnalyses
+      summary: Get analyses
+  '/metadata/analyses/{id}':
+    get:
+      consumes:
+        - application/json
+      produces:
+        - '*/*'
+      parameters:
+        - description: analysis Id
+          in: path
+          name: id
+          required: true
+          type: string
+        - description: idType
+          in: query
+          name: idtype
+          required: false
+          type: string
+      responses:
+        '200':
+          description: OK
+          schema:
+            $ref: '#/definitions/Base«AnalysisData»'
+        '401':
+          description: Unauthorized
+        '403':
+          description: Forbidden
+        '404':
+          description: Not Found
+      tags:
+        - metadata
+      deprecated: false
+      description: Get analysis by Id.
+      operationId: getAnalysis
+      summary: Get analysis
+  /metadata/dacs:
+    get:
+      consumes:
+        - application/json
+      produces:
+        - '*/*'
+      parameters:
+        - description: queryBy
+          in: query
+          name: queryby
+          required: false
+          type: string
+        - description: queryId
+          in: query
+          name: queryid
+          required: false
+          type: string
+        - $ref: '#/parameters/sortParam'
+        - $ref: '#/parameters/skipParam'
+        - $ref: '#/parameters/limitParam'
+      responses:
+        '200':
+          description: OK
+          schema:
+            $ref: '#/definitions/Base«DacData»'
+        '401':
+          description: Unauthorized
+        '403':
+          description: Forbidden
+        '404':
+          description: Not Found
+      tags:
+        - metadata
+      deprecated: false
+      description: Get all DACs.
+      operationId: listDacs
+      summary: Get DACs
+  '/metadata/dacs/{id}':
+    get:
+      consumes:
+        - application/json
+      produces:
+        - '*/*'
+      parameters:
+        - description: DAC id
+          in: path
+          name: id
+          required: true
+          type: string
+        - description: idType
+          in: query
+          name: idtype
+          required: false
+          type: string
+      responses:
+        '200':
+          description: OK
+          schema:
+            $ref: '#/definitions/Base«DacData»'
+        '401':
+          description: Unauthorized
+        '403':
+          description: Forbidden
+        '404':
+          description: Not Found
+      tags:
+        - metadata
+      deprecated: false
+      description: Get DAC by Id.
+      operationId: getDac
+      summary: Get DAC
+  /metadata/datasets:
+    get:
+      consumes:
+        - application/json
+      produces:
+        - '*/*'
+      parameters:
+        - description: queryBy
+          in: query
+          name: queryby
+          required: false
+          type: string
+        - description: queryId
+          in: query
+          name: queryid
+          required: false
+          type: string
+        - $ref: '#/parameters/sortParam'
+        - $ref: '#/parameters/skipParam'
+        - $ref: '#/parameters/limitParam'
+      responses:
+        '200':
+          description: OK
+          schema:
+            $ref: '#/definitions/Base«DatasetData»'
+        '401':
+          description: Unauthorized
+        '403':
+          description: Forbidden
+        '404':
+          description: Not Found
+      tags:
+        - metadata
+      deprecated: false
+      description: Get all datasets.
+      operationId: listDatasets
+      summary: Get datasets
+  '/metadata/datasets/{id}':
+    get:
+      consumes:
+        - application/json
+      produces:
+        - '*/*'
+      parameters:
+        - description: dataset id
+          in: path
+          name: id
+          required: true
+          type: string
+        - description: idType
+          in: query
+          name: idtype
+          required: false
+          type: string
+      responses:
+        '200':
+          description: OK
+          schema:
+            $ref: '#/definitions/Base«DatasetData»'
+        '401':
+          description: Unauthorized
+        '403':
+          description: Forbidden
+        '404':
+          description: Not Found
+      tags:
+        - metadata
+      deprecated: false
+      description: Get dataset by Id.
+      operationId: getDataset
+      summary: Get dataset
+  /metadata/datasets_released:
+    get:
+      consumes:
+        - application/json
+      produces:
+        - '*/*'
+      parameters:
+        - $ref: '#/parameters/sortParam'
+        - $ref: '#/parameters/skipParam'
+        - $ref: '#/parameters/limitParam'
+      responses:
+        '200':
+          description: OK
+          schema:
+            $ref: '#/definitions/Base«DatasetData»'
+        '401':
+          description: Unauthorized
+        '403':
+          description: Forbidden
+        '404':
+          description: Not Found
+      tags:
+        - metadata
+      deprecated: false
+      description: Get all released datasets.
+      operationId: listDatasetsReleased
+      summary: Get released datasets
+  /metadata/experiments:
+    get:
+      consumes:
+        - application/json
+      produces:
+        - '*/*'
+      parameters:
+        - description: queryBy
+          in: query
+          name: queryby
+          required: false
+          type: string
+        - description: queryId
+          in: query
+          name: queryid
+          required: false
+          type: string
+        - $ref: '#/parameters/sortParam'
+        - $ref: '#/parameters/skipParam'
+        - $ref: '#/parameters/limitParam'
+      responses:
+        '200':
+          description: OK
+          schema:
+            $ref: '#/definitions/Base«ExperimentData»'
+        '401':
+          description: Unauthorized
+        '403':
+          description: Forbidden
+        '404':
+          description: Not Found
+      tags:
+        - metadata
+      deprecated: false
+      description: Get all experiments.
+      operationId: listExperiments
+      summary: Get experiments
+  '/metadata/experiments/{id}':
+    get:
+      consumes:
+        - application/json
+      produces:
+        - '*/*'
+      parameters:
+        - description: experiment id
+          in: path
+          name: id
+          required: true
+          type: string
+        - description: idType
+          in: query
+          name: idtype
+          required: false
+          type: string
+      responses:
+        '200':
+          description: OK
+          schema:
+            $ref: '#/definitions/Base«ExperimentData»'
+        '401':
+          description: Unauthorized
+        '403':
+          description: Forbidden
+        '404':
+          description: Not Found
+      tags:
+        - metadata
+      deprecated: false
+      description: Get experiment by Id.
+      operationId: getExperiment
+      summary: Get experiment
+  /metadata/files:
+    get:
+      consumes:
+        - application/json
+      produces:
+        - '*/*'
+      parameters:
+        - description: queryBy
+          in: query
+          name: queryby
+          required: false
+          type: string
+        - description: queryId
+          in: query
+          name: queryid
+          required: false
+          type: string
+        - $ref: '#/parameters/sortParam'
+        - $ref: '#/parameters/skipParam'
+        - $ref: '#/parameters/limitParam'
+      responses:
+        '200':
+          description: OK
+          schema:
+            $ref: '#/definitions/Base«FileData»'
+        '401':
+          description: Unauthorized
+        '403':
+          description: Forbidden
+        '404':
+          description: Not Found
+      tags:
+        - metadata
+      deprecated: false
+      description: Get all files. Use 'queryBy' and 'queryId' to filter results.
+      operationId: listFiles
+      summary: Get files
+  /metadata/policies:
+    get:
+      consumes:
+        - application/json
+      produces:
+        - '*/*'
+      parameters:
+        - description: queryBy
+          in: query
+          name: queryby
+          required: false
+          type: string
+        - description: queryId
+          in: query
+          name: queryid
+          required: false
+          type: string
+        - $ref: '#/parameters/sortParam'
+        - $ref: '#/parameters/skipParam'
+        - $ref: '#/parameters/limitParam'
+      responses:
+        '200':
+          description: OK
+          schema:
+            $ref: '#/definitions/Base«PolicyData»'
+        '401':
+          description: Unauthorized
+        '403':
+          description: Forbidden
+        '404':
+          description: Not Found
+      tags:
+        - metadata
+      deprecated: false
+      description: Get all policies.
+      operationId: listPolicies
+      summary: Get policies
+  '/metadata/policies/{id}':
+    get:
+      consumes:
+        - application/json
+      produces:
+        - '*/*'
+      parameters:
+        - description: policy Id
+          in: path
+          name: id
+          required: true
+          type: string
+        - description: idType
+          in: query
+          name: idtype
+          required: false
+          type: string
+      responses:
+        '200':
+          description: OK
+          schema:
+            $ref: '#/definitions/Base«PolicyData»'
+        '401':
+          description: Unauthorized
+        '403':
+          description: Forbidden
+        '404':
+          description: Not Found
+      tags:
+        - metadata
+      deprecated: false
+      description: Get policy by Id.
+      operationId: getPolicy
+      summary: Get policy
+  /metadata/query_by_values:
+    get:
+      consumes:
+        - application/json
+      produces:
+        - '*/*'
+      responses:
+        '200':
+          description: OK
+          schema:
+            $ref: '#/definitions/Base«string»'
+        '401':
+          description: Unauthorized
+        '403':
+          description: Forbidden
+        '404':
+          description: Not Found
+      tags:
+        - metadata
+      deprecated: false
+      description: Get accepted values for 'queryBy' parameter.
+      operationId: listQueryByValues
+      summary: Get 'queryBy' values
+  /metadata/runs:
+    get:
+      consumes:
+        - application/json
+      produces:
+        - '*/*'
+      parameters:
+        - description: queryBy
+          in: query
+          name: queryby
+          required: false
+          type: string
+        - description: queryId
+          in: query
+          name: queryid
+          required: false
+          type: string
+        - $ref: '#/parameters/sortParam'
+        - $ref: '#/parameters/skipParam'
+        - $ref: '#/parameters/limitParam'
+      responses:
+        '200':
+          description: OK
+          schema:
+            $ref: '#/definitions/Base«RunData»'
+        '401':
+          description: Unauthorized
+        '403':
+          description: Forbidden
+        '404':
+          description: Not Found
+      tags:
+        - metadata
+      deprecated: false
+      description: Get all runs.
+      operationId: listRuns
+      summary: Get runs
+  '/metadata/runs/{id}':
+    get:
+      consumes:
+        - application/json
+      produces:
+        - '*/*'
+      parameters:
+        - description: run id
+          in: path
+          name: id
+          required: true
+          type: string
+        - description: idType
+          in: query
+          name: idtype
+          required: false
+          type: string
+      responses:
+        '200':
+          description: OK
+          schema:
+            $ref: '#/definitions/Base«RunData»'
+        '401':
+          description: Unauthorized
+        '403':
+          description: Forbidden
+        '404':
+          description: Not Found
+      tags:
+        - metadata
+      deprecated: false
+      description: Get run by Id.
+      operationId: getRun
+      summary: Get run
+  /metadata/samples:
+    get:
+      consumes:
+        - application/json
+      produces:
+        - '*/*'
+      parameters:
+        - description: queryBy
+          in: query
+          name: queryby
+          required: false
+          type: string
+        - description: queryId
+          in: query
+          name: queryid
+          required: false
+          type: string
+        - $ref: '#/parameters/sortParam'
+        - $ref: '#/parameters/skipParam'
+        - $ref: '#/parameters/limitParam'
+      responses:
+        '200':
+          description: OK
+          schema:
+            $ref: '#/definitions/Base«SampleData»'
+        '401':
+          description: Unauthorized
+        '403':
+          description: Forbidden
+        '404':
+          description: Not Found
+      tags:
+        - metadata
+      deprecated: false
+      description: Get all samples.
+      operationId: listSamples
+      summary: Get samples
+  '/metadata/samples/{id}':
+    get:
+      consumes:
+        - application/json
+      produces:
+        - '*/*'
+      parameters:
+        - description: sample Id
+          in: path
+          name: id
+          required: true
+          type: string
+        - description: idType
+          in: query
+          name: idtype
+          required: false
+          type: string
+      responses:
+        '200':
+          description: OK
+          schema:
+            $ref: '#/definitions/Base«SampleData»'
+        '401':
+          description: Unauthorized
+        '403':
+          description: Forbidden
+        '404':
+          description: Not Found
+      tags:
+        - metadata
+      deprecated: false
+      description: Get sample by Id.
+      operationId: getSample
+      summary: Get sample
+  /metadata/studies:
+    get:
+      consumes:
+        - application/json
+      produces:
+        - '*/*'
+      parameters:
+        - description: queryBy
+          in: query
+          name: queryby
+          required: false
+          type: string
+        - description: queryId
+          in: query
+          name: queryid
+          required: false
+          type: string
+        - $ref: '#/parameters/sortParam'
+        - $ref: '#/parameters/skipParam'
+        - $ref: '#/parameters/limitParam'
+      responses:
+        '200':
+          description: OK
+          schema:
+            $ref: '#/definitions/Base«StudyData»'
+        '401':
+          description: Unauthorized
+        '403':
+          description: Forbidden
+        '404':
+          description: Not Found
+      tags:
+        - metadata
+      deprecated: false
+      description: Get all studies.
+      operationId: listStudies
+      summary: Get studies
+  '/metadata/studies/{id}':
+    get:
+      consumes:
+        - application/json
+      produces:
+        - '*/*'
+      parameters:
+        - description: study id
+          in: path
+          name: id
+          required: true
+          type: string
+        - description: idType
+          in: query
+          name: idtype
+          required: false
+          type: string
+      responses:
+        '200':
+          description: OK
+          schema:
+            $ref: '#/definitions/Base«StudyData»'
+        '401':
+          description: Unauthorized
+        '403':
+          description: Forbidden
+        '404':
+          description: Not Found
+      tags:
+        - metadata
+      deprecated: false
+      description: Get study by Id.
+      operationId: getStudy
+      summary: Get study
+definitions:
+  AnalysisData:
+    properties:
+      alias:
+        type: string
+      analysisType:
+        type: string
+      centerName:
+        type: string
+      creationTime:
+        type: string
+      description:
+        type: string
+      egaStableId:
+        type: string
+      genome:
+        type: string
+      studyStableId:
+        type: string
+      title:
+        type: string
+  AttributeData:
+    properties:
+      group:
+        type: string
+      label:
+        type: string
+      tag:
+        type: string
+      unit:
+        type: string
+      value:
+        type: string
+  Base:
+    properties:
+      header:
+        $ref: '#/definitions/Header'
+        description: header of the response
+      response:
+        $ref: '#/definitions/Response«object»'
+        description: response of the call
+    required:
+      - header
+      - response
+  Base«AnalysisData»:
+    properties:
+      header:
+        $ref: '#/definitions/Header'
+        description: header of the response
+      response:
+        $ref: '#/definitions/Response«AnalysisData»'
+        description: response of the call
+    required:
+      - header
+      - response
+  Base«DacData»:
+    properties:
+      header:
+        $ref: '#/definitions/Header'
+        description: header of the response
+      response:
+        $ref: '#/definitions/Response«DacData»'
+        description: response of the call
+    required:
+      - header
+      - response
+  Base«DatasetData»:
+    properties:
+      header:
+        $ref: '#/definitions/Header'
+        description: header of the response
+      response:
+        $ref: '#/definitions/Response«DatasetData»'
+        description: response of the call
+    required:
+      - header
+      - response
+  Base«ExperimentData»:
+    properties:
+      header:
+        $ref: '#/definitions/Header'
+        description: header of the response
+      response:
+        $ref: '#/definitions/Response«ExperimentData»'
+        description: response of the call
+    required:
+      - header
+      - response
+  Base«FileData»:
+    properties:
+      header:
+        $ref: '#/definitions/Header'
+        description: header of the response
+      response:
+        $ref: '#/definitions/Response«FileData»'
+        description: response of the call
+    required:
+      - header
+      - response
+  Base«GitRepositoryState»:
+    properties:
+      header:
+        $ref: '#/definitions/Header'
+        description: header of the response
+      response:
+        $ref: '#/definitions/Response«GitRepositoryState»'
+        description: response of the call
+    required:
+      - header
+      - response
+  Base«MavenEntry»:
+    properties:
+      header:
+        $ref: '#/definitions/Header'
+        description: header of the response
+      response:
+        $ref: '#/definitions/Response«MavenEntry»'
+        description: response of the call
+    required:
+      - header
+      - response
+  Base«PolicyData»:
+    properties:
+      header:
+        $ref: '#/definitions/Header'
+        description: header of the response
+      response:
+        $ref: '#/definitions/Response«PolicyData»'
+        description: response of the call
+    required:
+      - header
+      - response
+  Base«PublicationDTO»:
+    properties:
+      header:
+        $ref: '#/definitions/Header'
+        description: header of the response
+      response:
+        $ref: '#/definitions/Response«PublicationDTO»'
+        description: response of the call
+    required:
+      - header
+      - response
+  Base«RunData»:
+    properties:
+      header:
+        $ref: '#/definitions/Header'
+        description: header of the response
+      response:
+        $ref: '#/definitions/Response«RunData»'
+        description: response of the call
+    required:
+      - header
+      - response
+  Base«SampleData»:
+    properties:
+      header:
+        $ref: '#/definitions/Header'
+        description: header of the response
+      response:
+        $ref: '#/definitions/Response«SampleData»'
+        description: response of the call
+    required:
+      - header
+      - response
+  Base«StudyData»:
+    properties:
+      header:
+        $ref: '#/definitions/Header'
+        description: header of the response
+      response:
+        $ref: '#/definitions/Response«StudyData»'
+        description: response of the call
+    required:
+      - header
+      - response
+  Base«string»:
+    properties:
+      header:
+        $ref: '#/definitions/Header'
+        description: header of the response
+      response:
+        $ref: '#/definitions/Response«string»'
+        description: response of the call
+    required:
+      - header
+      - response
+  BasicDTO«DacBasicDTO»:
+    properties:
+      data:
+        items:
+          $ref: '#/definitions/DacBasicDTO'
+        type: array
+      recordsFiltered:
+        format: int32
+        type: integer
+      recordsTotal:
+        format: int32
+        type: integer
+  BasicDTO«DatasetBasicDTO»:
+    properties:
+      data:
+        items:
+          $ref: '#/definitions/DatasetBasicDTO'
+        type: array
+      recordsFiltered:
+        format: int32
+        type: integer
+      recordsTotal:
+        format: int32
+        type: integer
+  BasicDTO«StudyBasicDTO»:
+    properties:
+      data:
+        items:
+          $ref: '#/definitions/StudyBasicDTO'
+        type: array
+      recordsFiltered:
+        format: int32
+        type: integer
+      recordsTotal:
+        format: int32
+        type: integer
+  ContactData:
+    properties:
+      contactName:
+        type: string
+      email:
+        type: string
+      organisation:
+        type: string
+      phoneNumber:
+        type: string
+  DacBasicDTO:
+    properties:
+      contactPerson:
+        type: string
+      email:
+        type: string
+      name:
+        type: string
+      published:
+        type: boolean
+      released:
+        type: string
+      stableId:
+        type: string
+      url:
+        type: string
+  DacDTO:
+    properties:
+      contactPerson:
+        type: string
+      datasets:
+        items:
+          $ref: '#/definitions/DatasetBasicDTO'
+        type: array
+      description:
+        type: string
+      email:
+        type: string
+      name:
+        type: string
+      published:
+        type: boolean
+      released:
+        type: string
+      stableId:
+        type: string
+      url:
+        type: string
+  DacData:
+    properties:
+      alias:
+        type: string
+      centerName:
+        type: string
+      contacts:
+        items:
+          $ref: '#/definitions/ContactData'
+        type: array
+      creationTime:
+        type: string
+      egaStableId:
+        type: string
+      published:
+        type: boolean
+      released:
+        type: string
+      title:
+        type: string
+  DatasetBasicDTO:
+    properties:
+      description:
+        type: string
+      published:
+        type: boolean
+      released:
+        type: string
+      releasedDate:
+        type: string
+      samples:
+        format: int32
+        type: integer
+      stableId:
+        type: string
+      technology:
+        type: string
+      title:
+        type: string
+  DatasetDTO:
+    properties:
+      accessType:
+        type: string
+      availableInBeacon:
+        type: boolean
+      dac:
+        $ref: '#/definitions/DacBasicDTO'
+      description:
+        type: string
+      published:
+        type: boolean
+      released:
+        type: string
+      releasedDate:
+        type: string
+      samples:
+        format: int32
+        type: integer
+      stableId:
+        type: string
+      studies:
+        items:
+          $ref: '#/definitions/StudyBasicDTO'
+        type: array
+      technology:
+        type: string
+      title:
+        type: string
+  DatasetData:
+    properties:
+      accessType:
+        type: string
+      alias:
+        type: string
+      attributes:
+        items:
+          $ref: '#/definitions/AttributeData'
+        type: array
+      availableInBeacon:
+        type: boolean
+      centerName:
+        type: string
+      creationTime:
+        type: string
+      datasetLinks:
+        items:
+          $ref: '#/definitions/UrlLink'
+        type: array
+      datasetTypes:
+        items:
+          type: string
+        type: array
+      description:
+        type: string
+      egaStableId:
+        type: string
+      files:
+        items:
+          $ref: '#/definitions/FileData'
+        type: array
+      numSamples:
+        format: int32
+        type: integer
+      policyStableId:
+        type: string
+      published:
+        type: boolean
+      released:
+        type: string
+      releasedDate:
+        type: string
+      technology:
+        items:
+          type: string
+        type: array
+      title:
+        type: string
+  ExperimentData:
+    properties:
+      alias:
+        type: string
+      centerName:
+        type: string
+      creationTime:
+        type: string
+      designDescription:
+        type: string
+      egaStableId:
+        type: string
+      instrumentModel:
+        type: string
+      instrumentPlatform:
+        type: string
+      libraryConstructionProtocol:
+        type: string
+      libraryLayout:
+        type: string
+      libraryName:
+        type: string
+      librarySelection:
+        type: string
+      librarySource:
+        type: string
+      libraryStrategy:
+        type: string
+      pairedNominalLength:
+        format: int64
+        type: integer
+      pairedNominalSdev:
+        format: double
+        type: number
+      sampleStableId:
+        type: string
+      studyStableId:
+        type: string
+  FileData:
+    properties:
+      egaStableId:
+        type: string
+      fileName:
+        type: string
+      md5:
+        type: string
+  Format:
+    properties:
+      urlToDescriptionDoc:
+        type: string
+      version:
+        type: string
+  GitRepositoryState:
+    properties:
+      branch:
+        type: string
+      buildTime:
+        type: string
+      buildUserEmail:
+        type: string
+      buildUserName:
+        type: string
+      commitId:
+        type: string
+      commitMessageFull:
+        type: string
+      commitMessageShort:
+        type: string
+      commitTime:
+        type: string
+      commitUserEmail:
+        type: string
+      commitUserName:
+        type: string
+      describe:
+        type: string
+  Header:
+    properties:
+      apiVersion:
+        description: API version
+        type: string
+      code:
+        description: HTTP status code
+        type: string
+      developerMessage:
+        description: error message for developer
+        type: string
+      docLink:
+        description: link to documentation
+        type: string
+      errorCode:
+        description: internal error code
+        type: string
+      errorStack:
+        description: error stack trace
+        type: string
+      service:
+        description: service answering the call
+        type: string
+      userMessage:
+        description: error message for user
+        type: string
+    required:
+      - apiVersion
+      - code
+      - docLink
+      - service
+      - userMessage
+  MavenEntry:
+    properties:
+      group:
+        type: string
+      name:
+        type: string
+      scope:
+        type: string
+      type:
+        type: string
+      version:
+        type: string
+  MessageHeader:
+    properties:
+      conversationId:
+        type: string
+      format:
+        $ref: '#/definitions/Format'
+      idInSequence:
+        format: int32
+        type: integer
+      messageId:
+        type: string
+      millisecToExpiration:
+        format: int64
+        type: integer
+      producer:
+        $ref: '#/definitions/Producer'
+      replyTo:
+        type: string
+      timestamp:
+        type: string
+  PolicyData:
+    properties:
+      alias:
+        type: string
+      centerName:
+        type: string
+      creationTime:
+        type: string
+      dacStableId:
+        type: string
+      egaStableId:
+        type: string
+      policyText:
+        type: string
+      title:
+        type: string
+      url:
+        type: string
+  Producer:
+    properties:
+      host:
+        type: string
+      application:
+        type: string
+      ip:
+        type: string
+      processId:
+        type: string
+      userId:
+        type: string
+  PublicationDTO:
+    properties:
+      pmid:
+        format: int32
+        type: integer
+  Response«AnalysisData»:
+    properties:
+      numTotalResults:
+        description: total number of results (ignoring pagination)
+        format: int32
+        type: integer
+      result:
+        description: collection of results
+        items:
+          $ref: '#/definitions/AnalysisData'
+        type: array
+      resultType:
+        description: type of the object returned in result field
+        type: string
+    required:
+      - numTotalResults
+      - result
+      - resultType
+  Response«DacData»:
+    properties:
+      numTotalResults:
+        description: total number of results (ignoring pagination)
+        format: int32
+        type: integer
+      result:
+        description: collection of results
+        items:
+          $ref: '#/definitions/DacData'
+        type: array
+      resultType:
+        description: type of the object returned in result field
+        type: string
+    required:
+      - numTotalResults
+      - result
+      - resultType
+  Response«DatasetData»:
+    properties:
+      numTotalResults:
+        description: total number of results (ignoring pagination)
+        format: int32
+        type: integer
+      result:
+        description: collection of results
+        items:
+          $ref: '#/definitions/DatasetData'
+        type: array
+      resultType:
+        description: type of the object returned in result field
+        type: string
+    required:
+      - numTotalResults
+      - result
+      - resultType
+  Response«ExperimentData»:
+    properties:
+      numTotalResults:
+        description: total number of results (ignoring pagination)
+        format: int32
+        type: integer
+      result:
+        description: collection of results
+        items:
+          $ref: '#/definitions/ExperimentData'
+        type: array
+      resultType:
+        description: type of the object returned in result field
+        type: string
+    required:
+      - numTotalResults
+      - result
+      - resultType
+  Response«FileData»:
+    properties:
+      numTotalResults:
+        description: total number of results (ignoring pagination)
+        format: int32
+        type: integer
+      result:
+        description: collection of results
+        items:
+          $ref: '#/definitions/FileData'
+        type: array
+      resultType:
+        description: type of the object returned in result field
+        type: string
+    required:
+      - numTotalResults
+      - result
+      - resultType
+  Response«GitRepositoryState»:
+    properties:
+      numTotalResults:
+        description: total number of results (ignoring pagination)
+        format: int32
+        type: integer
+      result:
+        description: collection of results
+        items:
+          $ref: '#/definitions/GitRepositoryState'
+        type: array
+      resultType:
+        description: type of the object returned in result field
+        type: string
+    required:
+      - numTotalResults
+      - result
+      - resultType
+  Response«MavenEntry»:
+    properties:
+      numTotalResults:
+        description: total number of results (ignoring pagination)
+        format: int32
+        type: integer
+      result:
+        description: collection of results
+        items:
+          $ref: '#/definitions/MavenEntry'
+        type: array
+      resultType:
+        description: type of the object returned in result field
+        type: string
+    required:
+      - numTotalResults
+      - result
+      - resultType
+  Response«PolicyData»:
+    properties:
+      numTotalResults:
+        description: total number of results (ignoring pagination)
+        format: int32
+        type: integer
+      result:
+        description: collection of results
+        items:
+          $ref: '#/definitions/PolicyData'
+        type: array
+      resultType:
+        description: type of the object returned in result field
+        type: string
+    required:
+      - numTotalResults
+      - result
+      - resultType
+  Response«PublicationDTO»:
+    properties:
+      numTotalResults:
+        description: total number of results (ignoring pagination)
+        format: int32
+        type: integer
+      result:
+        description: collection of results
+        items:
+          $ref: '#/definitions/PublicationDTO'
+        type: array
+      resultType:
+        description: type of the object returned in result field
+        type: string
+    required:
+      - numTotalResults
+      - result
+      - resultType
+  Response«RunData»:
+    properties:
+      numTotalResults:
+        description: total number of results (ignoring pagination)
+        format: int32
+        type: integer
+      result:
+        description: collection of results
+        items:
+          $ref: '#/definitions/RunData'
+        type: array
+      resultType:
+        description: type of the object returned in result field
+        type: string
+    required:
+      - numTotalResults
+      - result
+      - resultType
+  Response«SampleData»:
+    properties:
+      numTotalResults:
+        description: total number of results (ignoring pagination)
+        format: int32
+        type: integer
+      result:
+        description: collection of results
+        items:
+          $ref: '#/definitions/SampleData'
+        type: array
+      resultType:
+        description: type of the object returned in result field
+        type: string
+    required:
+      - numTotalResults
+      - result
+      - resultType
+  Response«StudyData»:
+    properties:
+      numTotalResults:
+        description: total number of results (ignoring pagination)
+        format: int32
+        type: integer
+      result:
+        description: collection of results
+        items:
+          $ref: '#/definitions/StudyData'
+        type: array
+      resultType:
+        description: type of the object returned in result field
+        type: string
+    required:
+      - numTotalResults
+      - result
+      - resultType
+  Response«object»:
+    properties:
+      numTotalResults:
+        description: total number of results (ignoring pagination)
+        format: int32
+        type: integer
+      result:
+        description: collection of results
+        items:
+          type: object
+        type: array
+      resultType:
+        description: type of the object returned in result field
+        type: string
+    required:
+      - numTotalResults
+      - result
+      - resultType
+  Response«string»:
+    properties:
+      numTotalResults:
+        description: total number of results (ignoring pagination)
+        format: int32
+        type: integer
+      result:
+        description: collection of results
+        items:
+          type: string
+        type: array
+      resultType:
+        description: type of the object returned in result field
+        type: string
+    required:
+      - numTotalResults
+      - result
+      - resultType
+  RunData:
+    properties:
+      alias:
+        type: string
+      centerName:
+        type: string
+      creationTime:
+        type: string
+      egaStableId:
+        type: string
+      sampleStableId:
+        type: string
+  SampleData:
+    properties:
+      alias:
+        type: string
+      attributes:
+        items:
+          $ref: '#/definitions/AttributeData'
+        type: array
+      bioSampleId:
+        type: string
+      centerName:
+        type: string
+      creationTime:
+        type: string
+      egaStableId:
+        type: string
+      gender:
+        type: string
+      phenotype:
+        type: string
+      subjectId:
+        type: string
+      title:
+        type: string
+  ServiceMessage:
+    properties:
+      header:
+        $ref: '#/definitions/MessageHeader'
+      messageType:
+        enum:
+          - COMMAND
+          - EVENT
+        type: string
+  StudyBasicDTO:
+    properties:
+      published:
+        type: boolean
+      released:
+        type: string
+      releasedDate:
+        type: string
+      stableId:
+        type: string
+      title:
+        type: string
+      type:
+        type: string
+  StudyDTO:
+    properties:
+      alternativeStableId:
+        type: string
+      datasets:
+        items:
+          $ref: '#/definitions/DatasetBasicDTO'
+        type: array
+      description:
+        type: string
+      link:
+        type: string
+      publications:
+        items:
+          $ref: '#/definitions/PublicationDTO'
+        type: array
+      published:
+        type: boolean
+      released:
+        type: string
+      releasedDate:
+        type: string
+      stableId:
+        type: string
+      title:
+        type: string
+      type:
+        type: string
+  StudyData:
+    properties:
+      alias:
+        type: string
+      centerName:
+        type: string
+      creationTime:
+        type: string
+      customTags:
+        items:
+          $ref: '#/definitions/AttributeData'
+        type: array
+      description:
+        type: string
+      egaStableId:
+        type: string
+      pubMedIds:
+        items:
+          type: string
+        type: array
+      published:
+        type: boolean
+      released:
+        type: string
+      releasedDate:
+        type: string
+      studyAbstract:
+        type: string
+      studyType:
+        type: string
+      title:
+        type: string
+  UrlLink:
+    properties:
+      label:
+        type: string
+      url:
+        type: string
+tags:
+  - description: Endpoints present in all EGA Services
+    name: 'EGA common'
+  - description: Endpoints added by Spring framework
+    name: common-spring
+  - description: Citation Controller
+    name: citations
+  - description: Dac Controller
+    name: dacs
+  - description: Dataset Controller
+    name: datasets
+  - description: Metadata Controller
+    name: metadata
+  - description: Study Controller
+    name: studies
+
