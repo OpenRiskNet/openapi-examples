@@ -13,12 +13,12 @@ info:
     name: ""
     url: ""
 host: "cpsign-rest.130.238.55.60.xip.io"
-basePath: "v3"
+basePath: "/v3"
 tags:
-- name: "Models"
 - name: "Algorithms"
-- name: "Datasets"
 - name: "Tasks"
+- name: "Datasets"
+- name: "Models"
 - name: "Licenses"
 schemes:
 - "http"
@@ -138,6 +138,8 @@ paths:
         default: 3
         format: "int32"
       responses:
+        202:
+          description: "Asynchronous Task Accepted"
         401:
           description: "Unauthorized"
           schema:
@@ -146,8 +148,6 @@ paths:
           description: "Bad Request"
           schema:
             $ref: "#/definitions/BadRequestError"
-        307:
-          description: "Asynchronous Task Accepted"
         500:
           description: "Server error"
           schema:
@@ -257,6 +257,8 @@ paths:
         default: 3
         format: "int32"
       responses:
+        202:
+          description: "Asynchronous Task Accepted"
         401:
           description: "Unauthorized"
           schema:
@@ -265,8 +267,6 @@ paths:
           description: "Bad Request"
           schema:
             $ref: "#/definitions/BadRequestError"
-        307:
-          description: "Asynchronous Task Accepted"
         500:
           description: "Server error"
           schema:
@@ -534,7 +534,7 @@ paths:
     get:
       tags:
       - "Models"
-      summary: ""
+      summary: "List models"
       description: "Get a list of all available models"
       operationId: "modelsGet"
       produces:
@@ -585,32 +585,35 @@ paths:
     post:
       tags:
       - "Models"
-      summary: ""
-      description: "Apply a model to predict a dataset or compound"
+      summary: "Predict new compound"
+      description: "Apply a model to predict a compound"
       operationId: "modelsIdPost"
+      consumes:
+      - "multipart/form-data"
       produces:
       - "application/json"
       parameters:
       - name: "id"
         in: "path"
-        description: "The ID or URI of the model to use"
+        description: "The ID of the model to use"
         required: true
         type: "string"
       - name: "license"
-        in: "query"
+        in: "formData"
         description: "The ID or URI of the license to use (same as encrypted by if\
           \ model is encrypted)"
         required: true
         type: "string"
       - name: "smiles"
-        in: "query"
+        in: "formData"
         description: "Compound structure notation using SMILES notation"
         required: true
         type: "string"
+        default: "CCCCC=O"
       - name: "confidence"
-        in: "query"
+        in: "formData"
         description: "The desired confidence of the prediction"
-        required: false
+        required: true
         type: "number"
         default: 0.8
         format: "double"
@@ -638,14 +641,14 @@ paths:
     delete:
       tags:
       - "Models"
-      summary: ""
+      summary: "Remove model"
       description: "Delete the chosen model"
       operationId: "modelsIdDelete"
       produces:
       - "application/json"
       parameters:
       - name: "id"
-        in: "query"
+        in: "path"
         description: "The ID of the model"
         required: true
         type: "string"
@@ -664,7 +667,7 @@ paths:
     get:
       tags:
       - "Tasks"
-      summary: ""
+      summary: "Status for Task"
       description: "Get status of the task"
       operationId: "tasksIdGet"
       produces:
@@ -781,6 +784,8 @@ paths:
         default: 3
         format: "int32"
       responses:
+        202:
+          description: "Asynchronous Task Accepted"
         401:
           description: "Unauthorized"
           schema:
@@ -789,8 +794,6 @@ paths:
           description: "Bad Request"
           schema:
             $ref: "#/definitions/BadRequestError"
-        307:
-          description: "Asynchronous Task Accepted"
         500:
           description: "Server error"
           schema:
@@ -813,21 +816,6 @@ definitions:
         description: "Predicted interval"
         $ref: "#/definitions/PredictionRegressionResult"
     description: "Prediction result"
-  PredictionRegressionResult:
-    type: "object"
-    required:
-    - "maxValue"
-    - "minValue"
-    properties:
-      minValue:
-        type: "number"
-        format: "double"
-        description: "Predicted lower range"
-      maxValue:
-        type: "number"
-        format: "double"
-        description: "Predicted upper range"
-    description: "predicted regression interval"
   ModelInfo:
     type: "object"
     required:
@@ -895,6 +883,21 @@ definitions:
         format: "double"
         description: "Calibration ratio (if any)"
     description: "Information about a model"
+  PredictionRegressionResult:
+    type: "object"
+    required:
+    - "maxValue"
+    - "minValue"
+    properties:
+      minValue:
+        type: "number"
+        format: "double"
+        description: "Predicted lower range"
+      maxValue:
+        type: "number"
+        format: "double"
+        description: "Predicted upper range"
+    description: "predicted regression interval"
   FinishedTask:
     type: "object"
     required:
@@ -911,6 +914,7 @@ definitions:
         type: "string"
         format: "uri"
         description: "Location of the result of this task"
+        readOnly: true
     description: "Information about a finished Task"
   LicenseInfo:
     type: "object"
@@ -956,21 +960,22 @@ definitions:
         type: "string"
         description: "The version of the license"
     description: "Information about a license"
-  TaskInfo:
+  PValueMapping:
     type: "object"
     required:
-    - "id"
+    - "label"
+    - "pValue"
     properties:
-      id:
+      label:
         type: "string"
-        description: "The id of the task"
-      progress:
+        description: "Label"
+      pValue:
         type: "number"
-        description: "Progress [0-100]%"
-      currentRuntime:
-        type: "number"
-        description: "How long the task has been running (milliseconds)"
-    description: "Information about a running Task"
+        format: "double"
+        description: "p-value (or null)"
+        minimum: 0.0
+        maximum: 1.0
+    description: "Mapping of label to predicted p-value"
   DatasetInfo:
     type: "object"
     required:
@@ -999,6 +1004,35 @@ definitions:
         format: "int64"
         description: "Number of molecules contained in the dataset"
     description: "Information about a model"
+  TaskInfo:
+    type: "object"
+    required:
+    - "id"
+    properties:
+      id:
+        type: "string"
+        description: "The id of the task"
+      progress:
+        type: "number"
+        description: "Progress [0-100]%"
+      currentRuntime:
+        type: "number"
+        description: "How long the task has been running (milliseconds)"
+    description: "Information about a running Task"
+  Error:
+    type: "object"
+    required:
+    - "code"
+    - "message"
+    properties:
+      code:
+        type: "integer"
+        format: "int32"
+        description: "HTTP status code"
+      message:
+        type: "string"
+        description: "Error message"
+    description: "Error"
   BadRequestError:
     type: "object"
     required:
@@ -1019,36 +1053,6 @@ definitions:
         items:
           type: "string"
     description: "BadRequestError"
-  PValueMapping:
-    type: "object"
-    required:
-    - "label"
-    - "pValue"
-    properties:
-      label:
-        type: "string"
-        description: "Label"
-      pValue:
-        type: "number"
-        format: "double"
-        description: "p-value (or null)"
-        minimum: 0.0
-        maximum: 1.0
-    description: "Mapping of label to predicted p-value"
-  Error:
-    type: "object"
-    required:
-    - "code"
-    - "message"
-    properties:
-      code:
-        type: "integer"
-        format: "int32"
-        description: "HTTP status code"
-      message:
-        type: "string"
-        description: "Error message"
-    description: "Error"
 externalDocs:
   description: "More information"
   url: "http://cpsign-docs.genettasoft.com/"
