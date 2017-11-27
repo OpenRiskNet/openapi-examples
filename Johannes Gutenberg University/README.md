@@ -1,6 +1,6 @@
-#Johannes Gutenberg University OpenAPI definitions
+# Johannes Gutenberg University OpenAPI definitions
 
-##JGU WEKA Rest Service definitions
+## JGU WEKA Rest Service definitions
 
 The file *jgu_weka_rest.json* contains an initial API definition for the JGU WEKA Rest service.
 
