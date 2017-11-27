@@ -1,0 +1,891 @@
+{
+  "swagger": "2.0",
+  "info": {
+    "description": "RESTful API Webservice to WEKA Machine Learning Algorithms.\nThis webservice provides an [OpenRiskNet](https://openrisknet.org/) compliant REST interface to machine learning algorithms from the WEKA Java Library.\nThis application is developed by the [Institute of Computer Science](http://www.datamining.informatik.uni-mainz.de) at the Johannes Gutenberg University Mainz.\nOpenRiskNet is funded by the European Commission GA 731075. WEKA is developed by the [Machine Learning Group](https://www.cs.waikato.ac.nz/ml/index.html) at the University of Waikato.",
+    "version": "0.0.2",
+    "title": "JGU WEKA REST Service",
+    "termsOfService": "",
+    "contact": {
+      "email": "rautenberg@uni-mainz.de"
+    },
+    "license": {
+      "name": "GNU General Public License 3",
+      "url": "https://www.gnu.org/licenses/gpl-3.0.de.html"
+    }
+  },
+  "tags": [
+    {
+      "name": "algorithm"
+    },
+    {
+      "name": "authorization"
+    },
+    {
+      "name": "dataset"
+    },
+    {
+      "name": "model"
+    }
+  ],
+  "paths": {
+    "/algorithm/BayesNet": {
+      "post": {
+        "tags": [
+          "algorithm"
+        ],
+        "summary": "REST interface to the WEKA BayesNet classifier.",
+        "description": "REST interface to the WEKA BayesNet classifier.",
+        "operationId": "algorithmBayesNetPost",
+        "consumes": [
+          "multipart/form-data"
+        ],
+        "produces": [
+          "text/x-arff"
+        ],
+        "parameters": [
+          {
+            "name": "file",
+            "in": "formData",
+            "required": false,
+            "type": "file"
+          },
+          {
+            "name": "estimator",
+            "in": "formData",
+            "description": "The estimator algorithm to be used in the compound. Must be SimpleEstimator,  MultiNomialBMAEstimator, BMAEstimator or BayesNetEstimator (Default: SimpleEstimator).",
+            "required": false,
+            "type": "string",
+            "default": "SimpleEstimator",
+            "enum": [
+              "SimpleEstimator",
+              "MultiNomialBMAEstimator",
+              "BMAEstimator",
+              "BayesNetEstimator"
+            ]
+          },
+          {
+            "name": "estimatorParams",
+            "in": "formData",
+            "description": "The parameter for the estimator to be used in the compound.  Must be of type double (Default: 0.5).",
+            "required": false,
+            "type": "number",
+            "default": 0.5
+          },
+          {
+            "name": "useADTree",
+            "in": "formData",
+            "description": "Whether to use ADTrees for searching (using will increase the speed of the search, but will also raise the memory use (Default: 0).",
+            "required": false,
+            "type": "integer",
+            "default": 0,
+            "format": "int32",
+            "enum": [
+              0,
+              1
+            ]
+          },
+          {
+            "name": "searchAlgorithm",
+            "in": "formData",
+            "description": "The algorithmn to be used for searching in the compound. Must be local.K2, local.GeneticSearch, local.HillClimber, local.LAGDHillClimber, local.RepeatedHillClimber, local.SimulatedAnnealing, local.TabuSearch, local.TAN, global.K2, global.GeneticSearch, global.HillClimber, global.RepeatedHillClimber, global.SimulatedAnnealing, global.TabuSearch, global.TAN, ci.CISearchAlgorithm, ci.ICSSearchAlgorithm (Default: local.K2).",
+            "required": false,
+            "type": "string",
+            "default": "local.K2",
+            "enum": [
+              "local.K2",
+              "local.GeneticSearch",
+              "local.HillClimber",
+              "local.LAGDHillClimber",
+              "local.RepeatedHillClimber",
+              "local.SimulatedAnnealing",
+              "local.TabuSearch",
+              "local.TAN",
+              "global.K2",
+              "global.GeneticSearch",
+              "global.HillClimber",
+              "global.RepeatedHillClimber",
+              "global.SimulatedAnnealing",
+              "global.TabuSearch",
+              "global.TAN",
+              "ci.CISearchAlgorithm",
+              "ci.ICSSearchAlgorithm"
+            ]
+          },
+          {
+            "name": "searchParams",
+            "in": "formData",
+            "description": "The parameter for algorithmn to be used for searching in the compound. Are set automatically (WEKA's standard parameter setting).",
+            "required": false,
+            "type": "string",
+            "default": "-P 1 -S BAYES"
+          },
+          {
+            "name": "subjectid",
+            "in": "header",
+            "description": "authorization token",
+            "required": false,
+            "type": "string"
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "OK"
+          },
+          "400": {
+            "description": "Bad Request"
+          },
+          "401": {
+            "description": "Unauthorized"
+          },
+          "403": {
+            "description": "Forbidden"
+          },
+          "404": {
+            "description": "Resource Not Found"
+          }
+        }
+      }
+    },
+    "/algorithm/linearRegression": {
+      "post": {
+        "tags": [
+          "algorithm"
+        ],
+        "summary": "REST interface to the WEKA linear regression classifier.",
+        "description": "REST interface to the WEKA linear regression classifier.",
+        "operationId": "algorithmLRPost",
+        "consumes": [
+          "multipart/form-data"
+        ],
+        "produces": [
+          "text/x-arff",
+          "application/json"
+        ],
+        "parameters": [
+          {
+            "name": "file",
+            "in": "formData",
+            "required": false,
+            "type": "file"
+          },
+          {
+            "name": "attributeSelectionMethod",
+            "in": "formData",
+            "description": "Attribute selection method to be used (Default M5 method).Available methods are: no attribute selection(Value:1), attribute selection using M5's method (Value:0) and a greedy selection using the Akaike information metric(Value:2). One of 0,1,2 (Default: 0).",
+            "required": false,
+            "type": "integer",
+            "default": 0,
+            "format": "int32",
+            "enum": [
+              0,
+              1,
+              2
+            ]
+          },
+          {
+            "name": "eliminateColinearAttributes",
+            "in": "formData",
+            "description": "Whether to eliminate colinear attributes. Must be 0 or 1 (Default: 1).",
+            "required": false,
+            "type": "integer",
+            "default": 1,
+            "format": "int32",
+            "enum": [
+              0,
+              1
+            ]
+          },
+          {
+            "name": "ridge",
+            "in": "formData",
+            "description": "The ridge parameter (Default: 1.0E-8).",
+            "required": false,
+            "type": "number",
+            "default": 1e-8
+          },
+          {
+            "name": "subjectid",
+            "in": "header",
+            "description": "authorization token",
+            "required": false,
+            "type": "string"
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "OK"
+          },
+          "400": {
+            "description": "Bad Request"
+          },
+          "401": {
+            "description": "Unauthorized"
+          },
+          "403": {
+            "description": "Forbidden"
+          },
+          "404": {
+            "description": "Resource Not Found"
+          }
+        }
+      }
+    },
+    "/algorithm/kNNclassification": {
+      "post": {
+        "tags": [
+          "algorithm"
+        ],
+        "summary": "REST interface to the WEKA K-nearest neighbours classifier.",
+        "description": "REST interface to the WEKA K-nearest neighbours classifier.",
+        "operationId": "algorithmKNNclassificationPost",
+        "consumes": [
+          "multipart/form-data"
+        ],
+        "produces": [
+          "text/x-arff",
+          "application/json"
+        ],
+        "parameters": [
+          {
+            "name": "file",
+            "in": "formData",
+            "required": false,
+            "type": "file"
+          },
+          {
+            "name": "windowSize",
+            "in": "formData",
+            "description": "Gets the maximum number of instances allowed in the training pool. The addition of new instances above this value will result in old instances being removed. A value of 0 signifies no limit to the number of training instances. Must be 0 or 1 (Default: 0).",
+            "required": false,
+            "type": "integer",
+            "default": 0,
+            "format": "int32"
+          },
+          {
+            "name": "KNN",
+            "in": "formData",
+            "description": "The number of neighbors to use. Must be an integer greater than 0 (Default: 1).",
+            "required": false,
+            "type": "integer",
+            "default": 1,
+            "format": "int32"
+          },
+          {
+            "name": "crossValidate",
+            "in": "formData",
+            "description": "Whether hold-one-out cross-validation will be used to select the best k value. Must be 0 or 1 (Default: 0).",
+            "required": false,
+            "type": "integer",
+            "default": 0,
+            "format": "int32"
+          },
+          {
+            "name": "distanceWeighting",
+            "in": "formData",
+            "description": "May be 0 for no distance weighting, I for 1/distance or F for 1-distance. Must be 0, I or F (Default: 0).",
+            "required": false,
+            "type": "string",
+            "default": "0"
+          },
+          {
+            "name": "meanSquared",
+            "in": "formData",
+            "description": "Whether the mean squared error is used rather than mean absolute error when doing cross-validation for regression problems. Must be 0 or 1 (Default: 0).",
+            "required": false,
+            "type": "integer",
+            "default": 0,
+            "format": "int32"
+          },
+          {
+            "name": "nearestNeighbourSearchAlgorithm",
+            "in": "formData",
+            "description": "The nearest neighbour search algorithm to use (Default: weka.core.neighboursearch.LinearNNSearch). Fixed.",
+            "required": false,
+            "type": "string",
+            "default": "LinearNNSearch"
+          },
+          {
+            "name": "subjectid",
+            "in": "header",
+            "description": "Authorization token",
+            "required": false,
+            "type": "string"
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "OK"
+          },
+          "400": {
+            "description": "Bad Request"
+          },
+          "401": {
+            "description": "Unauthorized"
+          },
+          "403": {
+            "description": "Forbidden"
+          },
+          "404": {
+            "description": "Resource Not Found"
+          }
+        }
+      }
+    },
+    "/algorithm/ZeroR": {
+      "post": {
+        "tags": [
+          "algorithm"
+        ],
+        "summary": "REST interface to the WEKA ZeroR classifier.",
+        "description": "REST interface to the WEKA ZeroR classifier.",
+        "operationId": "algorithmKNNclassificationPost",
+        "consumes": [
+          "multipart/form-data"
+        ],
+        "produces": [
+          "text/x-arff",
+          "application/json"
+        ],
+        "parameters": [
+          {
+            "name": "file",
+            "in": "formData",
+            "required": false,
+            "type": "file"
+          },
+          {
+            "name": "subjectid",
+            "in": "header",
+            "description": "authorization token",
+            "required": false,
+            "type": "string"
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "OK"
+          },
+          "400": {
+            "description": "Bad Request"
+          },
+          "401": {
+            "description": "Unauthorized"
+          },
+          "403": {
+            "description": "Forbidden"
+          },
+          "404": {
+            "description": "Resource Not Found"
+          }
+        }
+      }
+    },
+    "/algorithm/M5Rules": {
+      "post": {
+        "tags": [
+          "algorithm"
+        ],
+        "summary": "REST interface to the WEKA M5Rules classifier.",
+        "description": "REST interface to the WEKA M5Rules classifier.",
+        "operationId": "algorithmM5RclassificationPost",
+        "consumes": [
+          "multipart/form-data"
+        ],
+        "produces": [
+          "text/x-arff"
+        ],
+        "parameters": [
+          {
+            "name": "file",
+            "in": "formData",
+            "required": false,
+            "type": "file"
+          },
+          {
+            "name": "unpruned",
+            "in": "formData",
+            "description": "Whether pruning is performed.",
+            "required": false,
+            "type": "integer",
+            "default": 0,
+            "format": "int32",
+            "x-example": 0,
+            "enum": [
+              0,
+              1
+            ]
+          },
+          {
+            "name": "useUnsmoothed",
+            "in": "formData",
+            "description": "Whether to use unsmoothed predictions.",
+            "required": false,
+            "type": "integer",
+            "default": 0,
+            "format": "int32",
+            "enum": [
+              0,
+              1
+            ]
+          },
+          {
+            "name": "minNumInstances",
+            "in": "formData",
+            "description": "The minimum number of instances to allow at a leaf node.",
+            "required": false,
+            "type": "number",
+            "default": 4,
+            "format": "double"
+          },
+          {
+            "name": "buildRegressionTree",
+            "in": "formData",
+            "description": "Whether to generate a regression tree/rule instead of a model tree/rule.",
+            "required": false,
+            "type": "integer",
+            "default": 0,
+            "format": "int32",
+            "enum": [
+              0,
+              1
+            ]
+          },
+          {
+            "name": "subjectid",
+            "in": "header",
+            "description": "authorization token",
+            "required": false,
+            "type": "string"
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "OK"
+          },
+          "400": {
+            "description": "Bad Request"
+          },
+          "401": {
+            "description": "Unauthorized"
+          },
+          "403": {
+            "description": "Forbidden"
+          },
+          "404": {
+            "description": "Resource Not Found"
+          }
+        }
+      }
+    },
+    "/algorithm/J48": {
+      "post": {
+        "tags": [
+          "algorithm"
+        ],
+        "summary": "REST interface to the WEKA J48 classifier.",
+        "description": "REST interface to the WEKA J48 classifier.",
+        "operationId": "algorithmJ48Post",
+        "consumes": [
+          "multipart/form-data"
+        ],
+        "produces": [
+          "text/x-arff"
+        ],
+        "parameters": [
+          {
+            "name": "file",
+            "in": "formData",
+            "required": false,
+            "type": "file"
+          },
+          {
+            "name": "binarySplits",
+            "in": "formData",
+            "description": "Whether to use binary splits on nominal attributes when building the trees.",
+            "required": false,
+            "type": "integer",
+            "default": 0,
+            "format": "int32",
+            "enum": [
+              0,
+              1
+            ]
+          },
+          {
+            "name": "confidenceFactor",
+            "in": "formData",
+            "description": "The confidence factor used for pruning (smaller values incur more pruning).",
+            "required": false,
+            "type": "number",
+            "default": 0.25
+          },
+          {
+            "name": "minNumObj",
+            "in": "formData",
+            "description": "The minimum number of instances per leaf.",
+            "required": false,
+            "type": "integer",
+            "default": 2,
+            "format": "int32"
+          },
+          {
+            "name": "numFolds",
+            "in": "formData",
+            "description": "Determines the amount of data used for reduced-error pruning.  One fold is used for pruning, the rest for growing the tree",
+            "required": false,
+            "type": "integer",
+            "default": 3,
+            "format": "int32"
+          },
+          {
+            "name": "reducedErrorPruning",
+            "in": "formData",
+            "description": "Whether reduced-error pruning is used instead of C.4.5 pruning.",
+            "required": false,
+            "type": "integer",
+            "default": 0,
+            "format": "int32",
+            "enum": [
+              0,
+              1
+            ]
+          },
+          {
+            "name": "seed",
+            "in": "formData",
+            "description": "The seed used for randomizing the data when reduced-error pruning is used.",
+            "required": false,
+            "type": "integer",
+            "default": 1,
+            "format": "int32",
+            "enum": [
+              0,
+              1
+            ]
+          },
+          {
+            "name": "subtreeRaising",
+            "in": "formData",
+            "description": "Whether to consider the subtree raising operation when pruning.",
+            "required": false,
+            "type": "integer",
+            "default": 1,
+            "format": "int32",
+            "enum": [
+              0,
+              1
+            ]
+          },
+          {
+            "name": "unpruned",
+            "in": "formData",
+            "description": "Whether pruning is performed.",
+            "required": false,
+            "type": "integer",
+            "default": 1,
+            "format": "int32",
+            "enum": [
+              0,
+              1
+            ]
+          },
+          {
+            "name": "useLaplace",
+            "in": "formData",
+            "description": "Whether counts at leaves are smoothed based on Laplace.",
+            "required": false,
+            "type": "integer",
+            "default": 0,
+            "format": "int32",
+            "enum": [
+              0,
+              1
+            ]
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "OK"
+          },
+          "400": {
+            "description": "Bad Request"
+          },
+          "401": {
+            "description": "Unauthorized"
+          },
+          "403": {
+            "description": "Forbidden"
+          },
+          "404": {
+            "description": "Resource Not Found"
+          }
+        }
+      }
+    },
+    "/aa/login": {
+      "post": {
+        "tags": [
+          "authorization"
+        ],
+        "summary": "Request a security token.",
+        "description": "Uses OpenAM server to get a security token.",
+        "operationId": "login",
+        "consumes": [
+          "multipart/form-data"
+        ],
+        "produces": [
+          "text/plain"
+        ],
+        "parameters": [
+          {
+            "name": "username",
+            "in": "formData",
+            "description": "Username",
+            "required": false,
+            "type": "string"
+          },
+          {
+            "name": "password",
+            "in": "formData",
+            "description": "Password",
+            "required": false,
+            "type": "string"
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Logged in - authentication token can be found in the response body (in JSON)"
+          },
+          "401": {
+            "description": "Wrong, missing or insufficient credentials. Error report is produced."
+          }
+        }
+      }
+    },
+    "/aa/logout": {
+      "post": {
+        "tags": [
+          "authorization"
+        ],
+        "summary": "Invalidate a security token.",
+        "description": "Invalidates a security token and logs out the corresponding user.",
+        "operationId": "logout",
+        "consumes": [
+          "application/x-www-form-urlencoded"
+        ],
+        "produces": [
+          "text/plain"
+        ],
+        "parameters": [
+          {
+            "name": "subjectid",
+            "in": "header",
+            "required": false,
+            "type": "string"
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Token invalidated."
+          },
+          "401": {
+            "description": "Wrong, missing or invalid token."
+          }
+        }
+      }
+    },
+    "/dataset/{id}/arff": {
+      "get": {
+        "tags": [
+          "dataset"
+        ],
+        "summary": "Get arff representation of a dataset.",
+        "description": "Get arff representation of a dataset.",
+        "operationId": "getDatasetArff",
+        "produces": [
+          "text/x-arff"
+        ],
+        "parameters": [
+          {
+            "name": "id",
+            "in": "path",
+            "description": "Dataset ID",
+            "required": true,
+            "type": "string"
+          },
+          {
+            "name": "subjectid",
+            "in": "header",
+            "description": "Authorization token",
+            "required": false,
+            "type": "string"
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "OK"
+          },
+          "400": {
+            "description": "Bad Request"
+          },
+          "401": {
+            "description": "Unauthorized"
+          },
+          "403": {
+            "description": "Forbidden"
+          },
+          "404": {
+            "description": "Resource Not Found"
+          }
+        }
+      }
+    },
+    "/dataset": {
+      "get": {
+        "tags": [
+          "dataset"
+        ],
+        "summary": "List all converted datasets.",
+        "description": "List all converted datasets.",
+        "operationId": "list",
+        "produces": [
+          "text/uri-list",
+          "application/json"
+        ],
+        "parameters": [
+          {
+            "name": "subjectid",
+            "in": "header",
+            "description": "Authorization token",
+            "required": false,
+            "type": "string"
+          },
+          {
+            "name": "Accept",
+            "in": "header",
+            "description": "requested Content-Type",
+            "required": true,
+            "type": "string",
+            "enum": [
+              "text/uri-list",
+              "application/json"
+            ]
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "OK"
+          },
+          "400": {
+            "description": "Bad Request"
+          },
+          "401": {
+            "description": "Unauthorized"
+          },
+          "403": {
+            "description": "Forbidden"
+          },
+          "404": {
+            "description": "Resource Not Found"
+          }
+        }
+      },
+      "post": {
+        "tags": [
+          "dataset"
+        ],
+        "summary": "Download dataset and convert into weka arff format",
+        "description": "Download an external dataset and convert it into weka arff format.",
+        "operationId": "create",
+        "consumes": [
+          "multipart/form-data"
+        ],
+        "produces": [
+          "text/x-arff"
+        ],
+        "parameters": [
+          {
+            "name": "dataset_uri",
+            "in": "formData",
+            "description": "URI of the dataset to be used.",
+            "required": true,
+            "type": "string"
+          },
+          {
+            "name": "class_uri",
+            "in": "formData",
+            "description": "URI of the feature to define as weka class",
+            "required": false,
+            "type": "string"
+          },
+          {
+            "name": "subjectid",
+            "in": "header",
+            "description": "Authorization token",
+            "required": false,
+            "type": "string"
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "OK"
+          },
+          "400": {
+            "description": "Bad Request"
+          },
+          "401": {
+            "description": "Unauthorized"
+          },
+          "403": {
+            "description": "Forbidden"
+          },
+          "404": {
+            "description": "Resource Not Found"
+          }
+        }
+      }
+    },
+    "/model": {
+      "get": {
+        "tags": [
+          "model"
+        ],
+        "summary": "List all Models",
+        "description": "List all Models.",
+        "operationId": "getModelList",
+        "consumes": [
+          "multipart/form-data"
+        ],
+        "produces": [
+          "text/uri-list"
+        ],
+        "parameters": [
+          {
+            "name": "subjectid",
+            "in": "header",
+            "description": "Authorization token",
+            "required": false,
+            "type": "string"
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "OK"
+          },
+          "400": {
+            "description": "Bad Request"
+          },
+          "401": {
+            "description": "Unauthorized"
+          },
+          "403": {
+            "description": "Forbidden"
+          },
+          "404": {
+            "description": "Resource Not Found"
+          }
+        }
+      }
+    }
+  }
+}
