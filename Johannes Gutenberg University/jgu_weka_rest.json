@@ -11,6 +11,11 @@
     "license": {
       "name": "GNU General Public License 3",
       "url": "https://www.gnu.org/licenses/gpl-3.0.de.html"
+    },
+    "x-project": {
+      "name": "OpenRiskNet",
+      "cordis": "http://www.cordis.europa.eu/project/rcn/206759_en.html",
+      "type": "H2020"
     }
   },
   "tags": [
@@ -18,7 +23,13 @@
       "name": "algorithm"
     },
     {
+      "name": "api"
+    },
+    {
       "name": "authorization"
+    },
+    {
+      "name": "cluster"
     },
     {
       "name": "dataset"
@@ -28,6 +39,81 @@
     }
   ],
   "paths": {
+    "/algorithm": {
+      "get": {
+        "tags": [
+          "algorithm"
+        ],
+        "summary": "Get a list of all available algorithms.",
+        "description": "Get a list of all algorithms.",
+        "operationId": "algorithmGet",
+        "produces": [
+          "text/uri-list"
+        ],
+        "parameters": [
+          {
+            "name": "Accept",
+            "in": "header",
+            "description": "requested Content-Type",
+            "required": true,
+            "type": "string",
+            "enum": [
+              "text/uri-list",
+              "application/json"
+            ]
+          },
+          {
+            "name": "subjectid",
+            "in": "header",
+            "description": "authorization token",
+            "required": false,
+            "type": "string"
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "OK"
+          },
+          "400": {
+            "description": "Bad Request"
+          },
+          "401": {
+            "description": "Unauthorized"
+          },
+          "404": {
+            "description": "Resource Not Found"
+          },
+          "500": {
+            "description": "Server Error"
+          }
+        }
+      }
+    },
+    "/api/api.json": {
+      "get": {
+        "tags": [
+          "api"
+        ],
+        "summary": "",
+        "description": "Get swagger api in JSON",
+        "operationId": "apiApiJsonGet",
+        "produces": [
+          "application/json"
+        ],
+        "parameters": [],
+        "responses": {
+          "200": {
+            "description": "OK"
+          },
+          "400": {
+            "description": "Bad Request"
+          },
+          "500": {
+            "description": "Server Error"
+          }
+        }
+      }
+    },
     "/algorithm/BayesNet": {
       "post": {
         "tags": [
@@ -48,6 +134,13 @@
             "in": "formData",
             "required": false,
             "type": "file"
+          },
+          {
+            "name": "datasetURI",
+            "in": "formData",
+            "description": "Dataset URI or local dataset ID (to the arff representation of a dataset).",
+            "required": false,
+            "type": "string"
           },
           {
             "name": "estimator",
@@ -114,7 +207,7 @@
           {
             "name": "searchParams",
             "in": "formData",
-            "description": "The parameter for algorithmn to be used for searching in the compound. Are set automatically (WEKA's standard parameter setting).",
+            "description": "The parameter for algorithmn to be used for searching in the compound. Are set automatically (WEKA\u0027s standard parameter setting).",
             "required": false,
             "type": "string",
             "default": "-P 1 -S BAYES"
@@ -143,6 +236,14 @@
           "404": {
             "description": "Resource Not Found"
           }
+        },
+        "x-algorithm": {
+          "http://purl.obolibrary.org/obo/IAO_0000064": "http://purl.enanomapper.org/onto/ENM_8000001",
+          "http://purl.enanomapper.org/onto/ENM_8000002": "http://purl.enanomapper.org/onto/ENM_8000005",
+          "http://purl.enanomapper.org/onto/ENM_8000014": "https://en.wikipedia.org/wiki/Bayesian_network",
+          "http://purl.enanomapper.org/onto/ENM_8000001": "http://purl.enanomapper.org/onto/ENM_8000002",
+          "BayesNet": "https://en.wikipedia.org/wiki/Bayesian_network",
+          "http://purl.enanomapper.org/onto/ENM_8000005": "http://purl.enanomapper.org/onto/ENM_8000014"
         }
       }
     },
@@ -169,9 +270,16 @@
             "type": "file"
           },
           {
+            "name": "datasetURI",
+            "in": "formData",
+            "description": "Dataset URI or local dataset ID (to the arff representation of a dataset).",
+            "required": false,
+            "type": "string"
+          },
+          {
             "name": "attributeSelectionMethod",
             "in": "formData",
-            "description": "Attribute selection method to be used (Default M5 method).Available methods are: no attribute selection(Value:1), attribute selection using M5's method (Value:0) and a greedy selection using the Akaike information metric(Value:2). One of 0,1,2 (Default: 0).",
+            "description": "Attribute selection method to be used (Default M5 method).Available methods are: no attribute selection(Value:1), attribute selection using M5\u0027s method (Value:0) and a greedy selection using the Akaike information metric(Value:2). One of 0,1,2 (Default: 0).",
             "required": false,
             "type": "integer",
             "default": 0,
@@ -201,7 +309,7 @@
             "description": "The ridge parameter (Default: 1.0E-8).",
             "required": false,
             "type": "number",
-            "default": 1e-8
+            "default": 1.0E-8
           },
           {
             "name": "subjectid",
@@ -227,6 +335,189 @@
           "404": {
             "description": "Resource Not Found"
           }
+        },
+        "x-algorithm": {
+          "Linear Regression": "https://en.wikipedia.org/wiki/Linear_regression"
+        }
+      }
+    },
+    "/algorithm/libsvm": {
+      "post": {
+        "tags": [
+          "algorithm"
+        ],
+        "summary": "REST interface to the WEKA support vector machine wrapper library classifier.",
+        "description": "REST interface to the WEKA support vector machine wrapper library classifier.",
+        "operationId": "algorithmLibSVMPost",
+        "consumes": [
+          "multipart/form-data"
+        ],
+        "produces": [
+          "text/x-arff",
+          "application/json"
+        ],
+        "parameters": [
+          {
+            "name": "file",
+            "in": "formData",
+            "required": false,
+            "type": "file"
+          },
+          {
+            "name": "datasetURI",
+            "in": "formData",
+            "description": "Dataset URI or local dataset ID (to the arff representation of a dataset).",
+            "required": false,
+            "type": "string"
+          },
+          {
+            "name": "svmType",
+            "in": "formData",
+            "description": "SVMType -- The type of SVM to use. \n 0: C-SVC (classification) \n 1: nu-SVC (classification) \n 2: one-class SVM (classification) \n 3: epsilon-SVR (regression)\n 4: nu-SVR (regression)\n (Default: 0).",
+            "required": false,
+            "type": "integer",
+            "default": 0,
+            "format": "int32",
+            "enum": [
+              0,
+              1,
+              2,
+              3,
+              4
+            ]
+          },
+          {
+            "name": "coef0",
+            "in": "formData",
+            "description": "coef0 -- The coefficient to use. (Default: 0).",
+            "required": false,
+            "type": "number",
+            "default": 0.0,
+            "format": "float"
+          },
+          {
+            "name": "cost",
+            "in": "formData",
+            "description": "cost -- The cost parameter C for C-SVC, epsilon-SVR and nu-SVR. (Default: 1.0).",
+            "required": false,
+            "type": "number",
+            "default": 1.0,
+            "format": "float"
+          },
+          {
+            "name": "degree",
+            "in": "formData",
+            "description": "degree -- The degree of the kernel. (Default: 3).",
+            "required": false,
+            "type": "integer",
+            "default": 3,
+            "format": "int32"
+          },
+          {
+            "name": "eps",
+            "in": "formData",
+            "description": "eps -- The tolerance of the termination criterion. (Default: 0.001).",
+            "required": false,
+            "type": "number",
+            "default": 0.001
+          },
+          {
+            "name": "gamma",
+            "in": "formData",
+            "description": "gamma -- The gamma to use, if 0 then 1/max_index is used. (Default: 0.0).",
+            "required": false,
+            "type": "number",
+            "default": 0.0
+          },
+          {
+            "name": "kernelType",
+            "in": "formData",
+            "description": "kernelType -- The type of kernel to use.\n 0: linear:u\u0027*v \n 1: polynomial: (gamma*u\u0027*v + coef0)^degree \n 2: radial basis function: exp(-gamma*|u-v|^2) \n 3: sigmoid: tanh()gamma*u\u0027*v + coef0) \n (Default: 2).",
+            "required": false,
+            "type": "integer",
+            "default": 2,
+            "format": "int32",
+            "enum": [
+              0,
+              1,
+              2,
+              3
+            ]
+          },
+          {
+            "name": "loss",
+            "in": "formData",
+            "description": "loss -- The epsilon for the loss function in epsilon-SVR. (Default: 0.1).",
+            "required": false,
+            "type": "number",
+            "default": 0.1
+          },
+          {
+            "name": "normalize",
+            "in": "formData",
+            "description": "normalize -- Whether to normalize the data.",
+            "required": false,
+            "type": "boolean",
+            "default": false
+          },
+          {
+            "name": "nu",
+            "in": "formData",
+            "description": "nu -- The value of nu for nu-SVC, one-class SVM and nu-SVR. (Default: 0.5).",
+            "required": false,
+            "type": "number",
+            "default": 0.5
+          },
+          {
+            "name": "probabilityEstimates",
+            "in": "formData",
+            "description": "probabilityEstimates -- Whether to generate probability estimates instead of -1/+1 for classification problems.",
+            "required": false,
+            "type": "boolean",
+            "default": false
+          },
+          {
+            "name": "shrinking",
+            "in": "formData",
+            "description": "shrinking -- Whether to use the shrinking heuristic.",
+            "required": false,
+            "type": "boolean",
+            "default": true
+          },
+          {
+            "name": "weights",
+            "in": "formData",
+            "description": "weights -- The weights to use for the classes (blank-separated list, eg, \"1 1 1\" for a 3-class problem), if empty 1 is used by default.",
+            "required": false,
+            "type": "string"
+          },
+          {
+            "name": "subjectid",
+            "in": "header",
+            "description": "authorization token",
+            "required": false,
+            "type": "string"
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "OK"
+          },
+          "400": {
+            "description": "Bad Request"
+          },
+          "401": {
+            "description": "Unauthorized"
+          },
+          "403": {
+            "description": "Forbidden"
+          },
+          "404": {
+            "description": "Resource Not Found"
+          }
+        },
+        "x-algorithm": {
+          "support vector machine": "https://en.wikipedia.org/wiki/Support_vector_machine"
         }
       }
     },
@@ -251,6 +542,13 @@
             "in": "formData",
             "required": false,
             "type": "file"
+          },
+          {
+            "name": "datasetURI",
+            "in": "formData",
+            "description": "Dataset URI or local dataset ID (to the arff representation of a dataset).",
+            "required": false,
+            "type": "string"
           },
           {
             "name": "windowSize",
@@ -328,55 +626,9 @@
           "404": {
             "description": "Resource Not Found"
           }
-        }
-      }
-    },
-    "/algorithm/ZeroR": {
-      "post": {
-        "tags": [
-          "algorithm"
-        ],
-        "summary": "REST interface to the WEKA ZeroR classifier.",
-        "description": "REST interface to the WEKA ZeroR classifier.",
-        "operationId": "algorithmKNNclassificationPost",
-        "consumes": [
-          "multipart/form-data"
-        ],
-        "produces": [
-          "text/x-arff",
-          "application/json"
-        ],
-        "parameters": [
-          {
-            "name": "file",
-            "in": "formData",
-            "required": false,
-            "type": "file"
-          },
-          {
-            "name": "subjectid",
-            "in": "header",
-            "description": "authorization token",
-            "required": false,
-            "type": "string"
-          }
-        ],
-        "responses": {
-          "200": {
-            "description": "OK"
-          },
-          "400": {
-            "description": "Bad Request"
-          },
-          "401": {
-            "description": "Unauthorized"
-          },
-          "403": {
-            "description": "Forbidden"
-          },
-          "404": {
-            "description": "Resource Not Found"
-          }
+        },
+        "x-algorithm": {
+          "k-nearest neighbors algorithm": "https://en.wikipedia.org/wiki/K-nearest_neighbors_algorithm"
         }
       }
     },
@@ -400,6 +652,13 @@
             "in": "formData",
             "required": false,
             "type": "file"
+          },
+          {
+            "name": "datasetURI",
+            "in": "formData",
+            "description": "Dataset URI or local dataset ID (to the arff representation of a dataset).",
+            "required": false,
+            "type": "string"
           },
           {
             "name": "unpruned",
@@ -434,7 +693,7 @@
             "description": "The minimum number of instances to allow at a leaf node.",
             "required": false,
             "type": "number",
-            "default": 4,
+            "default": 4.0,
             "format": "double"
           },
           {
@@ -474,6 +733,68 @@
           "404": {
             "description": "Resource Not Found"
           }
+        },
+        "x-algorithm": {
+          "M5Rules": "http://weka.sourceforge.net/doc.dev/weka/classifiers/rules/M5Rules.html"
+        }
+      }
+    },
+    "/algorithm/ZeroR": {
+      "post": {
+        "tags": [
+          "algorithm"
+        ],
+        "summary": "REST interface to the WEKA ZeroR classifier.",
+        "description": "REST interface to the WEKA ZeroR classifier.",
+        "operationId": "algorithmKNNclassificationPost",
+        "consumes": [
+          "multipart/form-data"
+        ],
+        "produces": [
+          "text/x-arff",
+          "application/json"
+        ],
+        "parameters": [
+          {
+            "name": "file",
+            "in": "formData",
+            "required": false,
+            "type": "file"
+          },
+          {
+            "name": "datasetURI",
+            "in": "formData",
+            "description": "Dataset URI or local dataset ID (to the arff representation of a dataset).",
+            "required": false,
+            "type": "string"
+          },
+          {
+            "name": "subjectid",
+            "in": "header",
+            "description": "authorization token",
+            "required": false,
+            "type": "string"
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "OK"
+          },
+          "400": {
+            "description": "Bad Request"
+          },
+          "401": {
+            "description": "Unauthorized"
+          },
+          "403": {
+            "description": "Forbidden"
+          },
+          "404": {
+            "description": "Resource Not Found"
+          }
+        },
+        "x-algorithm": {
+          "ZeroR": "http://weka.sourceforge.net/doc.dev/weka/classifiers/rules/ZeroR.html"
         }
       }
     },
@@ -497,6 +818,13 @@
             "in": "formData",
             "required": false,
             "type": "file"
+          },
+          {
+            "name": "datasetURI",
+            "in": "formData",
+            "description": "Dataset URI or local dataset ID (to the arff representation of a dataset).",
+            "required": false,
+            "type": "string"
           },
           {
             "name": "binarySplits",
@@ -619,6 +947,9 @@
           "404": {
             "description": "Resource Not Found"
           }
+        },
+        "x-algorithm": {
+          "J48": "https://en.wikipedia.org/wiki/C4.5_algorithm#Implementations"
         }
       }
     },
@@ -653,11 +984,11 @@
           }
         ],
         "responses": {
-          "200": {
-            "description": "Logged in - authentication token can be found in the response body (in JSON)"
-          },
           "401": {
             "description": "Wrong, missing or insufficient credentials. Error report is produced."
+          },
+          "200": {
+            "description": "Logged in - authentication token can be found in the response body (in JSON)"
           }
         }
       }
@@ -685,12 +1016,114 @@
           }
         ],
         "responses": {
-          "200": {
-            "description": "Token invalidated."
-          },
           "401": {
             "description": "Wrong, missing or invalid token."
+          },
+          "200": {
+            "description": "Token invalidated."
           }
+        }
+      }
+    },
+    "/cluster/EM": {
+      "post": {
+        "tags": [
+          "cluster"
+        ],
+        "summary": "REST interface to the WEKA EM clusterer.",
+        "description": "REST interface to the WEKA EM (expectation maximisation) clusterer.",
+        "operationId": "clusterEMPost",
+        "consumes": [
+          "multipart/form-data"
+        ],
+        "produces": [
+          "text/x-arff"
+        ],
+        "parameters": [
+          {
+            "name": "file",
+            "in": "formData",
+            "required": false,
+            "type": "file"
+          },
+          {
+            "name": "datasetURI",
+            "in": "formData",
+            "description": "Dataset URI or local dataset ID (to the arff representation of a dataset).",
+            "required": false,
+            "type": "string"
+          },
+          {
+            "name": "numFolds",
+            "in": "formData",
+            "description": "Number of folds to use when cross-validating to find the best number of clusters (default \u003d 10)",
+            "required": false,
+            "type": "integer",
+            "default": 10,
+            "format": "int32"
+          },
+          {
+            "name": "numKMeansRuns",
+            "in": "formData",
+            "description": "Number of runs of k-means to perform (default \u003d 10)",
+            "required": false,
+            "type": "integer",
+            "default": 10,
+            "format": "int32"
+          },
+          {
+            "name": "maximumNumberOfClusters",
+            "in": "formData",
+            "description": "Maximum number of clusters to consider during cross-validation to select the best number of clusters (default \u003d -1).",
+            "required": false,
+            "type": "integer",
+            "default": -1,
+            "format": "int32"
+          },
+          {
+            "name": "numClusters",
+            "in": "formData",
+            "description": "The number of clusters. -1 to select number of clusters automatically by cross validation (default \u003d -1).",
+            "required": false,
+            "type": "integer",
+            "default": -1,
+            "format": "int32"
+          },
+          {
+            "name": "maxIterations",
+            "in": "formData",
+            "description": "Maximum number of iterations (default \u003d 100).",
+            "required": false,
+            "type": "integer",
+            "default": 100,
+            "format": "int32"
+          },
+          {
+            "name": "subjectid",
+            "in": "header",
+            "required": false,
+            "type": "string"
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "OK"
+          },
+          "400": {
+            "description": "Bad Request"
+          },
+          "401": {
+            "description": "Unauthorized"
+          },
+          "403": {
+            "description": "Forbidden"
+          },
+          "404": {
+            "description": "Resource Not Found"
+          }
+        },
+        "x-algorithm": {
+          "EM": "https://en.wikipedia.org/wiki/Expectation%E2%80%93maximization_algorithm"
         }
       }
     },
@@ -759,17 +1192,6 @@
             "description": "Authorization token",
             "required": false,
             "type": "string"
-          },
-          {
-            "name": "Accept",
-            "in": "header",
-            "description": "requested Content-Type",
-            "required": true,
-            "type": "string",
-            "enum": [
-              "text/uri-list",
-              "application/json"
-            ]
           }
         ],
         "responses": {
@@ -845,6 +1267,147 @@
         }
       }
     },
+    "/dataset/{id}": {
+      "post": {
+        "tags": [
+          "dataset"
+        ],
+        "summary": "Filter an internal dataset with weka filter.",
+        "description": "Filter an internal dataset with weka filter. Remove attributes and normalize or standardize all numeric attributes of a dataset.",
+        "operationId": "filter",
+        "consumes": [
+          "multipart/form-data"
+        ],
+        "produces": [
+          "text/x-arff"
+        ],
+        "parameters": [
+          {
+            "name": "id",
+            "in": "path",
+            "description": "Dataset ID",
+            "required": true,
+            "type": "string"
+          },
+          {
+            "name": "idx_remove",
+            "in": "formData",
+            "description": "Feature(s) to remove. ID or comma separated IDs of the attribute(s)(column(s)) to remove. (0 \u003d no attribute will be deleted)",
+            "required": false,
+            "type": "string",
+            "default": "0"
+          },
+          {
+            "name": "scale",
+            "in": "formData",
+            "description": "Normalize all numeric values - scale: - The factor for scaling the output range (default: 1).",
+            "required": false,
+            "type": "string"
+          },
+          {
+            "name": "translation",
+            "in": "formData",
+            "description": "Normalize all numeric values - translation: The translation of the output range (default: 0).",
+            "required": false,
+            "type": "string"
+          },
+          {
+            "name": "standardize",
+            "in": "formData",
+            "description": "Standardize all numeric attributes in the given dataset to have zero mean and unit variance (apart from the class attribute, if set).",
+            "required": false,
+            "type": "boolean"
+          },
+          {
+            "name": "ignore",
+            "in": "formData",
+            "description": "Ignore class (ignore class attribute for Normalization or Standization).",
+            "required": false,
+            "type": "boolean"
+          },
+          {
+            "name": "attributeRange",
+            "in": "formData",
+            "description": "String to Nominal: Sets which attributes to process. This attributes must be string attributes (\"first\" and \"last\" are valid values as well as ranges and lists. Empty value do not process the filter).",
+            "required": false,
+            "type": "string"
+          },
+          {
+            "name": "subjectid",
+            "in": "header",
+            "description": "Authorization token",
+            "required": false,
+            "type": "string"
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "OK"
+          },
+          "400": {
+            "description": "Bad Request"
+          },
+          "401": {
+            "description": "Unauthorized"
+          },
+          "403": {
+            "description": "Forbidden"
+          },
+          "404": {
+            "description": "Resource Not Found"
+          }
+        }
+      }
+    },
+    "/model/{id}": {
+      "get": {
+        "tags": [
+          "model"
+        ],
+        "summary": "Get representation of a model.",
+        "description": "Get representation of a model.",
+        "operationId": "getModel",
+        "consumes": [
+          "multipart/form-data"
+        ],
+        "produces": [
+          "text/plain"
+        ],
+        "parameters": [
+          {
+            "name": "id",
+            "in": "path",
+            "description": "model ID",
+            "required": true,
+            "type": "string"
+          },
+          {
+            "name": "subjectid",
+            "in": "header",
+            "description": "Authorization token",
+            "required": false,
+            "type": "string"
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "OK"
+          },
+          "400": {
+            "description": "Bad Request"
+          },
+          "401": {
+            "description": "Unauthorized"
+          },
+          "403": {
+            "description": "Forbidden"
+          },
+          "404": {
+            "description": "Resource Not Found"
+          }
+        }
+      }
+    },
     "/model": {
       "get": {
         "tags": [
@@ -857,7 +1420,8 @@
           "multipart/form-data"
         ],
         "produces": [
-          "text/uri-list"
+          "text/uri-list",
+          "application/json"
         ],
         "parameters": [
           {
