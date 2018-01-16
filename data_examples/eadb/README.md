@@ -1,4 +1,4 @@
-# EDB data set
+# EADB data set
 
 ## Source
 
@@ -15,7 +15,7 @@ It's also present as a [Google Sheet](https://docs.google.com/spreadsheets/d/1f5
 
 Thomas Exner did some initial analysis of the data that can found in this [Google Sheet](https://docs.google.com/spreadsheets/d/1kg8-6HEn-ikSloNtWTX8O8Aanzi_-h7Cg-H4NwhO_HQ/edit#gid=1933108353).
 
-The data from the Excel sheet was exported to a tab separated text format file [eadb.tsv](). 
+The data from the Excel sheet was exported to a tab separated text format file [eadb.tsv]. 
 
 ## Processing
 
