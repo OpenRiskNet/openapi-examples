@@ -2,7 +2,9 @@
 
 ## Source
 
-TODO: describe the origin of this dataset
+This data on endocrine disruptors comes from the FDA.
+
+TODO: describe the origin of this dataset in more detail.
 
 TODO: briefly describe the contents of this dataset
 
@@ -15,31 +17,19 @@ It's also present as a [Google Sheet](https://docs.google.com/spreadsheets/d/1f5
 
 Thomas Exner did some initial analysis of the data that can found in this [Google Sheet](https://docs.google.com/spreadsheets/d/1kg8-6HEn-ikSloNtWTX8O8Aanzi_-h7Cg-H4NwhO_HQ/edit#gid=1933108353).
 
-The data from the Excel sheet was exported to a tab separated text format file [eadb.tsv](eadb.tsv). 
+The data from the Excel sheet was exported to a tab separated text format file [eadb.tsv](eadb.tsv).
+This tsv file provides the input for the work described here. 
 
 ## Processing
 
 The fist step was to convert the data to JSON so that it can be semantically annotated.
-This is done with the [parser.groovy](parser.groovy) script. Run like this:
+This is done with the [parser.groovy](parser.groovy) script that is described [here](../README.md).
 
-```
-groovy parser.groovy -c <config-file> -m parse <tsv-file>
-```
-For all the options run this:
-```
-$ groovy parser.groovy -h
-usage: parser.groovy -m <mode> -c <config> [-s <separator>] -[h] file
- -c,--config <config>         Configuration file
- -h,--help                    Show usage information
- -m,--mode <mode>             Main method to run
- -s,--separator <separator>   Separator in data file (default tab)
-```
-
-The -c argument is used to specify a configuration file that determines how the data is handled (the config file is loaded by the Groovy [ConfigSlurper class](http://docs.groovy-lang.org/latest/html/gapi/groovy/util/ConfigSlurper.html)).
+**NOTE:** Run all commands from the data_examples directory.
 
 The [flat-config.groovy](flat-config.groovy) configuration just specifies the data types on the fields that are not text types and generates a flat datastructure in JSON that is the equivalent of the original TSV file. It is now more parsable but does not contain any useful organisational  structure. It can be used like this:
 ```
-groovy parser.groovy -c flat-config.groovy -m parse eadb.tsv > eadb-flat-config.json
+groovy parser.groovy -c eadb/flat-config.groovy -m parse eadb/eadb.tsv > eadb/eadb-flat.json
 ```
 A sample record looks like this:
 
@@ -62,10 +52,11 @@ A sample record looks like this:
     "ENDPOINT_VALUE": 2
   }
 ```
+The full file is here: [eadb-flat.json](eadb-flat.json).
 
 If instead you use the [hierarchical-1-config.groovy](hierarchical-1-config.groovy) configuration using a command like this:
 ```
-groovy parser.groovy -c hierarchical-1-config.groovy -m parse eadb.tsv > eadb-hierarchical-1.json
+groovy parser.groovy -c eadb/hierarchical-1-config.groovy -m parse eadb/eadb.tsv > eadb/eadb-hierarchical-1.json
 ```
 then more structured output is generated with a single record looking like this:
 
