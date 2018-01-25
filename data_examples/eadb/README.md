@@ -314,12 +314,12 @@ OpenAPI JSON annotations of the flat and hierarhical-1 representations were gene
 }
 ```
 
-These are somewhat similar to the cnfiguration files used to parse the TSV data, though with more boiler plate related to the REST aspects. It nicely handles the hierarchical aspects. The flat version does not in any way infer the hierarchical that is implicit in the data and seen in the hierarchical version.
+These are somewhat similar to the configuration files used to parse the TSV data, though with more boiler plate related to the REST aspects. It nicely handles the hierarchical aspects. The flat version does not in any way infer the hierarchicy that is implicit in the data and seen in the hierarchical version.
 
 Ideally the flat data (e.g. TSV data) could be annotated in a manner that allowed the hierarchy to be inferred. e.g. in a way analagous to the [hierarchical-1 parser configuration](hierarchical-1-config.groovy).
 
 
 ## Next Steps
 
-1. Investigate how to annotate this dataset (Daniel)
+1. Investigate how to annotate this dataset (Daniel/Joh)
 2. Investigate pivoting the dataset (Tim) 
