@@ -2,7 +2,7 @@
   "swagger": "2.0",
   "info": {
     "description": "RESTful API Webservice to WEKA Machine Learning Algorithms.\nThis webservice provides an [OpenRiskNet](https://openrisknet.org/) compliant REST interface to machine learning algorithms from the WEKA Java Library.\nThis application is developed by the [Institute of Computer Science](http://www.datamining.informatik.uni-mainz.de) at the Johannes Gutenberg University Mainz.\nOpenRiskNet is funded by the European Commission GA 731075. WEKA is developed by the [Machine Learning Group](https://www.cs.waikato.ac.nz/ml/index.html) at the University of Waikato.",
-    "version": "0.0.2",
+    "version": "0.0.4",
     "title": "JGU WEKA REST Service",
     "termsOfService": "",
     "contact": {
@@ -12,12 +12,17 @@
       "name": "GNU General Public License 3",
       "url": "https://www.gnu.org/licenses/gpl-3.0.de.html"
     },
-    "x-project": {
+    "x-orn-@project": {
       "name": "OpenRiskNet",
       "cordis": "http://www.cordis.europa.eu/project/rcn/206759_en.html",
       "type": "H2020"
+    },
+    "x-orn-@context": {
+      "@vocab": "http://schema.org/"
     }
   },
+  "x-orn-@type": "x-orn:Service",
+  "x-orn-@id": "weka rest service",
   "tags": [
     {
       "name": "algorithm"
@@ -98,7 +103,8 @@
         "description": "Get swagger api in JSON",
         "operationId": "apiApiJsonGet",
         "produces": [
-          "application/json"
+          "application/json",
+          "application/ld+json"
         ],
         "parameters": [],
         "responses": {
@@ -120,13 +126,14 @@
           "algorithm"
         ],
         "summary": "REST interface to the WEKA BayesNet classifier.",
-        "description": "REST interface to the WEKA BayesNet classifier.",
+        "description": "REST interface to the WEKA BayesNet classifier. Save the model by POST request the content-type text/uri-list.",
         "operationId": "algorithmBayesNetPost",
         "consumes": [
           "multipart/form-data"
         ],
         "produces": [
-          "text/x-arff"
+          "text/x-arff",
+          "text/uri-list"
         ],
         "parameters": [
           {
@@ -207,7 +214,7 @@
           {
             "name": "searchParams",
             "in": "formData",
-            "description": "The parameter for algorithmn to be used for searching in the compound. Are set automatically (WEKA\u0027s standard parameter setting).",
+            "description": "The parameter for algorithmn to be used for searching in the compound. Are set automatically (WEKA's standard parameter setting).",
             "required": false,
             "type": "string",
             "default": "-P 1 -S BAYES"
@@ -253,14 +260,14 @@
           "algorithm"
         ],
         "summary": "REST interface to the WEKA linear regression classifier.",
-        "description": "REST interface to the WEKA linear regression classifier.",
+        "description": "REST interface to the WEKA linear regression classifier. Save the model by POST request the content-type text/uri-list.",
         "operationId": "algorithmLRPost",
         "consumes": [
           "multipart/form-data"
         ],
         "produces": [
           "text/x-arff",
-          "application/json"
+          "text/uri-list"
         ],
         "parameters": [
           {
@@ -279,7 +286,7 @@
           {
             "name": "attributeSelectionMethod",
             "in": "formData",
-            "description": "Attribute selection method to be used (Default M5 method).Available methods are: no attribute selection(Value:1), attribute selection using M5\u0027s method (Value:0) and a greedy selection using the Akaike information metric(Value:2). One of 0,1,2 (Default: 0).",
+            "description": "Attribute selection method to be used (Default M5 method).Available methods are: no attribute selection(Value:1), attribute selection using M5's method (Value:0) and a greedy selection using the Akaike information metric(Value:2). One of 0,1,2 (Default: 0).",
             "required": false,
             "type": "integer",
             "default": 0,
@@ -309,7 +316,7 @@
             "description": "The ridge parameter (Default: 1.0E-8).",
             "required": false,
             "type": "number",
-            "default": 1.0E-8
+            "default": 1e-8
           },
           {
             "name": "subjectid",
@@ -347,14 +354,14 @@
           "algorithm"
         ],
         "summary": "REST interface to the WEKA support vector machine wrapper library classifier.",
-        "description": "REST interface to the WEKA support vector machine wrapper library classifier.",
+        "description": "REST interface to the WEKA support vector machine wrapper library classifier.Save the model by POST request the content-type text/uri-list.",
         "operationId": "algorithmLibSVMPost",
         "consumes": [
           "multipart/form-data"
         ],
         "produces": [
           "text/x-arff",
-          "application/json"
+          "text/uri-list"
         ],
         "parameters": [
           {
@@ -392,7 +399,7 @@
             "description": "coef0 -- The coefficient to use. (Default: 0).",
             "required": false,
             "type": "number",
-            "default": 0.0,
+            "default": 0,
             "format": "float"
           },
           {
@@ -401,7 +408,7 @@
             "description": "cost -- The cost parameter C for C-SVC, epsilon-SVR and nu-SVR. (Default: 1.0).",
             "required": false,
             "type": "number",
-            "default": 1.0,
+            "default": 1,
             "format": "float"
           },
           {
@@ -427,12 +434,12 @@
             "description": "gamma -- The gamma to use, if 0 then 1/max_index is used. (Default: 0.0).",
             "required": false,
             "type": "number",
-            "default": 0.0
+            "default": 0
           },
           {
             "name": "kernelType",
             "in": "formData",
-            "description": "kernelType -- The type of kernel to use.\n 0: linear:u\u0027*v \n 1: polynomial: (gamma*u\u0027*v + coef0)^degree \n 2: radial basis function: exp(-gamma*|u-v|^2) \n 3: sigmoid: tanh()gamma*u\u0027*v + coef0) \n (Default: 2).",
+            "description": "kernelType -- The type of kernel to use.\n 0: linear:u'*v \n 1: polynomial: (gamma*u'*v + coef0)^degree \n 2: radial basis function: exp(-gamma*|u-v|^2) \n 3: sigmoid: tanh()gamma*u'*v + coef0) \n (Default: 2).",
             "required": false,
             "type": "integer",
             "default": 2,
@@ -527,14 +534,14 @@
           "algorithm"
         ],
         "summary": "REST interface to the WEKA K-nearest neighbours classifier.",
-        "description": "REST interface to the WEKA K-nearest neighbours classifier.",
+        "description": "REST interface to the WEKA K-nearest neighbours classifier. Save the model by POST request the content-type text/uri-list.",
         "operationId": "algorithmKNNclassificationPost",
         "consumes": [
           "multipart/form-data"
         ],
         "produces": [
           "text/x-arff",
-          "application/json"
+          "text/uri-list"
         ],
         "parameters": [
           {
@@ -603,6 +610,14 @@
             "default": "LinearNNSearch"
           },
           {
+            "name": "save",
+            "in": "formData",
+            "description": "Save the model.",
+            "required": false,
+            "type": "boolean",
+            "default": false
+          },
+          {
             "name": "subjectid",
             "in": "header",
             "description": "Authorization token",
@@ -632,19 +647,79 @@
         }
       }
     },
+    "/algorithm/ZeroR": {
+      "post": {
+        "tags": [
+          "algorithm"
+        ],
+        "summary": "REST interface to the WEKA ZeroR classifier.",
+        "description": "REST interface to the WEKA ZeroR classifier. Save the model by POST request the content-type text/uri-list.",
+        "operationId": "algorithmZeroRclassificationPost",
+        "consumes": [
+          "multipart/form-data"
+        ],
+        "produces": [
+          "text/x-arff",
+          "text/uri-list"
+        ],
+        "parameters": [
+          {
+            "name": "file",
+            "in": "formData",
+            "required": false,
+            "type": "file"
+          },
+          {
+            "name": "datasetURI",
+            "in": "formData",
+            "description": "Dataset URI or local dataset ID (to the arff representation of a dataset).",
+            "required": false,
+            "type": "string"
+          },
+          {
+            "name": "subjectid",
+            "in": "header",
+            "description": "authorization token",
+            "required": false,
+            "type": "string"
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "OK"
+          },
+          "400": {
+            "description": "Bad Request"
+          },
+          "401": {
+            "description": "Unauthorized"
+          },
+          "403": {
+            "description": "Forbidden"
+          },
+          "404": {
+            "description": "Resource Not Found"
+          }
+        },
+        "x-algorithm": {
+          "ZeroR": "http://weka.sourceforge.net/doc.dev/weka/classifiers/rules/ZeroR.html"
+        }
+      }
+    },
     "/algorithm/M5Rules": {
       "post": {
         "tags": [
           "algorithm"
         ],
         "summary": "REST interface to the WEKA M5Rules classifier.",
-        "description": "REST interface to the WEKA M5Rules classifier.",
+        "description": "REST interface to the WEKA M5Rules classifier. Save the model by POST request the content-type text/uri-list.",
         "operationId": "algorithmM5RclassificationPost",
         "consumes": [
           "multipart/form-data"
         ],
         "produces": [
-          "text/x-arff"
+          "text/x-arff",
+          "text/uri-list"
         ],
         "parameters": [
           {
@@ -693,7 +768,7 @@
             "description": "The minimum number of instances to allow at a leaf node.",
             "required": false,
             "type": "number",
-            "default": 4.0,
+            "default": 4,
             "format": "double"
           },
           {
@@ -739,78 +814,20 @@
         }
       }
     },
-    "/algorithm/ZeroR": {
-      "post": {
-        "tags": [
-          "algorithm"
-        ],
-        "summary": "REST interface to the WEKA ZeroR classifier.",
-        "description": "REST interface to the WEKA ZeroR classifier.",
-        "operationId": "algorithmKNNclassificationPost",
-        "consumes": [
-          "multipart/form-data"
-        ],
-        "produces": [
-          "text/x-arff",
-          "application/json"
-        ],
-        "parameters": [
-          {
-            "name": "file",
-            "in": "formData",
-            "required": false,
-            "type": "file"
-          },
-          {
-            "name": "datasetURI",
-            "in": "formData",
-            "description": "Dataset URI or local dataset ID (to the arff representation of a dataset).",
-            "required": false,
-            "type": "string"
-          },
-          {
-            "name": "subjectid",
-            "in": "header",
-            "description": "authorization token",
-            "required": false,
-            "type": "string"
-          }
-        ],
-        "responses": {
-          "200": {
-            "description": "OK"
-          },
-          "400": {
-            "description": "Bad Request"
-          },
-          "401": {
-            "description": "Unauthorized"
-          },
-          "403": {
-            "description": "Forbidden"
-          },
-          "404": {
-            "description": "Resource Not Found"
-          }
-        },
-        "x-algorithm": {
-          "ZeroR": "http://weka.sourceforge.net/doc.dev/weka/classifiers/rules/ZeroR.html"
-        }
-      }
-    },
     "/algorithm/J48": {
       "post": {
         "tags": [
           "algorithm"
         ],
         "summary": "REST interface to the WEKA J48 classifier.",
-        "description": "REST interface to the WEKA J48 classifier.",
+        "description": "REST interface to the WEKA J48 classifier. Save the model by POST request the content-type text/uri-list.",
         "operationId": "algorithmJ48Post",
         "consumes": [
           "multipart/form-data"
         ],
         "produces": [
-          "text/x-arff"
+          "text/x-arff",
+          "text/uri-list"
         ],
         "parameters": [
           {
@@ -929,6 +946,13 @@
               0,
               1
             ]
+          },
+          {
+            "name": "subjectid",
+            "in": "header",
+            "description": "Authorization token",
+            "required": false,
+            "type": "string"
           }
         ],
         "responses": {
@@ -965,7 +989,8 @@
           "multipart/form-data"
         ],
         "produces": [
-          "text/plain"
+          "text/plain",
+          "application/json"
         ],
         "parameters": [
           {
@@ -984,11 +1009,11 @@
           }
         ],
         "responses": {
-          "401": {
-            "description": "Wrong, missing or insufficient credentials. Error report is produced."
-          },
           "200": {
             "description": "Logged in - authentication token can be found in the response body (in JSON)"
+          },
+          "401": {
+            "description": "Wrong, missing or insufficient credentials. Error report is produced."
           }
         }
       }
@@ -1016,11 +1041,11 @@
           }
         ],
         "responses": {
-          "401": {
-            "description": "Wrong, missing or invalid token."
-          },
           "200": {
             "description": "Token invalidated."
+          },
+          "401": {
+            "description": "Wrong, missing or invalid token."
           }
         }
       }
@@ -1056,7 +1081,7 @@
           {
             "name": "numFolds",
             "in": "formData",
-            "description": "Number of folds to use when cross-validating to find the best number of clusters (default \u003d 10)",
+            "description": "Number of folds to use when cross-validating to find the best number of clusters (default = 10)",
             "required": false,
             "type": "integer",
             "default": 10,
@@ -1065,7 +1090,7 @@
           {
             "name": "numKMeansRuns",
             "in": "formData",
-            "description": "Number of runs of k-means to perform (default \u003d 10)",
+            "description": "Number of runs of k-means to perform (default = 10)",
             "required": false,
             "type": "integer",
             "default": 10,
@@ -1074,7 +1099,7 @@
           {
             "name": "maximumNumberOfClusters",
             "in": "formData",
-            "description": "Maximum number of clusters to consider during cross-validation to select the best number of clusters (default \u003d -1).",
+            "description": "Maximum number of clusters to consider during cross-validation to select the best number of clusters (default = -1).",
             "required": false,
             "type": "integer",
             "default": -1,
@@ -1083,7 +1108,7 @@
           {
             "name": "numClusters",
             "in": "formData",
-            "description": "The number of clusters. -1 to select number of clusters automatically by cross validation (default \u003d -1).",
+            "description": "The number of clusters. -1 to select number of clusters automatically by cross validation (default = -1).",
             "required": false,
             "type": "integer",
             "default": -1,
@@ -1092,7 +1117,7 @@
           {
             "name": "maxIterations",
             "in": "formData",
-            "description": "Maximum number of iterations (default \u003d 100).",
+            "description": "Maximum number of iterations (default = 100).",
             "required": false,
             "type": "integer",
             "default": 100,
@@ -1216,14 +1241,15 @@
         "tags": [
           "dataset"
         ],
-        "summary": "Download dataset and convert into weka arff format",
-        "description": "Download an external dataset and convert it into weka arff format.",
+        "summary": "Download dataset and convert into weka arff format.",
+        "description": "Download an external dataset and convert it into weka arff format. Save the dataset by POST request the content-type text/uri-list.",
         "operationId": "create",
         "consumes": [
           "multipart/form-data"
         ],
         "produces": [
-          "text/x-arff"
+          "text/x-arff",
+          "text/uri-list"
         ],
         "parameters": [
           {
@@ -1273,13 +1299,14 @@
           "dataset"
         ],
         "summary": "Filter an internal dataset with weka filter.",
-        "description": "Filter an internal dataset with weka filter. Remove attributes and normalize or standardize all numeric attributes of a dataset.",
+        "description": "Filter an internal dataset with weka filter. Remove attributes and normalize or standardize all numeric attributes of a dataset.Save the dataset by POST request the content-type text/uri-list.",
         "operationId": "filter",
         "consumes": [
           "multipart/form-data"
         ],
         "produces": [
-          "text/x-arff"
+          "text/x-arff",
+          "text/uri-list"
         ],
         "parameters": [
           {
@@ -1292,7 +1319,7 @@
           {
             "name": "idx_remove",
             "in": "formData",
-            "description": "Feature(s) to remove. ID or comma separated IDs of the attribute(s)(column(s)) to remove. (0 \u003d no attribute will be deleted)",
+            "description": "Feature(s) to remove. ID or comma separated IDs of the attribute(s)(column(s)) to remove. (0 = no attribute will be deleted)",
             "required": false,
             "type": "string",
             "default": "0"
@@ -1385,6 +1412,66 @@
             "name": "subjectid",
             "in": "header",
             "description": "Authorization token",
+            "required": false,
+            "type": "string"
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "OK"
+          },
+          "400": {
+            "description": "Bad Request"
+          },
+          "401": {
+            "description": "Unauthorized"
+          },
+          "403": {
+            "description": "Forbidden"
+          },
+          "404": {
+            "description": "Resource Not Found"
+          }
+        }
+      },
+      "post": {
+        "tags": [
+          "model"
+        ],
+        "summary": "Predict testdata with a model.",
+        "description": "Predict testdata with a model.",
+        "operationId": "modelPost",
+        "consumes": [
+          "multipart/form-data"
+        ],
+        "produces": [
+          "text/x-arff"
+        ],
+        "parameters": [
+          {
+            "name": "file",
+            "in": "formData",
+            "required": false,
+            "type": "file"
+          },
+          {
+            "name": "datasetID",
+            "in": "formData",
+            "description": "Dataset ID (to the arff representation of a dataset).",
+            "required": false,
+            "type": "string"
+          },
+          {
+            "name": "id",
+            "in": "path",
+            "description": "model ID",
+            "required": true,
+            "type": "string"
+          },
+          {
+            "name": "subjectid",
+            "in": "header",
+            "description": "authorization token",
             "required": false,
             "type": "string"
           }
