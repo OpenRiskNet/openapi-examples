@@ -1,0 +1,999 @@
+{
+  "openapi": "3.0.0",
+  "servers": [
+    {
+      "url": "https://api.in-silico.ch/"
+    }
+  ],
+  "info": {
+    "description": "REST API webservice for lazar and nano-lazar. \n*lazar* (lazy structure–activity relationships) is a modular framework for predictive toxicology. With activated Authentication & Authorization, subjectid authorization token are obligatory for designated services.\n",
+    "version": "1.1.0",
+    "title": "Lazar & Nano-Lazar REST Service",
+    "contact": {
+      "name": "in silico toxicology gmbh",
+      "email": "service@in-silico.ch",
+      "url": "https://in-silico.ch"
+    },
+    "license": {
+      "name": "GNU GENERAL PUBLIC LICENSE",
+      "url": "https://github.com/opentox/lazar-rest/blob/master/LICENSE"
+    }
+  },
+  "externalDocs": {
+    "description": "See also *lazar-rest* documentation on Github\n",
+    "url": "https://github.com/opentox/lazar-rest"
+  },
+  "paths": {
+    "/model": {
+      "get": {
+        "tags": [
+          "model"
+        ],
+        "description": "Get a list of all prediction models",
+        "parameters": [
+          {
+            "$ref": "#/components/parameters/subjectid"
+          }
+        ],
+        "responses": {
+          "200": {
+            "$ref": "#/components/responses/200"
+          },
+          "400": {
+            "$ref": "#/components/responses/400"
+          },
+          "401": {
+            "$ref": "#/components/responses/401"
+          },
+          "404": {
+            "$ref": "#/components/responses/404"
+          },
+          "500": {
+            "$ref": "#/components/responses/500"
+          }
+        }
+      }
+    },
+    "/model/{id}": {
+      "get": {
+        "tags": [
+          "model"
+        ],
+        "description": "Get model representation",
+        "parameters": [
+          {
+            "$ref": "#/components/parameters/id"
+          },
+          {
+            "$ref": "#/components/parameters/subjectid"
+          }
+        ],
+        "responses": {
+          "200": {
+            "$ref": "#/components/responses/200"
+          },
+          "400": {
+            "$ref": "#/components/responses/400"
+          },
+          "401": {
+            "$ref": "#/components/responses/401"
+          },
+          "403": {
+            "$ref": "#/components/responses/403"
+          },
+          "404": {
+            "$ref": "#/components/responses/404"
+          }
+        }
+      },
+      "post": {
+        "tags": [
+          "model"
+        ],
+        "description": "Predict a compound or a nanoparticle",
+        "parameters": [
+          {
+            "$ref": "#/components/parameters/id"
+          },
+          {
+            "$ref": "#/components/parameters/subjectid"
+          }
+        ],
+        "responses": {
+          "200": {
+            "$ref": "#/components/responses/200"
+          },
+          "400": {
+            "$ref": "#/components/responses/400"
+          },
+          "401": {
+            "$ref": "#/components/responses/401"
+          },
+          "403": {
+            "$ref": "#/components/responses/403"
+          },
+          "404": {
+            "$ref": "#/components/responses/404"
+          }
+        },
+        "requestBody": {
+          "content": {
+            "multipart/form-data": {
+              "schema": {
+                "type": "object",
+                "properties": {
+                  "identifier": {
+                    "description": "SMILES identifier or Nanoparticle URI or comma separated list of SMILES  identifiers or Nanoparticle URI",
+                    "type": "string"
+                  }
+                },
+                "required": [
+                  "identifier"
+                ]
+              }
+            }
+          }
+        }
+      }
+    },
+    "/report": {
+      "get": {
+        "tags": [
+          "report"
+        ],
+        "description": "Get a list of QMRF reports",
+        "parameters": [
+          {
+            "$ref": "#/components/parameters/subjectid"
+          }
+        ],
+        "responses": {
+          "200": {
+            "$ref": "#/components/responses/200"
+          },
+          "400": {
+            "$ref": "#/components/responses/400"
+          },
+          "401": {
+            "$ref": "#/components/responses/401"
+          },
+          "404": {
+            "$ref": "#/components/responses/404"
+          },
+          "500": {
+            "$ref": "#/components/responses/500"
+          }
+        }
+      }
+    },
+    "/report/{id}": {
+      "get": {
+        "tags": [
+          "report"
+        ],
+        "description": "Get QMRF for prediction model",
+        "parameters": [
+          {
+            "$ref": "#/components/parameters/id"
+          },
+          {
+            "$ref": "#/components/parameters/subjectid"
+          }
+        ],
+        "responses": {
+          "200": {
+            "$ref": "#/components/responses/200"
+          },
+          "400": {
+            "$ref": "#/components/responses/400"
+          },
+          "401": {
+            "$ref": "#/components/responses/401"
+          },
+          "403": {
+            "$ref": "#/components/responses/403"
+          },
+          "404": {
+            "$ref": "#/components/responses/404"
+          }
+        }
+      }
+    },
+    "/dataset": {
+      "get": {
+        "tags": [
+          "dataset"
+        ],
+        "description": "Get a list of all datasets",
+        "parameters": [
+          {
+            "$ref": "#/components/parameters/subjectid"
+          }
+        ],
+        "responses": {
+          "200": {
+            "$ref": "#/components/responses/200"
+          },
+          "400": {
+            "$ref": "#/components/responses/400"
+          },
+          "401": {
+            "$ref": "#/components/responses/401"
+          },
+          "404": {
+            "$ref": "#/components/responses/404"
+          },
+          "500": {
+            "$ref": "#/components/responses/500"
+          }
+        }
+      }
+    },
+    "/dataset/{id}": {
+      "get": {
+        "tags": [
+          "dataset"
+        ],
+        "description": "Get dataset representation",
+        "parameters": [
+          {
+            "$ref": "#/components/parameters/id"
+          },
+          {
+            "$ref": "#/components/parameters/subjectid"
+          }
+        ],
+        "responses": {
+          "200": {
+            "$ref": "#/components/responses/200"
+          },
+          "400": {
+            "$ref": "#/components/responses/400"
+          },
+          "401": {
+            "$ref": "#/components/responses/401"
+          },
+          "403": {
+            "$ref": "#/components/responses/403"
+          },
+          "404": {
+            "$ref": "#/components/responses/404"
+          },
+          "500": {
+            "$ref": "#/components/responses/500"
+          }
+        }
+      }
+    },
+    "/dataset/{id}/{attribute}": {
+      "get": {
+        "tags": [
+          "dataset"
+        ],
+        "description": "Get dataset representation",
+        "parameters": [
+          {
+            "name": "attribute",
+            "in": "path",
+            "description": "requested attribute",
+            "required": true,
+            "schema": {
+              "type": "string",
+              "enum": [
+                "compounds",
+                "nanoparticles",
+                "substances",
+                "features"
+              ]
+            }
+          },
+          {
+            "$ref": "#/components/parameters/id"
+          },
+          {
+            "$ref": "#/components/parameters/subjectid"
+          }
+        ],
+        "responses": {
+          "200": {
+            "$ref": "#/components/responses/200"
+          },
+          "400": {
+            "$ref": "#/components/responses/400"
+          },
+          "401": {
+            "$ref": "#/components/responses/401"
+          },
+          "403": {
+            "$ref": "#/components/responses/403"
+          },
+          "404": {
+            "$ref": "#/components/responses/404"
+          },
+          "500": {
+            "$ref": "#/components/responses/500"
+          }
+        }
+      }
+    },
+    "/substance": {
+      "get": {
+        "tags": [
+          "substance"
+        ],
+        "description": "Get a list of all substances",
+        "parameters": [
+          {
+            "$ref": "#/components/parameters/subjectid"
+          }
+        ],
+        "responses": {
+          "200": {
+            "$ref": "#/components/responses/200"
+          },
+          "400": {
+            "$ref": "#/components/responses/400"
+          },
+          "401": {
+            "$ref": "#/components/responses/401"
+          },
+          "404": {
+            "$ref": "#/components/responses/404"
+          },
+          "500": {
+            "$ref": "#/components/responses/500"
+          }
+        }
+      }
+    },
+    "/substance/{id}": {
+      "get": {
+        "tags": [
+          "substance"
+        ],
+        "description": "Get substance representation",
+        "parameters": [
+          {
+            "$ref": "#/components/parameters/id"
+          },
+          {
+            "$ref": "#/components/parameters/subjectid"
+          }
+        ],
+        "responses": {
+          "200": {
+            "$ref": "#/components/responses/200"
+          },
+          "400": {
+            "$ref": "#/components/responses/400"
+          },
+          "401": {
+            "$ref": "#/components/responses/401"
+          },
+          "403": {
+            "$ref": "#/components/responses/403"
+          },
+          "404": {
+            "$ref": "#/components/responses/404"
+          },
+          "500": {
+            "$ref": "#/components/responses/500"
+          }
+        }
+      }
+    },
+    "/nanoparticle": {
+      "get": {
+        "tags": [
+          "nanoparticle"
+        ],
+        "description": "Get a list of all nanoparticles",
+        "parameters": [
+          {
+            "$ref": "#/components/parameters/subjectid"
+          }
+        ],
+        "responses": {
+          "200": {
+            "$ref": "#/components/responses/200"
+          },
+          "400": {
+            "$ref": "#/components/responses/400"
+          },
+          "401": {
+            "$ref": "#/components/responses/401"
+          },
+          "404": {
+            "$ref": "#/components/responses/404"
+          },
+          "500": {
+            "$ref": "#/components/responses/500"
+          }
+        }
+      }
+    },
+    "/nanoparticle/{id}": {
+      "get": {
+        "tags": [
+          "nanoparticle"
+        ],
+        "description": "Get nanoparticle representation",
+        "parameters": [
+          {
+            "$ref": "#/components/parameters/id"
+          },
+          {
+            "$ref": "#/components/parameters/subjectid"
+          }
+        ],
+        "responses": {
+          "200": {
+            "$ref": "#/components/responses/200"
+          },
+          "400": {
+            "$ref": "#/components/responses/400"
+          },
+          "401": {
+            "$ref": "#/components/responses/401"
+          },
+          "403": {
+            "$ref": "#/components/responses/403"
+          },
+          "404": {
+            "$ref": "#/components/responses/404"
+          },
+          "500": {
+            "$ref": "#/components/responses/500"
+          }
+        }
+      }
+    },
+    "/feature": {
+      "get": {
+        "tags": [
+          "feature"
+        ],
+        "description": "Get a list of ids for all features",
+        "parameters": [
+          {
+            "$ref": "#/components/parameters/subjectid"
+          }
+        ],
+        "responses": {
+          "200": {
+            "$ref": "#/components/responses/200"
+          },
+          "400": {
+            "$ref": "#/components/responses/400"
+          },
+          "401": {
+            "$ref": "#/components/responses/401"
+          },
+          "404": {
+            "$ref": "#/components/responses/404"
+          },
+          "500": {
+            "$ref": "#/components/responses/500"
+          }
+        }
+      }
+    },
+    "/feature/{id}": {
+      "get": {
+        "tags": [
+          "feature"
+        ],
+        "description": "Get feature representation",
+        "parameters": [
+          {
+            "$ref": "#/components/parameters/id"
+          },
+          {
+            "$ref": "#/components/parameters/subjectid"
+          }
+        ],
+        "responses": {
+          "200": {
+            "$ref": "#/components/responses/200"
+          },
+          "400": {
+            "$ref": "#/components/responses/400"
+          },
+          "401": {
+            "$ref": "#/components/responses/401"
+          },
+          "403": {
+            "$ref": "#/components/responses/403"
+          },
+          "404": {
+            "$ref": "#/components/responses/404"
+          },
+          "500": {
+            "$ref": "#/components/responses/500"
+          }
+        }
+      }
+    },
+    "/validation": {
+      "get": {
+        "tags": [
+          "validation"
+        ],
+        "description": "Get a list of all validation types",
+        "parameters": [
+          {
+            "$ref": "#/components/parameters/subjectid"
+          }
+        ],
+        "responses": {
+          "200": {
+            "$ref": "#/components/responses/200"
+          },
+          "400": {
+            "$ref": "#/components/responses/400"
+          },
+          "401": {
+            "$ref": "#/components/responses/401"
+          },
+          "404": {
+            "$ref": "#/components/responses/404"
+          },
+          "500": {
+            "$ref": "#/components/responses/500"
+          }
+        }
+      }
+    },
+    "/validation/{validationtype}": {
+      "get": {
+        "tags": [
+          "validation"
+        ],
+        "description": "Get all validations of a validation type",
+        "parameters": [
+          {
+            "$ref": "#/components/parameters/valtype"
+          },
+          {
+            "$ref": "#/components/parameters/subjectid"
+          }
+        ],
+        "responses": {
+          "200": {
+            "$ref": "#/components/responses/200"
+          },
+          "400": {
+            "$ref": "#/components/responses/400"
+          },
+          "401": {
+            "$ref": "#/components/responses/401"
+          },
+          "403": {
+            "$ref": "#/components/responses/403"
+          },
+          "404": {
+            "$ref": "#/components/responses/404"
+          },
+          "500": {
+            "$ref": "#/components/responses/500"
+          }
+        }
+      }
+    },
+    "/validation/{validationtype}/{id}": {
+      "get": {
+        "tags": [
+          "validation"
+        ],
+        "description": "Get validation representation",
+        "parameters": [
+          {
+            "$ref": "#/components/parameters/valtype"
+          },
+          {
+            "$ref": "#/components/parameters/id"
+          },
+          {
+            "$ref": "#/components/parameters/subjectid"
+          }
+        ],
+        "responses": {
+          "200": {
+            "$ref": "#/components/responses/200"
+          },
+          "400": {
+            "$ref": "#/components/responses/400"
+          },
+          "401": {
+            "$ref": "#/components/responses/401"
+          },
+          "403": {
+            "$ref": "#/components/responses/403"
+          },
+          "404": {
+            "$ref": "#/components/responses/404"
+          },
+          "500": {
+            "$ref": "#/components/responses/500"
+          }
+        }
+      }
+    },
+    "/compound/descriptor": {
+      "get": {
+        "tags": [
+          "compound",
+          "descriptor"
+        ],
+        "description": "Get a list of all descriptors",
+        "parameters": [
+          {
+            "$ref": "#/components/parameters/subjectid"
+          }
+        ],
+        "responses": {
+          "200": {
+            "$ref": "#/components/responses/200"
+          },
+          "400": {
+            "$ref": "#/components/responses/400"
+          },
+          "401": {
+            "$ref": "#/components/responses/401"
+          },
+          "404": {
+            "$ref": "#/components/responses/404"
+          },
+          "500": {
+            "$ref": "#/components/responses/500"
+          }
+        }
+      },
+      "post": {
+        "tags": [
+          "compound",
+          "descriptor"
+        ],
+        "summary": "Descriptor calculation",
+        "description": "Calculate descriptors for a single compound as SMILES string \ncurl example: \n  curl -Lk -X POST -i  -H \"Accept:application/json\" -F \"identifier=O=C1NC(=O)NC=C1\" -F \"descriptor=Openbabel.MW,Openbabel.atoms\" https://api.in-silico.ch/compound/descriptor ",
+        "parameters": [
+          {
+            "$ref": "#/components/parameters/subjectid"
+          }
+        ],
+        "responses": {
+          "200": {
+            "$ref": "#/components/responses/200"
+          },
+          "400": {
+            "$ref": "#/components/responses/400"
+          },
+          "401": {
+            "$ref": "#/components/responses/401"
+          },
+          "404": {
+            "$ref": "#/components/responses/404"
+          },
+          "500": {
+            "$ref": "#/components/responses/500"
+          }
+        },
+        "requestBody": {
+          "content": {
+            "multipart/form-data": {
+              "schema": {
+                "type": "object",
+                "properties": {
+                  "identifier": {
+                    "description": "SMILES identifier",
+                    "type": "string"
+                  },
+                  "descriptor": {
+                    "description": "list of comma seperated descriptors",
+                    "type": "string"
+                  }
+                },
+                "required": [
+                  "identifier",
+                  "descriptor"
+                ]
+              }
+            }
+          }
+        }
+      }
+    },
+    "/compound/descriptor/{descriptor}": {
+      "get": {
+        "tags": [
+          "compound",
+          "descriptor"
+        ],
+        "description": "Get a list of a descriptors",
+        "parameters": [
+          {
+            "name": "descriptor",
+            "in": "path",
+            "description": "descriptor name or ID",
+            "required": true,
+            "schema": {
+              "type": "string"
+            }
+          },
+          {
+            "$ref": "#/components/parameters/subjectid"
+          }
+        ],
+        "responses": {
+          "200": {
+            "$ref": "#/components/responses/200"
+          },
+          "400": {
+            "$ref": "#/components/responses/400"
+          },
+          "401": {
+            "$ref": "#/components/responses/401"
+          },
+          "404": {
+            "$ref": "#/components/responses/404"
+          },
+          "500": {
+            "$ref": "#/components/responses/500"
+          }
+        }
+      }
+    },
+    "/compound/{InChI}": {
+      "get": {
+        "tags": [
+          "compound"
+        ],
+        "description": "Get compound representation",
+        "parameters": [
+          {
+            "$ref": "#/components/parameters/InChI"
+          },
+          {
+            "$ref": "#/components/parameters/subjectid"
+          }
+        ],
+        "responses": {
+          "200": {
+            "$ref": "#/components/responses/200"
+          },
+          "400": {
+            "$ref": "#/components/responses/400"
+          }
+        }
+      }
+    },
+    "/api/api.json": {
+      "get": {
+        "tags": [
+          "api"
+        ],
+        "description": "Get swagger api in JSON",
+        "responses": {
+          "200": {
+            "$ref": "#/components/responses/200"
+          },
+          "400": {
+            "$ref": "#/components/responses/400"
+          },
+          "500": {
+            "$ref": "#/components/responses/500"
+          }
+        }
+      }
+    },
+    "/aa/authenticate": {
+      "post": {
+        "tags": [
+          "authentication"
+        ],
+        "summary": "Get token",
+        "description": "Authentication against OpenSSO. Returns authentication token. Requires Username and Password.",
+        "operationId": "login",
+        "responses": {
+          "200": {
+            "$ref": "#/components/responses/200"
+          },
+          "400": {
+            "$ref": "#/components/responses/400"
+          },
+          "401": {
+            "$ref": "#/components/responses/401"
+          },
+          "500": {
+            "$ref": "#/components/responses/500"
+          }
+        },
+        "requestBody": {
+          "content": {
+            "multipart/form-data": {
+              "schema": {
+                "type": "object",
+                "properties": {
+                  "username": {
+                    "description": "username",
+                    "type": "string"
+                  },
+                  "password": {
+                    "description": "password",
+                    "type": "string",
+                    "format": "password"
+                  }
+                },
+                "required": [
+                  "username",
+                  "password"
+                ]
+              }
+            }
+          }
+        }
+      }
+    },
+    "/aa/logout": {
+      "post": {
+        "description": "Devalidates a token. Requires Subjectid.",
+        "summary": "Destroy token",
+        "operationId": "logout",
+        "tags": [
+          "authentication"
+        ],
+        "responses": {
+          "200": {
+            "$ref": "#/components/responses/200"
+          },
+          "400": {
+            "$ref": "#/components/responses/400"
+          },
+          "401": {
+            "$ref": "#/components/responses/401"
+          },
+          "500": {
+            "$ref": "#/components/responses/500"
+          }
+        },
+        "requestBody": {
+          "content": {
+            "multipart/form-data": {
+              "schema": {
+                "type": "object",
+                "properties": {
+                  "subjectid": {
+                    "description": "subjectid",
+                    "type": "string"
+                  }
+                },
+                "required": [
+                  "subjectid"
+                ]
+              }
+            }
+          }
+        }
+      }
+    }
+  },
+  "tags": [
+    {
+      "name": "api",
+      "description": "Swagger API representation in JSON"
+    },
+    {
+      "name": "algorithm",
+      "description": "Algorithm"
+    },
+    {
+      "name": "authentication",
+      "description": "minimal Authentication service"
+    },
+    {
+      "name": "compound",
+      "description": "Compound"
+    },
+    {
+      "name": "dataset",
+      "description": "Dataset"
+    },
+    {
+      "name": "descriptor",
+      "description": "Descriptor"
+    },
+    {
+      "name": "feature",
+      "description": "Feature"
+    },
+    {
+      "name": "model",
+      "description": "Lazar Model Service"
+    },
+    {
+      "name": "nanoparticle",
+      "description": "Nanoparticle"
+    },
+    {
+      "name": "report",
+      "description": "QMRF Reporting"
+    },
+    {
+      "name": "substance",
+      "description": "Substance"
+    },
+    {
+      "name": "validation",
+      "description": "Validation"
+    }
+  ],
+  "components": {
+    "parameters": {
+      "id": {
+        "name": "id",
+        "in": "path",
+        "description": "id",
+        "required": true,
+        "schema": {
+          "type": "string"
+        }
+      },
+      "InChI": {
+        "name": "InChI",
+        "in": "path",
+        "description": "InChI String",
+        "required": true,
+        "schema": {
+          "type": "string"
+        }
+      },
+      "valtype": {
+        "name": "validationtype",
+        "in": "path",
+        "description": "validation type",
+        "required": true,
+        "schema": {
+          "type": "string"
+        }
+      },
+      "subjectid": {
+        "in": "header",
+        "name": "subjectid",
+        "description": "authorization token",
+        "required": false,
+        "schema": {
+          "type": "string"
+        }
+      },
+      "subjectidRequired": {
+        "in": "header",
+        "name": "subjectid",
+        "description": "authorization token",
+        "required": true,
+        "schema": {
+          "type": "string"
+        }
+      }
+    },
+    "responses": {
+      "200": {
+        "description": "OK"
+      },
+      "400": {
+        "description": "Bad Request"
+      },
+      "401": {
+        "description": "Unauthorized"
+      },
+      "403": {
+        "description": "Forbidden"
+      },
+      "404": {
+        "description": "Resource Not Found"
+      },
+      "500": {
+        "description": "Server Error"
+      }
+    }
+  }
+}
