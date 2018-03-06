@@ -655,7 +655,7 @@
           "descriptor"
         ],
         "summary": "Descriptor calculation",
-        "description": "Calculate descriptors for a single compound as SMILES string \ncurl example: \n  curl -Lk -X POST -i  -H \"Accept:application/json\" -F \"identifier=O=C1NC(=O)NC=C1\" -F \"descriptor=Openbabel.MW,Openbabel.atoms\" https://api.in-silico.ch/compound/descriptor ",
+        "description": "Calculate descriptors for a single compound as SMILES string\n```\ncurl example:\ncurl -Lk -X POST -i  -H \"Accept:application/json\" -F \"identifier=O=C1NC(=O)NC=C1\" -F \"descriptor=Openbabel.MW,Openbabel.atoms\" https://api.in-silico.ch/compound/descriptor\n```\n",
         "parameters": [
           {
             "$ref": "#/components/parameters/subjectid"
