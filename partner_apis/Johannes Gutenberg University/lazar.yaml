@@ -25,11 +25,10 @@ externalDocs:
   url: 'https://github.com/opentox/lazar-rest'
 paths:
   /model:
-    x-orn-@id: "https://lazar.openrisknet.org/model"
-    x-orn-@type: ["x-orn:prediction", "x-orn:model"]
     get:
-      x-orn:returns:
-        x-orn-@id: "x-orn:ModelIDs"
+      x-orn-@type: x-orn:Model
+      x-orn:path: https://lazar.openrisknet.org/model
+      x-orn:method: Get
       tags:
         - model
       description: Get a list of all prediction models
@@ -48,8 +47,9 @@ paths:
           $ref: '#/components/responses/500'
   '/model/{id}':
     get:
-      x-orn:returns:
-        x-orn-@id: "x-orn:Model"
+      x-orn-@type: x-orn:Model
+      x-orn:path: https://lazar.openrisknet.org/model
+      x-orn:method: Get
       tags:
         - model
       description: Get model representation
@@ -68,10 +68,9 @@ paths:
         '404':
           $ref: '#/components/responses/404'
     post:
-      x-orn:expects:
-        x-orn-@type: "x-orn:Compound"
-      x-orn:returns:
-        x-orn-@id: "x-orn:Prediction"
+      x-orn-@type: x-orn:Prediction
+      x-orn:path: https://lazar.openrisknet.org/model
+      x-orn:method: Post
       tags:
         - model
       description: Predict a compound or a nanoparticle
@@ -96,11 +95,14 @@ paths:
         required: true
         content:
           application/x-www-form-urlencoded:
+            x-orn:schema: "application/x-www-form-urlencoded"
             schema:
               $ref: '#/components/schemas/postmodel'
   /report:
     get:
-      x-orn-@id: "https://lazar.openrisknet.org/Report"
+      x-orn-@type: x-orn:Report
+      x-orn:path: https://lazar.openrisknet.org/report
+      x-orn:method: Get
       tags:
         - report
       description: Get a list of QMRF reports
@@ -119,6 +121,9 @@ paths:
           $ref: '#/components/responses/500'
   '/report/{id}':
     get:
+      x-orn-@type: x-orn:Report
+      x-orn:path: https://lazar.openrisknet.org/report/{id}
+      x-orn:method: Get
       tags:
         - report
       description: Get QMRF for prediction model
@@ -138,7 +143,9 @@ paths:
           $ref: '#/components/responses/404'
   /dataset:
     get:
-      x-orn-@id: "https://lazar.openrisknet.org/dataset"
+      x-orn-@type: x-orn:Dataset
+      x-orn:path: https://lazar.openrisknet.org/dataset
+      x-orn:method: Get
       tags:
         - dataset
       description: Get a list of all datasets
@@ -157,6 +164,9 @@ paths:
           $ref: '#/components/responses/500'
   '/dataset/{id}':
     get:
+      x-orn-@type: x-orn:Dataset
+      x-orn:path: https://lazar.openrisknet.org/dataset/{id}
+      x-orn:method: Get
       tags:
         - dataset
       description: Get dataset representation
@@ -178,6 +188,9 @@ paths:
           $ref: '#/components/responses/500'
   '/dataset/{id}/{attribute}':
     get:
+      x-orn-@type: x-orn:Dataset
+      x-orn:path: https://lazar.openrisknet.org/dataset/{id}/{attribute}
+      x-orn:method: Get
       tags:
         - dataset
       description: Get dataset representation
@@ -210,7 +223,9 @@ paths:
           $ref: '#/components/responses/500'
   /substance:
     get:
-      x-orn-@id: "https://lazar.openrisknet.org/substance"
+      x-orn-@type: x-orn:Substance
+      x-orn:path: https://lazar.openrisknet.org/substance
+      x-orn:method: Get
       tags:
         - substance
       description: Get a list of all substances
@@ -229,6 +244,9 @@ paths:
           $ref: '#/components/responses/500'
   '/substance/{id}':
     get:
+      x-orn-@type: x-orn:Substance
+      x-orn:path: https://lazar.openrisknet.org/substance/{id}
+      x-orn:method: Get
       tags:
         - substance
       description: Get substance representation
@@ -250,7 +268,9 @@ paths:
           $ref: '#/components/responses/500'
   /nanoparticle:
     get:
-      x-orn-@id: "https://lazar.openrisknet.org/nanoparticle"
+      x-orn-@type: x-orn:Nanoparticle
+      x-orn:path: https://lazar.openrisknet.org/nanoparticle
+      x-orn:method: Get
       tags:
         - nanoparticle
       description: Get a list of all nanoparticles
@@ -269,6 +289,9 @@ paths:
           $ref: '#/components/responses/500'
   '/nanoparticle/{id}':
     get:
+      x-orn-@type: x-orn:Nanoparticle
+      x-orn:path: https://lazar.openrisknet.org/nanoparticle/{id}
+      x-orn:method: Get
       tags:
         - nanoparticle
       description: Get nanoparticle representation
@@ -290,7 +313,9 @@ paths:
           $ref: '#/components/responses/500'
   /feature:
     get:
-      x-orn-@id: "https://lazar.openrisknet.org/feature"
+      x-orn-@type: x-orn:Feature
+      x-orn:path: https://lazar.openrisknet.org/feature
+      x-orn:method: Get
       tags:
         - feature
       description: Get a list of ids for all features
@@ -309,6 +334,9 @@ paths:
           $ref: '#/components/responses/500'
   '/feature/{id}':
     get:
+      x-orn-@type: x-orn:Feature
+      x-orn:path: https://lazar.openrisknet.org/feature/{id}
+      x-orn:method: Get
       tags:
         - feature
       description: Get feature representation
@@ -330,7 +358,9 @@ paths:
           $ref: '#/components/responses/500'
   /validation:
     get:
-      x-orn-@id: "https://lazar.openrisknet.org/validation"
+      x-orn-@type: x-orn:Validation
+      x-orn:path: https://lazar.openrisknet.org/validation
+      x-orn:method: Get
       tags:
         - validation
       description: Get a list of all validation types
@@ -349,6 +379,9 @@ paths:
           $ref: '#/components/responses/500'
   '/validation/{validationtype}':
     get:
+      x-orn-@type: x-orn:Validation
+      x-orn:path: https://lazar.openrisknet.org/validation/{validationtype}
+      x-orn:method: Get
       tags:
         - validation
       description: Get all validations of a validation type
@@ -370,6 +403,9 @@ paths:
           $ref: '#/components/responses/500'
   '/validation/{validationtype}/{id}':
     get:
+      x-orn-@type: x-orn:Validation
+      x-orn:path: https://lazar.openrisknet.org/validation/{validationtype}/{id}
+      x-orn:method: Get
       tags:
         - validation
       description: Get validation representation
@@ -392,7 +428,9 @@ paths:
           $ref: '#/components/responses/500'
   /compound/descriptor:
     get:
-      x-orn-@id: "https://lazar.openrisknet.org/compound/descriptor"
+      x-orn-@type: x-orn:Descriptor
+      x-orn:path: https://lazar.openrisknet.org/compound/descriptor
+      x-orn:method: Get
       tags:
         - compound
         - descriptor
@@ -411,10 +449,9 @@ paths:
         '500':
           $ref: '#/components/responses/500'
     post:
-      x-orn-@id: "https://lazar.openrisknet.org/compound/descriptor"
-      x-orn:expects: ["x-orn:Compound", "x-orn:Descriptor"]
-      x-orn:returns:
-        x-orn-@id: "x-orn:Prediction"
+      x-orn-@type: x-orn:Prediction
+      x-orn:path: https://lazar.openrisknet.org/compound/descriptor
+      x-orn:method: Post
       tags:
         - compound
         - descriptor
@@ -438,10 +475,14 @@ paths:
         required: true
         content:
           application/x-www-form-urlencoded:
+            x-orn:schema: "application/x-www-form-urlencoded"
             schema:
               $ref: '#/components/schemas/postdescriptor'
   '/compound/descriptor/{descriptor}':
     get:
+      x-orn-@type: x-orn:Descriptor
+      x-orn:path: https://lazar.openrisknet.org/compound/descriptor/{descriptor}
+      x-orn:method: Get
       tags:
         - compound
         - descriptor
@@ -467,6 +508,9 @@ paths:
           $ref: '#/components/responses/500'
   '/compound/{InChI}':
     get:
+      x-orn-@type: x-orn:Compound
+      x-orn:path: https://lazar.openrisknet.org/compound/{InChI}
+      x-orn:method: Get
       tags:
         - compound
       description: Get compound representation
@@ -492,7 +536,9 @@ paths:
           $ref: '#/components/responses/500'
   /aa/authenticate:
     post:
-      x-orn-@id: "https://lazar.openrisknet.org/aa/authenticate"
+      x-orn-@type: x-orn:Authentication
+      x-orn:path: https://lazar.openrisknet.org/aa/authenticate
+      x-orn:method: Post
       tags:
         - authentication
       summary: Get token
@@ -514,11 +560,14 @@ paths:
         required: true
         content:
           application/x-www-form-urlencoded:
+            x-orn:schema: "application/x-www-form-urlencoded"
             schema:
               $ref: '#/components/schemas/postauth'
   /aa/logout:
     post:
-      x-orn-@id: "https://lazar.openrisknet.org/aa/logout"
+      x-orn-@type: x-orn:Authentication
+      x-orn:path: https://lazar.openrisknet.org/aa/logout
+      x-orn:method: Post
       description: Devalidates a token. Requires Subjectid.
       summary: Destroy token
       operationId: logout
@@ -537,6 +586,7 @@ paths:
         required: true
         content:
           application/x-www-form-urlencoded:
+            x-orn:schema: "application/x-www-form-urlencoded"
             schema:
               $ref: '#/components/schemas/postlogout'
 tags:
@@ -570,29 +620,35 @@ components:
       type: object
       properties:
         identifier:
+          x-orn:property: "identifier"
           type: string
           example: "O=C1NC(=O)NC=C1"
     postdescriptor:
       type: object
       properties:
         identifier:
+          x-orn:property: "identifier"
           type: string
           example: "O=C1NC(=O)NC=C1"
         descriptor:
+          x-orn:property: "descriptor"
           type: string
           example: "Openbabel.MW,Openbabel.atoms"
     postauth:
       type: object
       properties:
         username:
+          x-orn:property: "username"
           type: string
         password:
+          x-orn:property: "password"
           type: string
           format: password
     postlogout:
       type: object
       properties:
         subjectid:
+          x-orn:property: "subjectid"
           type: string
   parameters:
     id:
@@ -635,6 +691,7 @@ components:
       description: OK
       content:
         application/json:
+          x-orn:returns: "application/json"
           schema:
             type: object
     '400':
