@@ -4,7 +4,7 @@
   "x-orn-@type": "x-orn:Service",
   "servers": [
     {
-      "url": "https://dg-lazar.prod.in-silico.ch/"
+      "url": "https://dg-lazar.prod.openrisknet.org/"
     }
   ],
   "info": {
