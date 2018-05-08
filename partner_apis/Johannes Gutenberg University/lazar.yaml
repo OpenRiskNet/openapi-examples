@@ -2,7 +2,7 @@ openapi: 3.0.0
 x-orn-@id: 'https://lazar.openrisknet.org'
 x-orn-@type: 'x-orn:Service'
 servers:
-  - url: 'https://api.in-silico.ch/'
+  - url: 'https://dg-lazar.prod.openrisknet.org/'
 info:
   description: |
     REST API webservice for lazar and nano-lazar. 
