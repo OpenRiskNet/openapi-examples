@@ -1,8 +1,8 @@
 openapi: 3.0.0
-x-orn-@id: 'https://lazar.openrisknet.org'
+x-orn-@id: 'https://lazar.prod.openrisknet.org'
 x-orn-@type: 'x-orn:Service'
 servers:
-  - url: 'https://dg-lazar.prod.openrisknet.org/'
+  - url: 'https://lazar.prod.openrisknet.org/'
 info:
   description: |
     REST API webservice for lazar and nano-lazar. 
@@ -27,7 +27,7 @@ paths:
   /model:
     get:
       x-orn-@type: x-orn:Model
-      x-orn:path: https://lazar.openrisknet.org/model
+      x-orn:path: https://lazar.prod.openrisknet.org/model
       x-orn:method: Get
       tags:
         - model
@@ -48,7 +48,7 @@ paths:
   '/model/{id}':
     get:
       x-orn-@type: x-orn:Model
-      x-orn:path: https://lazar.openrisknet.org/model
+      x-orn:path: https://lazar.prod.openrisknet.org/model
       x-orn:method: Get
       tags:
         - model
@@ -69,7 +69,7 @@ paths:
           $ref: '#/components/responses/404'
     post:
       x-orn-@type: x-orn:Prediction
-      x-orn:path: https://lazar.openrisknet.org/model/{id}
+      x-orn:path: https://lazar.prod.openrisknet.org/model/{id}
       x-orn:method: Post
       tags:
         - model
@@ -101,7 +101,7 @@ paths:
   /report:
     get:
       x-orn-@type: x-orn:Report
-      x-orn:path: https://lazar.openrisknet.org/report
+      x-orn:path: https://lazar.prod.openrisknet.org/report
       x-orn:method: Get
       tags:
         - report
@@ -122,7 +122,7 @@ paths:
   '/report/{id}':
     get:
       x-orn-@type: x-orn:Report
-      x-orn:path: https://lazar.openrisknet.org/report/{id}
+      x-orn:path: https://lazar.prod.openrisknet.org/report/{id}
       x-orn:method: Get
       tags:
         - report
@@ -144,7 +144,7 @@ paths:
   /dataset:
     get:
       x-orn-@type: x-orn:Dataset
-      x-orn:path: https://lazar.openrisknet.org/dataset
+      x-orn:path: https://lazar.prod.openrisknet.org/dataset
       x-orn:method: Get
       tags:
         - dataset
@@ -165,7 +165,7 @@ paths:
   '/dataset/{id}':
     get:
       x-orn-@type: x-orn:Dataset
-      x-orn:path: https://lazar.openrisknet.org/dataset/{id}
+      x-orn:path: https://lazar.prod.openrisknet.org/dataset/{id}
       x-orn:method: Get
       tags:
         - dataset
@@ -189,7 +189,7 @@ paths:
   '/dataset/{id}/{attribute}':
     get:
       x-orn-@type: x-orn:Dataset
-      x-orn:path: https://lazar.openrisknet.org/dataset/{id}/{attribute}
+      x-orn:path: https://lazar.prod.openrisknet.org/dataset/{id}/{attribute}
       x-orn:method: Get
       tags:
         - dataset
@@ -224,7 +224,7 @@ paths:
   /substance:
     get:
       x-orn-@type: x-orn:Substance
-      x-orn:path: https://lazar.openrisknet.org/substance
+      x-orn:path: https://lazar.prod.openrisknet.org/substance
       x-orn:method: Get
       tags:
         - substance
@@ -245,7 +245,7 @@ paths:
   '/substance/{id}':
     get:
       x-orn-@type: x-orn:Substance
-      x-orn:path: https://lazar.openrisknet.org/substance/{id}
+      x-orn:path: https://lazar.prod.openrisknet.org/substance/{id}
       x-orn:method: Get
       tags:
         - substance
@@ -269,7 +269,7 @@ paths:
   /nanoparticle:
     get:
       x-orn-@type: x-orn:Nanoparticle
-      x-orn:path: https://lazar.openrisknet.org/nanoparticle
+      x-orn:path: https://lazar.prod.openrisknet.org/nanoparticle
       x-orn:method: Get
       tags:
         - nanoparticle
@@ -290,7 +290,7 @@ paths:
   '/nanoparticle/{id}':
     get:
       x-orn-@type: x-orn:Nanoparticle
-      x-orn:path: https://lazar.openrisknet.org/nanoparticle/{id}
+      x-orn:path: https://lazar.prod.openrisknet.org/nanoparticle/{id}
       x-orn:method: Get
       tags:
         - nanoparticle
@@ -314,7 +314,7 @@ paths:
   /feature:
     get:
       x-orn-@type: x-orn:Feature
-      x-orn:path: https://lazar.openrisknet.org/feature
+      x-orn:path: https://lazar.prod.openrisknet.org/feature
       x-orn:method: Get
       tags:
         - feature
@@ -335,7 +335,7 @@ paths:
   '/feature/{id}':
     get:
       x-orn-@type: x-orn:Feature
-      x-orn:path: https://lazar.openrisknet.org/feature/{id}
+      x-orn:path: https://lazar.prod.openrisknet.org/feature/{id}
       x-orn:method: Get
       tags:
         - feature
@@ -359,7 +359,7 @@ paths:
   /validation:
     get:
       x-orn-@type: x-orn:Validation
-      x-orn:path: https://lazar.openrisknet.org/validation
+      x-orn:path: https://lazar.prod.openrisknet.org/validation
       x-orn:method: Get
       tags:
         - validation
@@ -380,7 +380,7 @@ paths:
   '/validation/{validationtype}':
     get:
       x-orn-@type: x-orn:Validation
-      x-orn:path: https://lazar.openrisknet.org/validation/{validationtype}
+      x-orn:path: https://lazar.prod.openrisknet.org/validation/{validationtype}
       x-orn:method: Get
       tags:
         - validation
@@ -404,7 +404,7 @@ paths:
   '/validation/{validationtype}/{id}':
     get:
       x-orn-@type: x-orn:Validation
-      x-orn:path: https://lazar.openrisknet.org/validation/{validationtype}/{id}
+      x-orn:path: https://lazar.prod.openrisknet.org/validation/{validationtype}/{id}
       x-orn:method: Get
       tags:
         - validation
@@ -429,7 +429,7 @@ paths:
   /compound/descriptor:
     get:
       x-orn-@type: x-orn:Descriptor
-      x-orn:path: https://lazar.openrisknet.org/compound/descriptor
+      x-orn:path: https://lazar.prod.openrisknet.org/compound/descriptor
       x-orn:method: Get
       tags:
         - compound
@@ -450,7 +450,7 @@ paths:
           $ref: '#/components/responses/500'
     post:
       x-orn-@type: x-orn:Prediction
-      x-orn:path: https://lazar.openrisknet.org/compound/descriptor
+      x-orn:path: https://lazar.prod.openrisknet.org/compound/descriptor
       x-orn:method: Post
       tags:
         - compound
@@ -481,7 +481,7 @@ paths:
   '/compound/descriptor/{descriptor}':
     get:
       x-orn-@type: x-orn:Descriptor
-      x-orn:path: https://lazar.openrisknet.org/compound/descriptor/{descriptor}
+      x-orn:path: https://lazar.prod.openrisknet.org/compound/descriptor/{descriptor}
       x-orn:method: Get
       tags:
         - compound
@@ -509,7 +509,7 @@ paths:
   '/compound/{InChI}':
     get:
       x-orn-@type: x-orn:Compound
-      x-orn:path: https://lazar.openrisknet.org/compound/{InChI}
+      x-orn:path: https://lazar.prod.openrisknet.org/compound/{InChI}
       x-orn:method: Get
       tags:
         - compound
@@ -582,7 +582,7 @@ paths:
   /aa/authenticate:
     post:
       x-orn-@type: x-orn:Authentication
-      x-orn:path: https://lazar.openrisknet.org/aa/authenticate
+      x-orn:path: https://lazar.prod.openrisknet.org/aa/authenticate
       x-orn:method: Post
       tags:
         - authentication
@@ -611,7 +611,7 @@ paths:
   /aa/logout:
     post:
       x-orn-@type: x-orn:Authentication
-      x-orn:path: https://lazar.openrisknet.org/aa/logout
+      x-orn:path: https://lazar.prod.openrisknet.org/aa/logout
       x-orn:method: Post
       description: Devalidates a token. Requires Subjectid.
       summary: Destroy token
