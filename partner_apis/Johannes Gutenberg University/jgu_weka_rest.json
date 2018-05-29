@@ -1,10 +1,9 @@
 {
   "swagger": "2.0",
   "info": {
-    "description": "RESTful API Webservice to WEKA Machine Learning Algorithms.\nThis webservice provides an [OpenRiskNet](https://openrisknet.org/) compliant REST interface to machine learning algorithms from the WEKA Java Library.\nThis application is developed by the [Institute of Computer Science](http://www.datamining.informatik.uni-mainz.de) at the Johannes Gutenberg University Mainz.\nOpenRiskNet is funded by the European Commission GA 731075. WEKA is developed by the [Machine Learning Group](https://www.cs.waikato.ac.nz/ml/index.html) at the University of Waikato.",
-    "version": "0.0.4",
+    "description": "RESTful API Webservice to WEKA Machine Learning Algorithms.\nThis webservice provides an [OpenRiskNet](https://openrisknet.org/) compliant REST interface to machine learning algorithms from the WEKA Java Library.\nThis application is developed by the [Institute of Computer Science](http://www.datamining.informatik.uni-mainz.de) at the Johannes Gutenberg University Mainz.\nOpenRiskNet is funded by the European Commission GA 731075. WEKA is developed by the [Machine Learning Group](https://www.cs.waikato.ac.nz/ml/index.html) at the University of Waikato.\nSee [Documentation](https://jguwekarest.github.io/jguwekarest/), [Issue Tracker](https://github.com/jguwekarest/jguwekarest/issues) and [Code](https://github.com/jguwekarest/jguwekarest) at Github.",
+    "version": "0.1.0",
     "title": "JGU WEKA REST Service",
-    "termsOfService": "",
     "contact": {
       "email": "rautenberg@uni-mainz.de"
     },
@@ -21,14 +20,15 @@
       "@vocab": "http://schema.org/"
     }
   },
-  "x-orn-@type": "x-orn:Service",
-  "x-orn-@id": "weka rest service",
   "tags": [
     {
       "name": "algorithm"
     },
     {
       "name": "api"
+    },
+    {
+      "name": "meta algorithm"
     },
     {
       "name": "authorization"
@@ -41,6 +41,9 @@
     },
     {
       "name": "model"
+    },
+    {
+      "name": "task"
     }
   ],
   "paths": {
@@ -53,20 +56,10 @@
         "description": "Get a list of all algorithms.",
         "operationId": "algorithmGet",
         "produces": [
-          "text/uri-list"
+          "text/uri-list",
+          "application/json"
         ],
         "parameters": [
-          {
-            "name": "Accept",
-            "in": "header",
-            "description": "requested Content-Type",
-            "required": true,
-            "type": "string",
-            "enum": [
-              "text/uri-list",
-              "application/json"
-            ]
-          },
           {
             "name": "subjectid",
             "in": "header",
@@ -126,14 +119,14 @@
           "algorithm"
         ],
         "summary": "REST interface to the WEKA BayesNet classifier.",
-        "description": "REST interface to the WEKA BayesNet classifier. Save the model by POST request the content-type text/uri-list.",
+        "description": "REST interface to the WEKA BayesNet classifier. Returns a Task URI.",
         "operationId": "algorithmBayesNetPost",
         "consumes": [
           "multipart/form-data"
         ],
         "produces": [
-          "text/x-arff",
-          "text/uri-list"
+          "text/uri-list",
+          "application/json"
         ],
         "parameters": [
           {
@@ -143,7 +136,7 @@
             "type": "file"
           },
           {
-            "name": "datasetURI",
+            "name": "datasetUri",
             "in": "formData",
             "description": "Dataset URI or local dataset ID (to the arff representation of a dataset).",
             "required": false,
@@ -214,10 +207,31 @@
           {
             "name": "searchParams",
             "in": "formData",
-            "description": "The parameter for algorithmn to be used for searching in the compound. Are set automatically (WEKA's standard parameter setting).",
+            "description": "The parameter for algorithmn to be used for searching in the compound. Are set automatically (WEKA\u0027s standard parameter setting).",
             "required": false,
             "type": "string",
             "default": "-P 1 -S BAYES"
+          },
+          {
+            "name": "validation",
+            "in": "formData",
+            "description": "Validation to use.",
+            "required": false,
+            "type": "string",
+            "default": "CrossValidation",
+            "enum": [
+              "CrossValidation",
+              "Hold-Out"
+            ]
+          },
+          {
+            "name": "validationNum",
+            "in": "formData",
+            "description": "Num of Crossvalidations or Percentage Split %.",
+            "required": false,
+            "type": "number",
+            "default": 10.0,
+            "format": "double"
           },
           {
             "name": "subjectid",
@@ -242,7 +256,17 @@
           },
           "404": {
             "description": "Resource Not Found"
+          },
+          "500": {
+            "description": "Internal Server Error"
           }
+        },
+        "x-orn-@type": "x-orn:Algorithm",
+        "x-orn:expects": {
+          "x-orn-@id": "x-orn:Dataset"
+        },
+        "x-orn:returns": {
+          "x-orn-@id": "x-orn:Task"
         },
         "x-algorithm": {
           "http://purl.obolibrary.org/obo/IAO_0000064": "http://purl.enanomapper.org/onto/ENM_8000001",
@@ -251,23 +275,25 @@
           "http://purl.enanomapper.org/onto/ENM_8000001": "http://purl.enanomapper.org/onto/ENM_8000002",
           "BayesNet": "https://en.wikipedia.org/wiki/Bayesian_network",
           "http://purl.enanomapper.org/onto/ENM_8000005": "http://purl.enanomapper.org/onto/ENM_8000014"
-        }
+        },
+        "x-orn-@id": "/algorithm/BayesNet"
       }
     },
-    "/algorithm/linearRegression": {
+    "/algorithm/BayesNet/adaboost": {
       "post": {
         "tags": [
-          "algorithm"
+          "algorithm",
+          "meta algorithm"
         ],
-        "summary": "REST interface to the WEKA linear regression classifier.",
-        "description": "REST interface to the WEKA linear regression classifier. Save the model by POST request the content-type text/uri-list.",
-        "operationId": "algorithmLRPost",
+        "summary": "REST interface to the WEKA AdaBoost M1 with BayesNet classifier.",
+        "description": "REST interface to the WEKA AdaBoost M1 with BayesNet classifier. Returns a Task URI.",
+        "operationId": "algorithmBayesNetAdaBoostPost",
         "consumes": [
           "multipart/form-data"
         ],
         "produces": [
-          "text/x-arff",
-          "text/uri-list"
+          "text/uri-list",
+          "application/json"
         ],
         "parameters": [
           {
@@ -277,7 +303,861 @@
             "type": "file"
           },
           {
-            "name": "datasetURI",
+            "name": "datasetUri",
+            "in": "formData",
+            "description": "Dataset URI or local dataset ID (to the arff representation of a dataset).",
+            "required": false,
+            "type": "string"
+          },
+          {
+            "name": "batchSize",
+            "in": "formData",
+            "description": "Adaboost M1: The preferred number of instances to process if batch prediction is being performed. More or fewer instances may be provided, but this gives implementations a chance to specify a preferred batch size.",
+            "required": false,
+            "type": "integer",
+            "default": 100,
+            "format": "int32"
+          },
+          {
+            "name": "numIterations",
+            "in": "formData",
+            "description": "Adaboost M1: The number of iterations to be performed.",
+            "required": false,
+            "type": "integer",
+            "default": 10,
+            "format": "int32"
+          },
+          {
+            "name": "useResampling",
+            "in": "formData",
+            "description": "Adaboost M1: Whether resampling is used instead of reweighting.",
+            "required": false,
+            "type": "integer",
+            "default": 0,
+            "format": "int32",
+            "enum": [
+              0,
+              1
+            ]
+          },
+          {
+            "name": "weightThreshold",
+            "in": "formData",
+            "description": "Adaboost M1: Weight threshold for weight pruning.",
+            "required": false,
+            "type": "integer",
+            "default": 100,
+            "format": "int32"
+          },
+          {
+            "name": "estimator",
+            "in": "formData",
+            "description": "The estimator algorithm to be used in the compound. Must be SimpleEstimator,  MultiNomialBMAEstimator, BMAEstimator or BayesNetEstimator (Default: SimpleEstimator).",
+            "required": false,
+            "type": "string",
+            "default": "SimpleEstimator",
+            "enum": [
+              "SimpleEstimator",
+              "MultiNomialBMAEstimator",
+              "BMAEstimator",
+              "BayesNetEstimator"
+            ]
+          },
+          {
+            "name": "estimatorParams",
+            "in": "formData",
+            "description": "The parameter for the estimator to be used in the compound.  Must be of type double (Default: 0.5).",
+            "required": false,
+            "type": "number",
+            "default": 0.5
+          },
+          {
+            "name": "useADTree",
+            "in": "formData",
+            "description": "Whether to use ADTrees for searching (using will increase the speed of the search, but will also raise the memory use (Default: 0).",
+            "required": false,
+            "type": "integer",
+            "default": 0,
+            "format": "int32",
+            "enum": [
+              0,
+              1
+            ]
+          },
+          {
+            "name": "searchAlgorithm",
+            "in": "formData",
+            "description": "The algorithmn to be used for searching in the compound. Must be local.K2, local.GeneticSearch, local.HillClimber, local.LAGDHillClimber, local.RepeatedHillClimber, local.SimulatedAnnealing, local.TabuSearch, local.TAN, global.K2, global.GeneticSearch, global.HillClimber, global.RepeatedHillClimber, global.SimulatedAnnealing, global.TabuSearch, global.TAN, ci.CISearchAlgorithm, ci.ICSSearchAlgorithm (Default: local.K2).",
+            "required": false,
+            "type": "string",
+            "default": "local.K2",
+            "enum": [
+              "local.K2",
+              "local.GeneticSearch",
+              "local.HillClimber",
+              "local.LAGDHillClimber",
+              "local.RepeatedHillClimber",
+              "local.SimulatedAnnealing",
+              "local.TabuSearch",
+              "local.TAN",
+              "global.K2",
+              "global.GeneticSearch",
+              "global.HillClimber",
+              "global.RepeatedHillClimber",
+              "global.SimulatedAnnealing",
+              "global.TabuSearch",
+              "global.TAN",
+              "ci.CISearchAlgorithm",
+              "ci.ICSSearchAlgorithm"
+            ]
+          },
+          {
+            "name": "searchParams",
+            "in": "formData",
+            "description": "The parameter for algorithmn to be used for searching in the compound. Are set automatically (WEKA\u0027s standard parameter setting).",
+            "required": false,
+            "type": "string",
+            "default": "-P 1 -S BAYES"
+          },
+          {
+            "name": "validation",
+            "in": "formData",
+            "description": "Validation to use.",
+            "required": false,
+            "type": "string",
+            "default": "CrossValidation",
+            "enum": [
+              "CrossValidation",
+              "Hold-Out"
+            ]
+          },
+          {
+            "name": "validationNum",
+            "in": "formData",
+            "description": "Num of Crossvalidations or Percentage Split %.",
+            "required": false,
+            "type": "number",
+            "default": 10.0,
+            "format": "double"
+          },
+          {
+            "name": "subjectid",
+            "in": "header",
+            "description": "authorization token",
+            "required": false,
+            "type": "string"
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "OK"
+          },
+          "400": {
+            "description": "Bad Request"
+          },
+          "401": {
+            "description": "Unauthorized"
+          },
+          "403": {
+            "description": "Forbidden"
+          },
+          "404": {
+            "description": "Resource Not Found"
+          },
+          "500": {
+            "description": "Internal Server Error"
+          }
+        },
+        "x-orn-@type": "x-orn:Algorithm",
+        "x-orn:expects": {
+          "x-orn-@id": "x-orn:Dataset"
+        },
+        "x-orn:returns": {
+          "x-orn-@id": "x-orn:Task"
+        },
+        "x-algorithm": {
+          "http://purl.obolibrary.org/obo/IAO_0000064": "http://purl.enanomapper.org/onto/ENM_8000001",
+          "http://purl.enanomapper.org/onto/ENM_8000002": "http://purl.enanomapper.org/onto/ENM_8000005",
+          "http://purl.enanomapper.org/onto/ENM_8000014": "https://en.wikipedia.org/wiki/Bayesian_network",
+          "http://purl.enanomapper.org/onto/ENM_8000001": "http://purl.enanomapper.org/onto/ENM_8000002",
+          "BayesNet": "https://en.wikipedia.org/wiki/Bayesian_network",
+          "http://purl.enanomapper.org/onto/ENM_8000005": "http://purl.enanomapper.org/onto/ENM_8000014"
+        },
+        "x-orn-@id": "/algorithm/BayesNet/adaboost"
+      }
+    },
+    "/algorithm/BayesNet/bagging": {
+      "post": {
+        "tags": [
+          "algorithm",
+          "meta algorithm"
+        ],
+        "summary": "REST interface to the WEKA Bagging with BayesNet classifier.",
+        "description": "REST interface to the WEKA Bagging with BayesNet BayesNet classifier. Returns a Task URI.",
+        "operationId": "algorithmBayesNetBaggingPost",
+        "consumes": [
+          "multipart/form-data"
+        ],
+        "produces": [
+          "text/uri-list",
+          "application/json"
+        ],
+        "parameters": [
+          {
+            "name": "file",
+            "in": "formData",
+            "required": false,
+            "type": "file"
+          },
+          {
+            "name": "datasetUri",
+            "in": "formData",
+            "description": "Dataset URI or local dataset ID (to the arff representation of a dataset).",
+            "required": false,
+            "type": "string"
+          },
+          {
+            "name": "bagSizePercent",
+            "in": "formData",
+            "description": "Bagging: Size of each bag, as a percentage of the training set size.",
+            "required": false,
+            "type": "integer",
+            "default": 100,
+            "format": "int32"
+          },
+          {
+            "name": "batchSize",
+            "in": "formData",
+            "description": "Bagging: The preferred number of instances to process if batch prediction is being performed. More or fewer instances may be provided, but this gives implementations a chance to specify a preferred batch size.",
+            "required": false,
+            "type": "integer",
+            "default": 100,
+            "format": "int32"
+          },
+          {
+            "name": "numIterations",
+            "in": "formData",
+            "description": "Bagging: The number of iterations to be performed.",
+            "required": false,
+            "type": "integer",
+            "default": 10,
+            "format": "int32"
+          },
+          {
+            "name": "estimator",
+            "in": "formData",
+            "description": "The estimator algorithm to be used in the compound. Must be SimpleEstimator,  MultiNomialBMAEstimator, BMAEstimator or BayesNetEstimator (Default: SimpleEstimator).",
+            "required": false,
+            "type": "string",
+            "default": "SimpleEstimator",
+            "enum": [
+              "SimpleEstimator",
+              "MultiNomialBMAEstimator",
+              "BMAEstimator",
+              "BayesNetEstimator"
+            ]
+          },
+          {
+            "name": "estimatorParams",
+            "in": "formData",
+            "description": "The parameter for the estimator to be used in the compound.  Must be of type double (Default: 0.5).",
+            "required": false,
+            "type": "number",
+            "default": 0.5
+          },
+          {
+            "name": "useADTree",
+            "in": "formData",
+            "description": "Whether to use ADTrees for searching (using will increase the speed of the search, but will also raise the memory use (Default: 0).",
+            "required": false,
+            "type": "integer",
+            "default": 0,
+            "format": "int32",
+            "enum": [
+              0,
+              1
+            ]
+          },
+          {
+            "name": "searchAlgorithm",
+            "in": "formData",
+            "description": "The algorithmn to be used for searching in the compound. Must be local.K2, local.GeneticSearch, local.HillClimber, local.LAGDHillClimber, local.RepeatedHillClimber, local.SimulatedAnnealing, local.TabuSearch, local.TAN, global.K2, global.GeneticSearch, global.HillClimber, global.RepeatedHillClimber, global.SimulatedAnnealing, global.TabuSearch, global.TAN, ci.CISearchAlgorithm, ci.ICSSearchAlgorithm (Default: local.K2).",
+            "required": false,
+            "type": "string",
+            "default": "local.K2",
+            "enum": [
+              "local.K2",
+              "local.GeneticSearch",
+              "local.HillClimber",
+              "local.LAGDHillClimber",
+              "local.RepeatedHillClimber",
+              "local.SimulatedAnnealing",
+              "local.TabuSearch",
+              "local.TAN",
+              "global.K2",
+              "global.GeneticSearch",
+              "global.HillClimber",
+              "global.RepeatedHillClimber",
+              "global.SimulatedAnnealing",
+              "global.TabuSearch",
+              "global.TAN",
+              "ci.CISearchAlgorithm",
+              "ci.ICSSearchAlgorithm"
+            ]
+          },
+          {
+            "name": "searchParams",
+            "in": "formData",
+            "description": "The parameter for algorithmn to be used for searching in the compound. Are set automatically (WEKA\u0027s standard parameter setting).",
+            "required": false,
+            "type": "string",
+            "default": "-P 1 -S BAYES"
+          },
+          {
+            "name": "validation",
+            "in": "formData",
+            "description": "Validation to use.",
+            "required": false,
+            "type": "string",
+            "default": "CrossValidation",
+            "enum": [
+              "CrossValidation",
+              "Hold-Out"
+            ]
+          },
+          {
+            "name": "validationNum",
+            "in": "formData",
+            "description": "Num of Crossvalidations or Percentage Split %.",
+            "required": false,
+            "type": "number",
+            "default": 10.0,
+            "format": "double"
+          },
+          {
+            "name": "subjectid",
+            "in": "header",
+            "description": "authorization token",
+            "required": false,
+            "type": "string"
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "OK"
+          },
+          "400": {
+            "description": "Bad Request"
+          },
+          "401": {
+            "description": "Unauthorized"
+          },
+          "403": {
+            "description": "Forbidden"
+          },
+          "404": {
+            "description": "Resource Not Found"
+          },
+          "500": {
+            "description": "Internal Server Error"
+          }
+        },
+        "x-orn-@type": "x-orn:Algorithm",
+        "x-orn:expects": {
+          "x-orn-@id": "x-orn:Dataset"
+        },
+        "x-orn:returns": {
+          "x-orn-@id": "x-orn:Task"
+        },
+        "x-algorithm": {
+          "http://purl.obolibrary.org/obo/IAO_0000064": "http://purl.enanomapper.org/onto/ENM_8000001",
+          "http://purl.enanomapper.org/onto/ENM_8000002": "http://purl.enanomapper.org/onto/ENM_8000005",
+          "http://purl.enanomapper.org/onto/ENM_8000014": "https://en.wikipedia.org/wiki/Bayesian_network",
+          "http://purl.enanomapper.org/onto/ENM_8000001": "http://purl.enanomapper.org/onto/ENM_8000002",
+          "BayesNet": "https://en.wikipedia.org/wiki/Bayesian_network",
+          "http://purl.enanomapper.org/onto/ENM_8000005": "http://purl.enanomapper.org/onto/ENM_8000014"
+        },
+        "x-orn-@id": "/algorithm/BayesNet/adaboost"
+      }
+    },
+    "/algorithm/NaiveBayes": {
+      "post": {
+        "tags": [
+          "algorithm"
+        ],
+        "summary": "REST interface to the WEKA NaiveBayes classifier.",
+        "description": "REST interface to the WEKA NaiveBayes classifier. Returns a Task URI.",
+        "operationId": "algorithmNaiveBayesPost",
+        "consumes": [
+          "multipart/form-data"
+        ],
+        "produces": [
+          "text/uri-list",
+          "application/json"
+        ],
+        "parameters": [
+          {
+            "name": "file",
+            "in": "formData",
+            "required": false,
+            "type": "file"
+          },
+          {
+            "name": "datasetUri",
+            "in": "formData",
+            "description": "Dataset URI or local dataset ID (to the arff representation of a dataset).",
+            "required": false,
+            "type": "string"
+          },
+          {
+            "name": "batchSize",
+            "in": "formData",
+            "description": "The preferred number of instances to process if batch prediction is being performed. More or fewer instances may be provided, but this gives implementations a chance to specify a preferred batch size.",
+            "required": false,
+            "type": "integer",
+            "default": 100,
+            "format": "int32"
+          },
+          {
+            "name": "useKernelEstimator",
+            "in": "formData",
+            "description": "Use a kernel estimator for numeric attributes rather than a normal distribution. (Default: 0).",
+            "required": false,
+            "type": "string",
+            "default": "0",
+            "enum": [
+              "0",
+              "1"
+            ]
+          },
+          {
+            "name": "useSupervisedDiscretization",
+            "in": "formData",
+            "description": "Use supervised discretization to convert numeric attributes to nominal ones. (Default: 0). Works not together with useKernelEstimator\u003d1.",
+            "required": false,
+            "type": "number",
+            "default": 0.0,
+            "enum": [
+              0.0,
+              1.0
+            ]
+          },
+          {
+            "name": "validation",
+            "in": "formData",
+            "description": "Validation to use.",
+            "required": false,
+            "type": "string",
+            "default": "CrossValidation",
+            "enum": [
+              "CrossValidation",
+              "Hold-Out"
+            ]
+          },
+          {
+            "name": "validationNum",
+            "in": "formData",
+            "description": "Num of Crossvalidations or Percentage Split %.",
+            "required": false,
+            "type": "number",
+            "default": 10.0,
+            "format": "double"
+          },
+          {
+            "name": "subjectid",
+            "in": "header",
+            "description": "authorization token",
+            "required": false,
+            "type": "string"
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "OK"
+          },
+          "400": {
+            "description": "Bad Request"
+          },
+          "401": {
+            "description": "Unauthorized"
+          },
+          "403": {
+            "description": "Forbidden"
+          },
+          "404": {
+            "description": "Resource Not Found"
+          },
+          "500": {
+            "description": "Internal Server Error"
+          }
+        },
+        "x-orn-@type": "x-orn:Algorithm",
+        "x-orn:expects": {
+          "x-orn-@id": "x-orn:Dataset"
+        },
+        "x-orn:returns": {
+          "x-orn-@id": "x-orn:Task"
+        },
+        "x-algorithm": {
+          "http://purl.obolibrary.org/obo/IAO_0000064": "http://purl.enanomapper.org/onto/ENM_8000001",
+          "http://purl.enanomapper.org/onto/ENM_8000002": "http://purl.enanomapper.org/onto/ENM_8000005",
+          "http://purl.enanomapper.org/onto/ENM_8000014": "https://en.wikipedia.org/wiki/Bayesian_network",
+          "http://purl.enanomapper.org/onto/ENM_8000001": "http://purl.enanomapper.org/onto/ENM_8000002",
+          "BayesNet": "https://en.wikipedia.org/wiki/Bayesian_network",
+          "http://purl.enanomapper.org/onto/ENM_8000005": "http://purl.enanomapper.org/onto/ENM_8000014"
+        },
+        "x-orn-@id": "/algorithm/BayesNet"
+      }
+    },
+    "/algorithm/NaiveBayes/adaboost": {
+      "post": {
+        "tags": [
+          "algorithm"
+        ],
+        "summary": "REST interface to the WEKA  AdaBoost M1 with NaiveBayes classifier.",
+        "description": "REST interface to the WEKA  AdaBoost M1 with NaiveBayes classifier. Returns a Task URI.",
+        "operationId": "algorithmNaiveBayesAdaBoostPost",
+        "consumes": [
+          "multipart/form-data"
+        ],
+        "produces": [
+          "text/uri-list",
+          "application/json"
+        ],
+        "parameters": [
+          {
+            "name": "file",
+            "in": "formData",
+            "required": false,
+            "type": "file"
+          },
+          {
+            "name": "datasetUri",
+            "in": "formData",
+            "description": "Dataset URI or local dataset ID (to the arff representation of a dataset).",
+            "required": false,
+            "type": "string"
+          },
+          {
+            "name": "batchSize",
+            "in": "formData",
+            "description": "Adaboost M1: The preferred number of instances to process if batch prediction is being performed. More or fewer instances may be provided, but this gives implementations a chance to specify a preferred batch size.",
+            "required": false,
+            "type": "integer",
+            "default": 100,
+            "format": "int32"
+          },
+          {
+            "name": "numIterations",
+            "in": "formData",
+            "description": "Adaboost M1: The number of iterations to be performed.",
+            "required": false,
+            "type": "integer",
+            "default": 10,
+            "format": "int32"
+          },
+          {
+            "name": "useResampling",
+            "in": "formData",
+            "description": "Adaboost M1: Whether resampling is used instead of reweighting.",
+            "required": false,
+            "type": "integer",
+            "default": 0,
+            "format": "int32",
+            "enum": [
+              0,
+              1
+            ]
+          },
+          {
+            "name": "weightThreshold",
+            "in": "formData",
+            "description": "Adaboost M1: Weight threshold for weight pruning.",
+            "required": false,
+            "type": "integer",
+            "default": 100,
+            "format": "int32"
+          },
+          {
+            "name": "batchSize",
+            "in": "formData",
+            "description": "The preferred number of instances to process if batch prediction is being performed. More or fewer instances may be provided, but this gives implementations a chance to specify a preferred batch size.",
+            "required": false,
+            "type": "integer",
+            "default": 100,
+            "format": "int32"
+          },
+          {
+            "name": "useKernelEstimator",
+            "in": "formData",
+            "description": "Use a kernel estimator for numeric attributes rather than a normal distribution. (Default: 0).",
+            "required": false,
+            "type": "string",
+            "default": "0",
+            "enum": [
+              "0",
+              "1"
+            ]
+          },
+          {
+            "name": "useSupervisedDiscretization",
+            "in": "formData",
+            "description": "Use supervised discretization to convert numeric attributes to nominal ones. (Default: 0). Works not together with useKernelEstimator\u003d1.",
+            "required": false,
+            "type": "number",
+            "default": 0.0,
+            "enum": [
+              0.0,
+              1.0
+            ]
+          },
+          {
+            "name": "validation",
+            "in": "formData",
+            "description": "Validation to use.",
+            "required": false,
+            "type": "string",
+            "default": "CrossValidation",
+            "enum": [
+              "CrossValidation",
+              "Hold-Out"
+            ]
+          },
+          {
+            "name": "validationNum",
+            "in": "formData",
+            "description": "Num of Crossvalidations or Percentage Split %.",
+            "required": false,
+            "type": "number",
+            "default": 10.0,
+            "format": "double"
+          },
+          {
+            "name": "subjectid",
+            "in": "header",
+            "description": "authorization token",
+            "required": false,
+            "type": "string"
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "OK"
+          },
+          "400": {
+            "description": "Bad Request"
+          },
+          "401": {
+            "description": "Unauthorized"
+          },
+          "403": {
+            "description": "Forbidden"
+          },
+          "404": {
+            "description": "Resource Not Found"
+          },
+          "500": {
+            "description": "Internal Server Error"
+          }
+        },
+        "x-orn-@type": "x-orn:Algorithm",
+        "x-orn:expects": {
+          "x-orn-@id": "x-orn:Dataset"
+        },
+        "x-orn:returns": {
+          "x-orn-@id": "x-orn:Task"
+        },
+        "x-algorithm": {
+          "http://purl.obolibrary.org/obo/IAO_0000064": "http://purl.enanomapper.org/onto/ENM_8000001",
+          "http://purl.enanomapper.org/onto/ENM_8000002": "http://purl.enanomapper.org/onto/ENM_8000005",
+          "http://purl.enanomapper.org/onto/ENM_8000014": "https://en.wikipedia.org/wiki/Bayesian_network",
+          "http://purl.enanomapper.org/onto/ENM_8000001": "http://purl.enanomapper.org/onto/ENM_8000002",
+          "BayesNet": "https://en.wikipedia.org/wiki/Bayesian_network",
+          "http://purl.enanomapper.org/onto/ENM_8000005": "http://purl.enanomapper.org/onto/ENM_8000014"
+        },
+        "x-orn-@id": "/algorithm/BayesNet"
+      }
+    },
+    "/algorithm/NaiveBayes/bagging": {
+      "post": {
+        "tags": [
+          "algorithm"
+        ],
+        "summary": "REST interface to the WEKA Bagging with NaiveBayes classifier.",
+        "description": "REST interface to the WEKA Bagging with NaiveBayes classifier. Returns a Task URI.",
+        "operationId": "algorithmNaiveBayesBaggingPost",
+        "consumes": [
+          "multipart/form-data"
+        ],
+        "produces": [
+          "text/uri-list",
+          "application/json"
+        ],
+        "parameters": [
+          {
+            "name": "file",
+            "in": "formData",
+            "required": false,
+            "type": "file"
+          },
+          {
+            "name": "datasetUri",
+            "in": "formData",
+            "description": "Dataset URI or local dataset ID (to the arff representation of a dataset).",
+            "required": false,
+            "type": "string"
+          },
+          {
+            "name": "bagSizePercent",
+            "in": "formData",
+            "description": "Bagging: Size of each bag, as a percentage of the training set size.",
+            "required": false,
+            "type": "integer",
+            "default": 100,
+            "format": "int32"
+          },
+          {
+            "name": "batchSize",
+            "in": "formData",
+            "description": "Bagging: The preferred number of instances to process if batch prediction is being performed. More or fewer instances may be provided, but this gives implementations a chance to specify a preferred batch size.",
+            "required": false,
+            "type": "integer",
+            "default": 100,
+            "format": "int32"
+          },
+          {
+            "name": "numIterations",
+            "in": "formData",
+            "description": "Bagging: The number of iterations to be performed.",
+            "required": false,
+            "type": "integer",
+            "default": 10,
+            "format": "int32"
+          },
+          {
+            "name": "batchSize",
+            "in": "formData",
+            "description": "The preferred number of instances to process if batch prediction is being performed. More or fewer instances may be provided, but this gives implementations a chance to specify a preferred batch size.",
+            "required": false,
+            "type": "integer",
+            "default": 100,
+            "format": "int32"
+          },
+          {
+            "name": "useKernelEstimator",
+            "in": "formData",
+            "description": "Use a kernel estimator for numeric attributes rather than a normal distribution. (Default: 0).",
+            "required": false,
+            "type": "string",
+            "default": "0",
+            "enum": [
+              "0",
+              "1"
+            ]
+          },
+          {
+            "name": "useSupervisedDiscretization",
+            "in": "formData",
+            "description": "Use supervised discretization to convert numeric attributes to nominal ones. (Default: 0). Works not together with useKernelEstimator\u003d1.",
+            "required": false,
+            "type": "number",
+            "default": 0.0,
+            "enum": [
+              0.0,
+              1.0
+            ]
+          },
+          {
+            "name": "validation",
+            "in": "formData",
+            "description": "Validation to use.",
+            "required": false,
+            "type": "string",
+            "default": "CrossValidation",
+            "enum": [
+              "CrossValidation",
+              "Hold-Out"
+            ]
+          },
+          {
+            "name": "validationNum",
+            "in": "formData",
+            "description": "Num of Crossvalidations or Percentage Split %.",
+            "required": false,
+            "type": "number",
+            "default": 10.0,
+            "format": "double"
+          },
+          {
+            "name": "subjectid",
+            "in": "header",
+            "description": "authorization token",
+            "required": false,
+            "type": "string"
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "OK"
+          },
+          "400": {
+            "description": "Bad Request"
+          },
+          "401": {
+            "description": "Unauthorized"
+          },
+          "403": {
+            "description": "Forbidden"
+          },
+          "404": {
+            "description": "Resource Not Found"
+          },
+          "500": {
+            "description": "Internal Server Error"
+          }
+        },
+        "x-orn-@type": "x-orn:Algorithm",
+        "x-orn:expects": {
+          "x-orn-@id": "x-orn:Dataset"
+        },
+        "x-orn:returns": {
+          "x-orn-@id": "x-orn:Task"
+        },
+        "x-algorithm": {
+          "http://purl.obolibrary.org/obo/IAO_0000064": "http://purl.enanomapper.org/onto/ENM_8000001",
+          "http://purl.enanomapper.org/onto/ENM_8000002": "http://purl.enanomapper.org/onto/ENM_8000005",
+          "http://purl.enanomapper.org/onto/ENM_8000014": "https://en.wikipedia.org/wiki/Bayesian_network",
+          "http://purl.enanomapper.org/onto/ENM_8000001": "http://purl.enanomapper.org/onto/ENM_8000002",
+          "BayesNet": "https://en.wikipedia.org/wiki/Bayesian_network",
+          "http://purl.enanomapper.org/onto/ENM_8000005": "http://purl.enanomapper.org/onto/ENM_8000014"
+        },
+        "x-orn-@id": "/algorithm/BayesNet"
+      }
+    },
+    "/algorithm/linearRegression": {
+      "post": {
+        "tags": [
+          "algorithm"
+        ],
+        "summary": "REST interface to the WEKA linear regression classifier.",
+        "description": "REST interface to the WEKA linear regression classifier. Returns a Task URI.",
+        "operationId": "algorithmLRPost",
+        "consumes": [
+          "multipart/form-data"
+        ],
+        "produces": [
+          "text/uri-list",
+          "application/json"
+        ],
+        "parameters": [
+          {
+            "name": "file",
+            "in": "formData",
+            "required": false,
+            "type": "file"
+          },
+          {
+            "name": "datasetUri",
             "in": "formData",
             "description": "Dataset URI or local dataset ID (to the arff representation of a dataset).",
             "required": false,
@@ -286,7 +1166,7 @@
           {
             "name": "attributeSelectionMethod",
             "in": "formData",
-            "description": "Attribute selection method to be used (Default M5 method).Available methods are: no attribute selection(Value:1), attribute selection using M5's method (Value:0) and a greedy selection using the Akaike information metric(Value:2). One of 0,1,2 (Default: 0).",
+            "description": "Attribute selection method to be used (Default M5 method).Available methods are: no attribute selection(Value:1), attribute selection using M5\u0027s method (Value:0) and a greedy selection using the Akaike information metric(Value:2). One of 0,1,2 (Default: 0).",
             "required": false,
             "type": "integer",
             "default": 0,
@@ -316,7 +1196,28 @@
             "description": "The ridge parameter (Default: 1.0E-8).",
             "required": false,
             "type": "number",
-            "default": 1e-8
+            "default": 1.0E-8
+          },
+          {
+            "name": "validation",
+            "in": "formData",
+            "description": "Validation to use.",
+            "required": false,
+            "type": "string",
+            "default": "CrossValidation",
+            "enum": [
+              "CrossValidation",
+              "Hold-Out"
+            ]
+          },
+          {
+            "name": "validationNum",
+            "in": "formData",
+            "description": "Num of Crossvalidations or Percentage Split %.",
+            "required": false,
+            "type": "number",
+            "default": 10.0,
+            "format": "double"
           },
           {
             "name": "subjectid",
@@ -341,11 +1242,22 @@
           },
           "404": {
             "description": "Resource Not Found"
+          },
+          "500": {
+            "description": "Internal Server Error"
           }
+        },
+        "x-orn-@type": "x-orn:Algorithm",
+        "x-orn:expects": {
+          "x-orn-@id": "x-orn:Dataset"
+        },
+        "x-orn:returns": {
+          "x-orn-@id": "x-orn:Task"
         },
         "x-algorithm": {
           "Linear Regression": "https://en.wikipedia.org/wiki/Linear_regression"
-        }
+        },
+        "x-orn-@id": "/algorithm/linearRegression"
       }
     },
     "/algorithm/libsvm": {
@@ -354,14 +1266,14 @@
           "algorithm"
         ],
         "summary": "REST interface to the WEKA support vector machine wrapper library classifier.",
-        "description": "REST interface to the WEKA support vector machine wrapper library classifier.Save the model by POST request the content-type text/uri-list.",
+        "description": "REST interface to the WEKA support vector machine wrapper library classifier.Returns a Task URI.",
         "operationId": "algorithmLibSVMPost",
         "consumes": [
           "multipart/form-data"
         ],
         "produces": [
-          "text/x-arff",
-          "text/uri-list"
+          "text/uri-list",
+          "application/json"
         ],
         "parameters": [
           {
@@ -371,7 +1283,7 @@
             "type": "file"
           },
           {
-            "name": "datasetURI",
+            "name": "datasetUri",
             "in": "formData",
             "description": "Dataset URI or local dataset ID (to the arff representation of a dataset).",
             "required": false,
@@ -399,7 +1311,7 @@
             "description": "coef0 -- The coefficient to use. (Default: 0).",
             "required": false,
             "type": "number",
-            "default": 0,
+            "default": 0.0,
             "format": "float"
           },
           {
@@ -408,7 +1320,7 @@
             "description": "cost -- The cost parameter C for C-SVC, epsilon-SVR and nu-SVR. (Default: 1.0).",
             "required": false,
             "type": "number",
-            "default": 1,
+            "default": 1.0,
             "format": "float"
           },
           {
@@ -434,12 +1346,12 @@
             "description": "gamma -- The gamma to use, if 0 then 1/max_index is used. (Default: 0.0).",
             "required": false,
             "type": "number",
-            "default": 0
+            "default": 0.0
           },
           {
             "name": "kernelType",
             "in": "formData",
-            "description": "kernelType -- The type of kernel to use.\n 0: linear:u'*v \n 1: polynomial: (gamma*u'*v + coef0)^degree \n 2: radial basis function: exp(-gamma*|u-v|^2) \n 3: sigmoid: tanh()gamma*u'*v + coef0) \n (Default: 2).",
+            "description": "kernelType -- The type of kernel to use.\n 0: linear:u\u0027*v \n 1: polynomial: (gamma*u\u0027*v + coef0)^degree \n 2: radial basis function: exp(-gamma*|u-v|^2) \n 3: sigmoid: tanh()gamma*u\u0027*v + coef0) \n (Default: 2).",
             "required": false,
             "type": "integer",
             "default": 2,
@@ -499,6 +1411,27 @@
             "type": "string"
           },
           {
+            "name": "validation",
+            "in": "formData",
+            "description": "Validation to use.",
+            "required": false,
+            "type": "string",
+            "default": "CrossValidation",
+            "enum": [
+              "CrossValidation",
+              "Hold-Out"
+            ]
+          },
+          {
+            "name": "validationNum",
+            "in": "formData",
+            "description": "Num of Crossvalidations or Percentage Split %.",
+            "required": false,
+            "type": "number",
+            "default": 10.0,
+            "format": "double"
+          },
+          {
             "name": "subjectid",
             "in": "header",
             "description": "authorization token",
@@ -521,27 +1454,38 @@
           },
           "404": {
             "description": "Resource Not Found"
+          },
+          "500": {
+            "description": "Internal Server Error"
           }
+        },
+        "x-orn-@type": "x-orn:Algorithm",
+        "x-orn:expects": {
+          "x-orn-@id": "x-orn:Dataset"
+        },
+        "x-orn:returns": {
+          "x-orn-@id": "x-orn:Task"
         },
         "x-algorithm": {
           "support vector machine": "https://en.wikipedia.org/wiki/Support_vector_machine"
-        }
+        },
+        "x-orn-@id": "/algorithm/libsvm"
       }
     },
-    "/algorithm/kNNclassification": {
+    "/algorithm/logistic": {
       "post": {
         "tags": [
           "algorithm"
         ],
-        "summary": "REST interface to the WEKA K-nearest neighbours classifier.",
-        "description": "REST interface to the WEKA K-nearest neighbours classifier. Save the model by POST request the content-type text/uri-list.",
-        "operationId": "algorithmKNNclassificationPost",
+        "summary": "REST interface to the WEKA logistic classifier.",
+        "description": "REST interface to the WEKA logistic classifier. Logistic class for building and using a multinomial logistic regression model with a ridge estimator. Returns a Task URI.",
+        "operationId": "algorithmLogisticPost",
         "consumes": [
           "multipart/form-data"
         ],
         "produces": [
-          "text/x-arff",
-          "text/uri-list"
+          "text/uri-list",
+          "application/json"
         ],
         "parameters": [
           {
@@ -551,7 +1495,322 @@
             "type": "file"
           },
           {
-            "name": "datasetURI",
+            "name": "datasetUri",
+            "in": "formData",
+            "description": "Dataset URI or local dataset ID (to the arff representation of a dataset).",
+            "required": false,
+            "type": "string"
+          },
+          {
+            "name": "ridge",
+            "in": "formData",
+            "description": "Set the Ridge value in the log-likelihood.",
+            "required": false,
+            "type": "number"
+          },
+          {
+            "name": "useConjugateGradientDescent",
+            "in": "formData",
+            "description": "Use conjugate gradient descent rather than BFGS updates; faster for problems with many parameters.",
+            "required": false,
+            "type": "boolean"
+          },
+          {
+            "name": "maxIts",
+            "in": "formData",
+            "description": "Maximum number of iterations to perform.",
+            "required": false,
+            "type": "integer",
+            "format": "int32"
+          },
+          {
+            "name": "validation",
+            "in": "formData",
+            "description": "Validation to use.",
+            "required": false,
+            "type": "string",
+            "default": "CrossValidation",
+            "enum": [
+              "CrossValidation",
+              "Hold-Out"
+            ]
+          },
+          {
+            "name": "validationNum",
+            "in": "formData",
+            "description": "Num of Crossvalidations or Percentage Split %.",
+            "required": false,
+            "type": "number",
+            "default": 10.0,
+            "format": "double"
+          },
+          {
+            "name": "subjectid",
+            "in": "header",
+            "description": "authorization token",
+            "required": false,
+            "type": "string"
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "OK"
+          },
+          "400": {
+            "description": "Bad Request"
+          },
+          "401": {
+            "description": "Unauthorized"
+          },
+          "403": {
+            "description": "Forbidden"
+          },
+          "404": {
+            "description": "Resource Not Found"
+          },
+          "500": {
+            "description": "Internal Server Error"
+          }
+        },
+        "x-orn-@type": "x-orn:Algorithm",
+        "x-orn:expects": {
+          "x-orn-@id": "x-orn:Dataset"
+        },
+        "x-orn:returns": {
+          "x-orn-@id": "x-orn:Task"
+        },
+        "x-algorithm": {
+          "support vector machine": "https://en.wikipedia.org/wiki/Multinomial_logistic_regression"
+        },
+        "x-orn-@id": "/algorithm/logistic"
+      }
+    },
+    "/algorithm/generic": {
+      "get": {
+        "tags": [
+          "algorithm"
+        ],
+        "summary": "Generic REST interface to WEKA classifiers.",
+        "description": "Generic REST interface to WEKA classifiers. Select a classifier and list options for the classifier. Returns a Task URI.",
+        "operationId": "algorithmGenericGet",
+        "consumes": [
+          "multipart/form-data"
+        ],
+        "produces": [
+          "text/plain"
+        ],
+        "parameters": [
+          {
+            "name": "classifierName",
+            "in": "header",
+            "description": "List Options for classifier.",
+            "required": false,
+            "type": "string",
+            "enum": [
+              "BayesNet",
+              "DecisionStump",
+              "GaussianProcesses",
+              "J48",
+              "IBk",
+              "LibSVM",
+              "LinearRegression",
+              "Logistic",
+              "M5P",
+              "M5Rules",
+              "MultilayerPerceptron",
+              "NaiveBayes",
+              "RandomForest",
+              "SMO",
+              "SMOreg",
+              "ZeroR",
+              "AdaBoost",
+              "Bagging"
+            ]
+          },
+          {
+            "name": "subjectid",
+            "in": "header",
+            "description": "authorization token",
+            "required": false,
+            "type": "string"
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "OK"
+          },
+          "400": {
+            "description": "Bad Request"
+          },
+          "401": {
+            "description": "Unauthorized"
+          },
+          "403": {
+            "description": "Forbidden"
+          },
+          "404": {
+            "description": "Resource Not Found"
+          },
+          "500": {
+            "description": "Internal Server Error"
+          }
+        },
+        "x-orn-@type": "x-orn:Algorithm",
+        "x-orn:expects": {
+          "x-orn-@id": "x-orn:Dataset"
+        },
+        "x-orn:returns": {
+          "x-orn-@id": "x-orn:Task"
+        },
+        "x-orn-@id": "/algorithm/generic"
+      },
+      "post": {
+        "tags": [
+          "algorithm"
+        ],
+        "summary": "Generic REST interface to WEKA classifiers.",
+        "description": "Generic REST interface to WEKA classifiers. Select a classifier and add parameter string as shown in WEKA Explorer. Returns a Task URI.",
+        "operationId": "algorithmGenericPost",
+        "consumes": [
+          "multipart/form-data"
+        ],
+        "produces": [
+          "text/uri-list",
+          "application/json"
+        ],
+        "parameters": [
+          {
+            "name": "file",
+            "in": "formData",
+            "required": false,
+            "type": "file"
+          },
+          {
+            "name": "datasetUri",
+            "in": "formData",
+            "description": "Dataset URI or local dataset ID (to the arff representation of a dataset).",
+            "required": false,
+            "type": "string"
+          },
+          {
+            "name": "classifierString",
+            "in": "formData",
+            "description": "Classifier to use.",
+            "required": false,
+            "type": "string",
+            "enum": [
+              "BayesNet",
+              "DecisionStump",
+              "GaussianProcesses",
+              "J48",
+              "IBk",
+              "LibSVM",
+              "LinearRegression",
+              "Logistic",
+              "M5P",
+              "M5Rules",
+              "MultilayerPerceptron",
+              "NaiveBayes",
+              "RandomForest",
+              "SMO",
+              "SMOreg",
+              "ZeroR",
+              "AdaBoost",
+              "Bagging"
+            ]
+          },
+          {
+            "name": "paramString",
+            "in": "formData",
+            "description": "Parameter String. As shown as in WEKA Explorer classifierer line",
+            "required": false,
+            "type": "string",
+            "x-example": "for SMO: -C 1.0 -L 0.001 -P 1.0E-12 -N 0 -V -1 -W 1 -K \"weka.classifiers.functions.supportVector.PolyKernel -E 1.0 -C 250007\" -calibrator \"weka.classifiers.functions.Logistic -R 1.0E-8 -M -1 -num-decimal-places 4\""
+          },
+          {
+            "name": "validation",
+            "in": "formData",
+            "description": "Validation to use.",
+            "required": false,
+            "type": "string",
+            "default": "CrossValidation",
+            "enum": [
+              "CrossValidation",
+              "Hold-Out"
+            ]
+          },
+          {
+            "name": "validationNum",
+            "in": "formData",
+            "description": "Num of Crossvalidations or Percentage Split %.",
+            "required": false,
+            "type": "number",
+            "default": 10.0,
+            "format": "double"
+          },
+          {
+            "name": "subjectid",
+            "in": "header",
+            "description": "authorization token",
+            "required": false,
+            "type": "string"
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "OK"
+          },
+          "400": {
+            "description": "Bad Request"
+          },
+          "401": {
+            "description": "Unauthorized"
+          },
+          "403": {
+            "description": "Forbidden"
+          },
+          "404": {
+            "description": "Resource Not Found"
+          },
+          "500": {
+            "description": "Internal Server Error"
+          }
+        },
+        "x-orn-@type": "x-orn:Algorithm",
+        "x-orn-method": "Post",
+        "x-orn:expects": {
+          "x-orn-@id": "x-orn:Dataset"
+        },
+        "x-orn:returns": {
+          "x-orn-@id": "x-orn:Task"
+        },
+        "x-orn-@id": "/algorithm/generic"
+      }
+    },
+    "/algorithm/IBk": {
+      "post": {
+        "tags": [
+          "algorithm"
+        ],
+        "summary": "REST interface to the WEKA K-nearest neighbours classifier.",
+        "description": "REST interface to the WEKA K-nearest neighbours classifier. Returns a Task URI.",
+        "operationId": "algorithmIBkPost",
+        "consumes": [
+          "multipart/form-data"
+        ],
+        "produces": [
+          "text/uri-list",
+          "application/json"
+        ],
+        "parameters": [
+          {
+            "name": "file",
+            "in": "formData",
+            "required": false,
+            "type": "file"
+          },
+          {
+            "name": "datasetUri",
             "in": "formData",
             "description": "Dataset URI or local dataset ID (to the arff representation of a dataset).",
             "required": false,
@@ -610,12 +1869,25 @@
             "default": "LinearNNSearch"
           },
           {
-            "name": "save",
+            "name": "validation",
             "in": "formData",
-            "description": "Save the model.",
+            "description": "Validation to use.",
             "required": false,
-            "type": "boolean",
-            "default": false
+            "type": "string",
+            "default": "CrossValidation",
+            "enum": [
+              "CrossValidation",
+              "Hold-Out"
+            ]
+          },
+          {
+            "name": "validationNum",
+            "in": "formData",
+            "description": "Num of Crossvalidations or Percentage Split %.",
+            "required": false,
+            "type": "number",
+            "default": 10.0,
+            "format": "double"
           },
           {
             "name": "subjectid",
@@ -640,11 +1912,22 @@
           },
           "404": {
             "description": "Resource Not Found"
+          },
+          "500": {
+            "description": "Internal Server Error"
           }
+        },
+        "x-orn-@type": "x-orn:Algorithm",
+        "x-orn:expects": {
+          "x-orn-@id": "x-orn:Dataset"
+        },
+        "x-orn:returns": {
+          "x-orn-@id": "x-orn:Task"
         },
         "x-algorithm": {
           "k-nearest neighbors algorithm": "https://en.wikipedia.org/wiki/K-nearest_neighbors_algorithm"
-        }
+        },
+        "x-orn-@id": "/algorithm/IBk"
       }
     },
     "/algorithm/ZeroR": {
@@ -653,14 +1936,14 @@
           "algorithm"
         ],
         "summary": "REST interface to the WEKA ZeroR classifier.",
-        "description": "REST interface to the WEKA ZeroR classifier. Save the model by POST request the content-type text/uri-list.",
+        "description": "REST interface to the WEKA ZeroR classifier. Returns a Task URI.",
         "operationId": "algorithmZeroRclassificationPost",
         "consumes": [
           "multipart/form-data"
         ],
         "produces": [
-          "text/x-arff",
-          "text/uri-list"
+          "text/uri-list",
+          "application/json"
         ],
         "parameters": [
           {
@@ -670,11 +1953,32 @@
             "type": "file"
           },
           {
-            "name": "datasetURI",
+            "name": "datasetUri",
             "in": "formData",
             "description": "Dataset URI or local dataset ID (to the arff representation of a dataset).",
             "required": false,
             "type": "string"
+          },
+          {
+            "name": "validation",
+            "in": "formData",
+            "description": "Validation to use.",
+            "required": false,
+            "type": "string",
+            "default": "CrossValidation",
+            "enum": [
+              "CrossValidation",
+              "Hold-Out"
+            ]
+          },
+          {
+            "name": "validationNum",
+            "in": "formData",
+            "description": "Num of Crossvalidations or Percentage Split %.",
+            "required": false,
+            "type": "number",
+            "default": 10.0,
+            "format": "double"
           },
           {
             "name": "subjectid",
@@ -699,11 +2003,22 @@
           },
           "404": {
             "description": "Resource Not Found"
+          },
+          "500": {
+            "description": "Internal Server Error"
           }
+        },
+        "x-orn-@type": "x-orn:Algorithm",
+        "x-orn:expects": {
+          "x-orn-@id": "x-orn:Dataset"
+        },
+        "x-orn:returns": {
+          "x-orn-@id": "x-orn:Task"
         },
         "x-algorithm": {
           "ZeroR": "http://weka.sourceforge.net/doc.dev/weka/classifiers/rules/ZeroR.html"
-        }
+        },
+        "x-orn-@id": "/algorithm/ZeroR"
       }
     },
     "/algorithm/M5Rules": {
@@ -712,14 +2027,14 @@
           "algorithm"
         ],
         "summary": "REST interface to the WEKA M5Rules classifier.",
-        "description": "REST interface to the WEKA M5Rules classifier. Save the model by POST request the content-type text/uri-list.",
+        "description": "REST interface to the WEKA M5Rules classifier. Returns a Task URI.",
         "operationId": "algorithmM5RclassificationPost",
         "consumes": [
           "multipart/form-data"
         ],
         "produces": [
-          "text/x-arff",
-          "text/uri-list"
+          "text/uri-list",
+          "application/json"
         ],
         "parameters": [
           {
@@ -729,7 +2044,7 @@
             "type": "file"
           },
           {
-            "name": "datasetURI",
+            "name": "datasetUri",
             "in": "formData",
             "description": "Dataset URI or local dataset ID (to the arff representation of a dataset).",
             "required": false,
@@ -768,7 +2083,7 @@
             "description": "The minimum number of instances to allow at a leaf node.",
             "required": false,
             "type": "number",
-            "default": 4,
+            "default": 4.0,
             "format": "double"
           },
           {
@@ -783,6 +2098,27 @@
               0,
               1
             ]
+          },
+          {
+            "name": "validation",
+            "in": "formData",
+            "description": "Validation to use.",
+            "required": false,
+            "type": "string",
+            "default": "CrossValidation",
+            "enum": [
+              "CrossValidation",
+              "Hold-Out"
+            ]
+          },
+          {
+            "name": "validationNum",
+            "in": "formData",
+            "description": "Num of Crossvalidations or Percentage Split %.",
+            "required": false,
+            "type": "number",
+            "default": 10.0,
+            "format": "double"
           },
           {
             "name": "subjectid",
@@ -807,11 +2143,22 @@
           },
           "404": {
             "description": "Resource Not Found"
+          },
+          "500": {
+            "description": "Internal Server Error"
           }
+        },
+        "x-orn-@type": "x-orn:Algorithm",
+        "x-orn:expects": {
+          "x-orn-@id": "x-orn:Dataset"
+        },
+        "x-orn:returns": {
+          "x-orn-@id": "x-orn:Task"
         },
         "x-algorithm": {
           "M5Rules": "http://weka.sourceforge.net/doc.dev/weka/classifiers/rules/M5Rules.html"
-        }
+        },
+        "x-orn-@id": "/algorithm/M5Rules"
       }
     },
     "/algorithm/J48": {
@@ -819,15 +2166,15 @@
         "tags": [
           "algorithm"
         ],
-        "summary": "REST interface to the WEKA J48 classifier.",
-        "description": "REST interface to the WEKA J48 classifier. Save the model by POST request the content-type text/uri-list.",
+        "summary": "REST interface to WEKA J48 classifier.",
+        "description": "REST interface to WEKA J48 classifier. Returns a Task URI.",
         "operationId": "algorithmJ48Post",
         "consumes": [
           "multipart/form-data"
         ],
         "produces": [
-          "text/x-arff",
-          "text/uri-list"
+          "text/uri-list",
+          "application/json"
         ],
         "parameters": [
           {
@@ -837,7 +2184,7 @@
             "type": "file"
           },
           {
-            "name": "datasetURI",
+            "name": "datasetUri",
             "in": "formData",
             "description": "Dataset URI or local dataset ID (to the arff representation of a dataset).",
             "required": false,
@@ -902,11 +2249,7 @@
             "required": false,
             "type": "integer",
             "default": 1,
-            "format": "int32",
-            "enum": [
-              0,
-              1
-            ]
+            "format": "int32"
           },
           {
             "name": "subtreeRaising",
@@ -948,6 +2291,27 @@
             ]
           },
           {
+            "name": "validation",
+            "in": "formData",
+            "description": "Validation to use.",
+            "required": false,
+            "type": "string",
+            "default": "CrossValidation",
+            "enum": [
+              "CrossValidation",
+              "Hold-Out"
+            ]
+          },
+          {
+            "name": "validationNum",
+            "in": "formData",
+            "description": "Num of Crossvalidations or Percentage Split %.",
+            "required": false,
+            "type": "number",
+            "default": 10.0,
+            "format": "double"
+          },
+          {
             "name": "subjectid",
             "in": "header",
             "description": "Authorization token",
@@ -970,11 +2334,1304 @@
           },
           "404": {
             "description": "Resource Not Found"
+          },
+          "500": {
+            "description": "Internal Server Error"
           }
+        },
+        "x-orn-@type": "x-orn:Algorithm",
+        "x-orn:expects": {
+          "x-orn-@id": "x-orn:Dataset"
+        },
+        "x-orn:returns": {
+          "x-orn-@id": "x-orn:Task"
         },
         "x-algorithm": {
           "J48": "https://en.wikipedia.org/wiki/C4.5_algorithm#Implementations"
-        }
+        },
+        "x-orn-@id": "/algorithm/J48"
+      }
+    },
+    "/algorithm/J48/adaboost": {
+      "post": {
+        "tags": [
+          "algorithm",
+          "meta algorithm"
+        ],
+        "summary": "REST interface to WEKA Adaboost M1 with J48 classifier.",
+        "description": "REST interface to WEKA Adaboost M1 with J48 classifier. Returns a Task URI.",
+        "operationId": "algorithmJ48AdaBoostPost",
+        "consumes": [
+          "multipart/form-data"
+        ],
+        "produces": [
+          "text/uri-list",
+          "application/json"
+        ],
+        "parameters": [
+          {
+            "name": "file",
+            "in": "formData",
+            "required": false,
+            "type": "file"
+          },
+          {
+            "name": "datasetUri",
+            "in": "formData",
+            "description": "Dataset URI or local dataset ID (to the arff representation of a dataset).",
+            "required": false,
+            "type": "string"
+          },
+          {
+            "name": "batchSize",
+            "in": "formData",
+            "description": "Adaboost M1: The preferred number of instances to process if batch prediction is being performed. More or fewer instances may be provided, but this gives implementations a chance to specify a preferred batch size.",
+            "required": false,
+            "type": "integer",
+            "default": 100,
+            "format": "int32"
+          },
+          {
+            "name": "numIterations",
+            "in": "formData",
+            "description": "Adaboost M1: The number of iterations to be performed.",
+            "required": false,
+            "type": "integer",
+            "default": 10,
+            "format": "int32"
+          },
+          {
+            "name": "useResampling",
+            "in": "formData",
+            "description": "Adaboost M1: Whether resampling is used instead of reweighting.",
+            "required": false,
+            "type": "integer",
+            "default": 0,
+            "format": "int32",
+            "enum": [
+              0,
+              1
+            ]
+          },
+          {
+            "name": "weightThreshold",
+            "in": "formData",
+            "description": "Adaboost M1: Weight threshold for weight pruning.",
+            "required": false,
+            "type": "integer",
+            "default": 100,
+            "format": "int32"
+          },
+          {
+            "name": "binarySplits",
+            "in": "formData",
+            "description": "Whether to use binary splits on nominal attributes when building the trees.",
+            "required": false,
+            "type": "integer",
+            "default": 0,
+            "format": "int32",
+            "enum": [
+              0,
+              1
+            ]
+          },
+          {
+            "name": "confidenceFactor",
+            "in": "formData",
+            "description": "The confidence factor used for pruning (smaller values incur more pruning).",
+            "required": false,
+            "type": "number",
+            "default": 0.25
+          },
+          {
+            "name": "minNumObj",
+            "in": "formData",
+            "description": "The minimum number of instances per leaf.",
+            "required": false,
+            "type": "integer",
+            "default": 2,
+            "format": "int32"
+          },
+          {
+            "name": "numFolds",
+            "in": "formData",
+            "description": "Determines the amount of data used for reduced-error pruning.  One fold is used for pruning, the rest for growing the tree",
+            "required": false,
+            "type": "integer",
+            "default": 3,
+            "format": "int32"
+          },
+          {
+            "name": "reducedErrorPruning",
+            "in": "formData",
+            "description": "Whether reduced-error pruning is used instead of C.4.5 pruning.",
+            "required": false,
+            "type": "integer",
+            "default": 0,
+            "format": "int32",
+            "enum": [
+              0,
+              1
+            ]
+          },
+          {
+            "name": "seed",
+            "in": "formData",
+            "description": "The seed used for randomizing the data when reduced-error pruning is used.",
+            "required": false,
+            "type": "integer",
+            "default": 1,
+            "format": "int32"
+          },
+          {
+            "name": "subtreeRaising",
+            "in": "formData",
+            "description": "Whether to consider the subtree raising operation when pruning.",
+            "required": false,
+            "type": "integer",
+            "default": 1,
+            "format": "int32",
+            "enum": [
+              0,
+              1
+            ]
+          },
+          {
+            "name": "unpruned",
+            "in": "formData",
+            "description": "Whether pruning is performed.",
+            "required": false,
+            "type": "integer",
+            "default": 1,
+            "format": "int32",
+            "enum": [
+              0,
+              1
+            ]
+          },
+          {
+            "name": "useLaplace",
+            "in": "formData",
+            "description": "Whether counts at leaves are smoothed based on Laplace.",
+            "required": false,
+            "type": "integer",
+            "default": 0,
+            "format": "int32",
+            "enum": [
+              0,
+              1
+            ]
+          },
+          {
+            "name": "validation",
+            "in": "formData",
+            "description": "Validation to use.",
+            "required": false,
+            "type": "string",
+            "default": "CrossValidation",
+            "enum": [
+              "CrossValidation",
+              "Hold-Out"
+            ]
+          },
+          {
+            "name": "validationNum",
+            "in": "formData",
+            "description": "Num of Crossvalidations or Percentage Split %.",
+            "required": false,
+            "type": "number",
+            "default": 10.0,
+            "format": "double"
+          },
+          {
+            "name": "subjectid",
+            "in": "header",
+            "description": "Authorization token",
+            "required": false,
+            "type": "string"
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "OK"
+          },
+          "400": {
+            "description": "Bad Request"
+          },
+          "401": {
+            "description": "Unauthorized"
+          },
+          "403": {
+            "description": "Forbidden"
+          },
+          "404": {
+            "description": "Resource Not Found"
+          },
+          "500": {
+            "description": "Internal Server Error"
+          }
+        },
+        "x-orn-@type": "x-orn:Algorithm",
+        "x-orn:expects": {
+          "x-orn-@id": "x-orn:Dataset"
+        },
+        "x-orn:returns": {
+          "x-orn-@id": "x-orn:Task"
+        },
+        "x-algorithm": {
+          "Adaboost M1 meta algorithm": "https://en.wikipedia.org/wiki/AdaBoost"
+        },
+        "x-orn-@id": "/algorithm/J48/adaboost"
+      }
+    },
+    "/algorithm/J48/bagging": {
+      "post": {
+        "tags": [
+          "algorithm",
+          "meta algorithm"
+        ],
+        "summary": "REST interface to WEKA Bagging with J48 classifier.",
+        "description": "REST interface to WEKA Bagging with J48 classifier. Returns a Task URI.",
+        "operationId": "algorithmJ48BaggingPost",
+        "consumes": [
+          "multipart/form-data"
+        ],
+        "produces": [
+          "text/uri-list",
+          "application/json"
+        ],
+        "parameters": [
+          {
+            "name": "file",
+            "in": "formData",
+            "required": false,
+            "type": "file"
+          },
+          {
+            "name": "datasetUri",
+            "in": "formData",
+            "description": "Dataset URI or local dataset ID (to the arff representation of a dataset).",
+            "required": false,
+            "type": "string"
+          },
+          {
+            "name": "bagSizePercent",
+            "in": "formData",
+            "description": "Bagging: Size of each bag, as a percentage of the training set size.",
+            "required": false,
+            "type": "integer",
+            "default": 100,
+            "format": "int32"
+          },
+          {
+            "name": "batchSize",
+            "in": "formData",
+            "description": "Bagging: The preferred number of instances to process if batch prediction is being performed. More or fewer instances may be provided, but this gives implementations a chance to specify a preferred batch size.",
+            "required": false,
+            "type": "integer",
+            "default": 100,
+            "format": "int32"
+          },
+          {
+            "name": "numIterations",
+            "in": "formData",
+            "description": "Bagging: The number of iterations to be performed.",
+            "required": false,
+            "type": "integer",
+            "default": 10,
+            "format": "int32"
+          },
+          {
+            "name": "binarySplits",
+            "in": "formData",
+            "description": "Whether to use binary splits on nominal attributes when building the trees.",
+            "required": false,
+            "type": "integer",
+            "default": 0,
+            "format": "int32",
+            "enum": [
+              0,
+              1
+            ]
+          },
+          {
+            "name": "confidenceFactor",
+            "in": "formData",
+            "description": "The confidence factor used for pruning (smaller values incur more pruning).",
+            "required": false,
+            "type": "number",
+            "default": 0.25
+          },
+          {
+            "name": "minNumObj",
+            "in": "formData",
+            "description": "The minimum number of instances per leaf.",
+            "required": false,
+            "type": "integer",
+            "default": 2,
+            "format": "int32"
+          },
+          {
+            "name": "numFolds",
+            "in": "formData",
+            "description": "Determines the amount of data used for reduced-error pruning.  One fold is used for pruning, the rest for growing the tree",
+            "required": false,
+            "type": "integer",
+            "default": 3,
+            "format": "int32"
+          },
+          {
+            "name": "reducedErrorPruning",
+            "in": "formData",
+            "description": "Whether reduced-error pruning is used instead of C.4.5 pruning.",
+            "required": false,
+            "type": "integer",
+            "default": 0,
+            "format": "int32",
+            "enum": [
+              0,
+              1
+            ]
+          },
+          {
+            "name": "seed",
+            "in": "formData",
+            "description": "The seed used for randomizing the data when reduced-error pruning is used.",
+            "required": false,
+            "type": "integer",
+            "default": 1,
+            "format": "int32"
+          },
+          {
+            "name": "subtreeRaising",
+            "in": "formData",
+            "description": "Whether to consider the subtree raising operation when pruning.",
+            "required": false,
+            "type": "integer",
+            "default": 1,
+            "format": "int32",
+            "enum": [
+              0,
+              1
+            ]
+          },
+          {
+            "name": "unpruned",
+            "in": "formData",
+            "description": "Whether pruning is performed.",
+            "required": false,
+            "type": "integer",
+            "default": 1,
+            "format": "int32",
+            "enum": [
+              0,
+              1
+            ]
+          },
+          {
+            "name": "useLaplace",
+            "in": "formData",
+            "description": "Whether counts at leaves are smoothed based on Laplace.",
+            "required": false,
+            "type": "integer",
+            "default": 0,
+            "format": "int32",
+            "enum": [
+              0,
+              1
+            ]
+          },
+          {
+            "name": "validation",
+            "in": "formData",
+            "description": "Validation to use.",
+            "required": false,
+            "type": "string",
+            "default": "CrossValidation",
+            "enum": [
+              "CrossValidation",
+              "Hold-Out"
+            ]
+          },
+          {
+            "name": "validationNum",
+            "in": "formData",
+            "description": "Num of Crossvalidations or Percentage Split %.",
+            "required": false,
+            "type": "number",
+            "default": 10.0,
+            "format": "double"
+          },
+          {
+            "name": "subjectid",
+            "in": "header",
+            "description": "Authorization token",
+            "required": false,
+            "type": "string"
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "OK"
+          },
+          "400": {
+            "description": "Bad Request"
+          },
+          "401": {
+            "description": "Unauthorized"
+          },
+          "403": {
+            "description": "Forbidden"
+          },
+          "404": {
+            "description": "Resource Not Found"
+          },
+          "500": {
+            "description": "Internal Server Error"
+          }
+        },
+        "x-orn-@type": "x-orn:Algorithm",
+        "x-orn:expects": {
+          "x-orn-@id": "x-orn:Dataset"
+        },
+        "x-orn:returns": {
+          "x-orn-@id": "x-orn:Task"
+        },
+        "x-algorithm": {
+          "Bagging meta algorithm": "https://en.wikipedia.org/wiki/Bootstrap_aggregating"
+        },
+        "x-orn-@id": "/algorithm/J48/bagging"
+      }
+    },
+    "/algorithm/M5P": {
+      "post": {
+        "tags": [
+          "algorithm"
+        ],
+        "summary": "REST interface to WEKA M5P classifier.",
+        "description": "REST interface to WEKA M5P classifier. Returns a Task URI.",
+        "operationId": "algorithmM5PPost",
+        "consumes": [
+          "multipart/form-data"
+        ],
+        "produces": [
+          "text/uri-list",
+          "application/json"
+        ],
+        "parameters": [
+          {
+            "name": "file",
+            "in": "formData",
+            "required": false,
+            "type": "file"
+          },
+          {
+            "name": "datasetUri",
+            "in": "formData",
+            "description": "Dataset URI or local dataset ID (to the arff representation of a dataset).",
+            "required": false,
+            "type": "string"
+          },
+          {
+            "name": "unpruned",
+            "in": "formData",
+            "description": "Whether unpruned tree to be generated.",
+            "required": false,
+            "type": "integer",
+            "default": 0,
+            "format": "int32",
+            "x-example": 0,
+            "enum": [
+              0,
+              1
+            ]
+          },
+          {
+            "name": "useUnsmoothed",
+            "in": "formData",
+            "description": "Whether to use unsmoothed predictions.",
+            "required": false,
+            "type": "integer",
+            "default": 0,
+            "format": "int32",
+            "enum": [
+              0,
+              1
+            ]
+          },
+          {
+            "name": "minNumInstances",
+            "in": "formData",
+            "description": "The minimum number of instances to allow at a leaf node.",
+            "required": false,
+            "type": "number",
+            "default": 4.0,
+            "format": "double"
+          },
+          {
+            "name": "buildRegressionTree",
+            "in": "formData",
+            "description": "Whether to generate a regression tree/rule instead of a model tree/rule.",
+            "required": false,
+            "type": "integer",
+            "default": 0,
+            "format": "int32",
+            "enum": [
+              0,
+              1
+            ]
+          },
+          {
+            "name": "validation",
+            "in": "formData",
+            "description": "Validation to use.",
+            "required": false,
+            "type": "string",
+            "default": "CrossValidation",
+            "enum": [
+              "CrossValidation",
+              "Hold-Out"
+            ]
+          },
+          {
+            "name": "validationNum",
+            "in": "formData",
+            "description": "Num of Crossvalidations or Percentage Split %.",
+            "required": false,
+            "type": "number",
+            "default": 10.0,
+            "format": "double"
+          },
+          {
+            "name": "subjectid",
+            "in": "header",
+            "description": "Authorization token",
+            "required": false,
+            "type": "string"
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "OK"
+          },
+          "400": {
+            "description": "Bad Request"
+          },
+          "401": {
+            "description": "Unauthorized"
+          },
+          "403": {
+            "description": "Forbidden"
+          },
+          "404": {
+            "description": "Resource Not Found"
+          },
+          "500": {
+            "description": "Internal Server Error"
+          }
+        },
+        "x-orn-@type": "x-orn:Algorithm",
+        "x-orn:expects": {
+          "x-orn-@id": "x-orn:Dataset"
+        },
+        "x-orn:returns": {
+          "x-orn-@id": "x-orn:Task"
+        },
+        "x-algorithm": {
+          "M5P": "http://weka.sourceforge.net/doc.dev/weka/classifiers/trees/M5P.html"
+        },
+        "x-orn-@id": "/algorithm/M5P"
+      }
+    },
+    "/algorithm/M5P/adaboost": {
+      "post": {
+        "tags": [
+          "algorithm",
+          "meta algorithm"
+        ],
+        "summary": "REST interface to WEKA AdaBoost M1 with M5P classifier.",
+        "description": "REST interface to WEKA AdaBoost M1 with M5P classifier. Returns a Task URI.",
+        "operationId": "algorithmM5PAdaBoostPost",
+        "consumes": [
+          "multipart/form-data"
+        ],
+        "produces": [
+          "text/uri-list",
+          "application/json"
+        ],
+        "parameters": [
+          {
+            "name": "file",
+            "in": "formData",
+            "required": false,
+            "type": "file"
+          },
+          {
+            "name": "datasetUri",
+            "in": "formData",
+            "description": "Dataset URI or local dataset ID (to the arff representation of a dataset).",
+            "required": false,
+            "type": "string"
+          },
+          {
+            "name": "batchSize",
+            "in": "formData",
+            "description": "Adaboost M1: The preferred number of instances to process if batch prediction is being performed. More or fewer instances may be provided, but this gives implementations a chance to specify a preferred batch size.",
+            "required": false,
+            "type": "integer",
+            "default": 100,
+            "format": "int32"
+          },
+          {
+            "name": "numIterations",
+            "in": "formData",
+            "description": "Adaboost M1: The number of iterations to be performed.",
+            "required": false,
+            "type": "integer",
+            "default": 10,
+            "format": "int32"
+          },
+          {
+            "name": "useResampling",
+            "in": "formData",
+            "description": "Adaboost M1: Whether resampling is used instead of reweighting.",
+            "required": false,
+            "type": "integer",
+            "default": 0,
+            "format": "int32",
+            "enum": [
+              0,
+              1
+            ]
+          },
+          {
+            "name": "weightThreshold",
+            "in": "formData",
+            "description": "Adaboost M1: Weight threshold for weight pruning.",
+            "required": false,
+            "type": "integer",
+            "default": 100,
+            "format": "int32"
+          },
+          {
+            "name": "unpruned",
+            "in": "formData",
+            "description": "Whether unpruned tree to be generated.",
+            "required": false,
+            "type": "integer",
+            "default": 0,
+            "format": "int32",
+            "x-example": 0,
+            "enum": [
+              0,
+              1
+            ]
+          },
+          {
+            "name": "useUnsmoothed",
+            "in": "formData",
+            "description": "Whether to use unsmoothed predictions.",
+            "required": false,
+            "type": "integer",
+            "default": 0,
+            "format": "int32",
+            "enum": [
+              0,
+              1
+            ]
+          },
+          {
+            "name": "minNumInstances",
+            "in": "formData",
+            "description": "The minimum number of instances to allow at a leaf node.",
+            "required": false,
+            "type": "number",
+            "default": 4.0,
+            "format": "double"
+          },
+          {
+            "name": "buildRegressionTree",
+            "in": "formData",
+            "description": "Whether to generate a regression tree/rule instead of a model tree/rule.",
+            "required": false,
+            "type": "integer",
+            "default": 0,
+            "format": "int32",
+            "enum": [
+              0,
+              1
+            ]
+          },
+          {
+            "name": "validation",
+            "in": "formData",
+            "description": "Validation to use.",
+            "required": false,
+            "type": "string",
+            "default": "CrossValidation",
+            "enum": [
+              "CrossValidation",
+              "Hold-Out"
+            ]
+          },
+          {
+            "name": "validationNum",
+            "in": "formData",
+            "description": "Num of Crossvalidations or Percentage Split %.",
+            "required": false,
+            "type": "number",
+            "default": 10.0,
+            "format": "double"
+          },
+          {
+            "name": "subjectid",
+            "in": "header",
+            "description": "Authorization token",
+            "required": false,
+            "type": "string"
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "OK"
+          },
+          "400": {
+            "description": "Bad Request"
+          },
+          "401": {
+            "description": "Unauthorized"
+          },
+          "403": {
+            "description": "Forbidden"
+          },
+          "404": {
+            "description": "Resource Not Found"
+          },
+          "500": {
+            "description": "Internal Server Error"
+          }
+        },
+        "x-orn-@type": "x-orn:Algorithm",
+        "x-orn:expects": {
+          "x-orn-@id": "x-orn:Dataset"
+        },
+        "x-orn:returns": {
+          "x-orn-@id": "x-orn:Task"
+        },
+        "x-algorithm": {
+          "M5P": "http://weka.sourceforge.net/doc.dev/weka/classifiers/trees/M5P.html"
+        },
+        "x-orn-@id": "/algorithm/M5P/adaboost"
+      }
+    },
+    "/algorithm/M5P/bagging": {
+      "post": {
+        "tags": [
+          "algorithm",
+          "meta algorithm"
+        ],
+        "summary": "REST interface to WEKA Bagging with M5P classifier.",
+        "description": "REST interface to WEKA Bagging with M5P classifier. Returns a Task URI.",
+        "operationId": "algorithmM5PBaggingPost",
+        "consumes": [
+          "multipart/form-data"
+        ],
+        "produces": [
+          "text/uri-list",
+          "application/json"
+        ],
+        "parameters": [
+          {
+            "name": "file",
+            "in": "formData",
+            "required": false,
+            "type": "file"
+          },
+          {
+            "name": "datasetUri",
+            "in": "formData",
+            "description": "Dataset URI or local dataset ID (to the arff representation of a dataset).",
+            "required": false,
+            "type": "string"
+          },
+          {
+            "name": "bagSizePercent",
+            "in": "formData",
+            "description": "Bagging: Size of each bag, as a percentage of the training set size.",
+            "required": false,
+            "type": "integer",
+            "default": 100,
+            "format": "int32"
+          },
+          {
+            "name": "batchSize",
+            "in": "formData",
+            "description": "Bagging: The preferred number of instances to process if batch prediction is being performed. More or fewer instances may be provided, but this gives implementations a chance to specify a preferred batch size.",
+            "required": false,
+            "type": "integer",
+            "default": 100,
+            "format": "int32"
+          },
+          {
+            "name": "numIterations",
+            "in": "formData",
+            "description": "Bagging: The number of iterations to be performed.",
+            "required": false,
+            "type": "integer",
+            "default": 10,
+            "format": "int32"
+          },
+          {
+            "name": "unpruned",
+            "in": "formData",
+            "description": "Whether unpruned tree to be generated.",
+            "required": false,
+            "type": "integer",
+            "default": 0,
+            "format": "int32",
+            "x-example": 0,
+            "enum": [
+              0,
+              1
+            ]
+          },
+          {
+            "name": "useUnsmoothed",
+            "in": "formData",
+            "description": "Whether to use unsmoothed predictions.",
+            "required": false,
+            "type": "integer",
+            "default": 0,
+            "format": "int32",
+            "enum": [
+              0,
+              1
+            ]
+          },
+          {
+            "name": "minNumInstances",
+            "in": "formData",
+            "description": "The minimum number of instances to allow at a leaf node.",
+            "required": false,
+            "type": "number",
+            "default": 4.0,
+            "format": "double"
+          },
+          {
+            "name": "buildRegressionTree",
+            "in": "formData",
+            "description": "Whether to generate a regression tree/rule instead of a model tree/rule.",
+            "required": false,
+            "type": "integer",
+            "default": 0,
+            "format": "int32",
+            "enum": [
+              0,
+              1
+            ]
+          },
+          {
+            "name": "validation",
+            "in": "formData",
+            "description": "Validation to use.",
+            "required": false,
+            "type": "string",
+            "default": "CrossValidation",
+            "enum": [
+              "CrossValidation",
+              "Hold-Out"
+            ]
+          },
+          {
+            "name": "validationNum",
+            "in": "formData",
+            "description": "Num of Crossvalidations or Percentage Split %.",
+            "required": false,
+            "type": "number",
+            "default": 10.0,
+            "format": "double"
+          },
+          {
+            "name": "subjectid",
+            "in": "header",
+            "description": "Authorization token",
+            "required": false,
+            "type": "string"
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "OK"
+          },
+          "400": {
+            "description": "Bad Request"
+          },
+          "401": {
+            "description": "Unauthorized"
+          },
+          "403": {
+            "description": "Forbidden"
+          },
+          "404": {
+            "description": "Resource Not Found"
+          },
+          "500": {
+            "description": "Internal Server Error"
+          }
+        },
+        "x-orn-@type": "x-orn:Algorithm",
+        "x-orn:expects": {
+          "x-orn-@id": "x-orn:Dataset"
+        },
+        "x-orn:returns": {
+          "x-orn-@id": "x-orn:Task"
+        },
+        "x-algorithm": {
+          "M5P": "http://weka.sourceforge.net/doc.dev/weka/classifiers/trees/M5P.html"
+        },
+        "x-orn-@id": "/algorithm/M5P/bagging"
+      }
+    },
+    "/algorithm/DecisionStump": {
+      "post": {
+        "tags": [
+          "algorithm"
+        ],
+        "summary": "REST interface to the WEKA DecisionStump classifier.",
+        "description": "REST interface to the DecisionStump classifier. Returns a Task URI.",
+        "operationId": "algorithmDecisionStumpPost",
+        "consumes": [
+          "multipart/form-data"
+        ],
+        "produces": [
+          "text/uri-list",
+          "application/json"
+        ],
+        "parameters": [
+          {
+            "name": "file",
+            "in": "formData",
+            "required": false,
+            "type": "file"
+          },
+          {
+            "name": "datasetUri",
+            "in": "formData",
+            "description": "Dataset URI or local dataset ID (to the arff representation of a dataset).",
+            "required": false,
+            "type": "string"
+          },
+          {
+            "name": "validation",
+            "in": "formData",
+            "description": "Validation to use.",
+            "required": false,
+            "type": "string",
+            "default": "CrossValidation",
+            "enum": [
+              "CrossValidation",
+              "Hold-Out"
+            ]
+          },
+          {
+            "name": "validationNum",
+            "in": "formData",
+            "description": "Num of Crossvalidations or Percentage Split %.",
+            "required": false,
+            "type": "number",
+            "default": 10.0,
+            "format": "double"
+          },
+          {
+            "name": "subjectid",
+            "in": "header",
+            "description": "Authorization token",
+            "required": false,
+            "type": "string"
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "OK"
+          },
+          "400": {
+            "description": "Bad Request"
+          },
+          "401": {
+            "description": "Unauthorized"
+          },
+          "403": {
+            "description": "Forbidden"
+          },
+          "404": {
+            "description": "Resource Not Found"
+          },
+          "500": {
+            "description": "Internal Server Error"
+          }
+        },
+        "x-orn-@type": "x-orn:Algorithm",
+        "x-orn:expects": {
+          "x-orn-@id": "x-orn:Dataset"
+        },
+        "x-orn:returns": {
+          "x-orn-@id": "x-orn:Task"
+        },
+        "x-algorithm": {
+          "DecisionStump": "https://en.wikipedia.org/wiki/Decision_stump"
+        },
+        "x-orn-@id": "/algorithm/DecisionStump"
+      }
+    },
+    "/algorithm/DecisionStump/adaboost": {
+      "post": {
+        "tags": [
+          "algorithm",
+          "meta algorithm"
+        ],
+        "summary": "REST interface to the WEKA AdaBoost M1 with DecisionStump classifier.",
+        "description": "REST interface to the WEKA AdaBoost M1 with DecisionStump classifier. Returns a Task URI.",
+        "operationId": "algorithmDecisionStumpAdaBoostPost",
+        "consumes": [
+          "multipart/form-data"
+        ],
+        "produces": [
+          "text/uri-list",
+          "application/json"
+        ],
+        "parameters": [
+          {
+            "name": "file",
+            "in": "formData",
+            "required": false,
+            "type": "file"
+          },
+          {
+            "name": "datasetUri",
+            "in": "formData",
+            "description": "Dataset URI or local dataset ID (to the arff representation of a dataset).",
+            "required": false,
+            "type": "string"
+          },
+          {
+            "name": "batchSize",
+            "in": "formData",
+            "description": "Adaboost M1: The preferred number of instances to process if batch prediction is being performed. More or fewer instances may be provided, but this gives implementations a chance to specify a preferred batch size.",
+            "required": false,
+            "type": "integer",
+            "default": 100,
+            "format": "int32"
+          },
+          {
+            "name": "numIterations",
+            "in": "formData",
+            "description": "Adaboost M1: The number of iterations to be performed.",
+            "required": false,
+            "type": "integer",
+            "default": 10,
+            "format": "int32"
+          },
+          {
+            "name": "useResampling",
+            "in": "formData",
+            "description": "Adaboost M1: Whether resampling is used instead of reweighting.",
+            "required": false,
+            "type": "integer",
+            "default": 0,
+            "format": "int32",
+            "enum": [
+              0,
+              1
+            ]
+          },
+          {
+            "name": "weightThreshold",
+            "in": "formData",
+            "description": "Adaboost M1: Weight threshold for weight pruning.",
+            "required": false,
+            "type": "integer",
+            "default": 100,
+            "format": "int32"
+          },
+          {
+            "name": "validation",
+            "in": "formData",
+            "description": "Validation to use.",
+            "required": false,
+            "type": "string",
+            "default": "CrossValidation",
+            "enum": [
+              "CrossValidation",
+              "Hold-Out"
+            ]
+          },
+          {
+            "name": "validationNum",
+            "in": "formData",
+            "description": "Num of Crossvalidations or Percentage Split %.",
+            "required": false,
+            "type": "number",
+            "default": 10.0,
+            "format": "double"
+          },
+          {
+            "name": "subjectid",
+            "in": "header",
+            "description": "Authorization token",
+            "required": false,
+            "type": "string"
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "OK"
+          },
+          "400": {
+            "description": "Bad Request"
+          },
+          "401": {
+            "description": "Unauthorized"
+          },
+          "403": {
+            "description": "Forbidden"
+          },
+          "404": {
+            "description": "Resource Not Found"
+          },
+          "500": {
+            "description": "Internal Server Error"
+          }
+        },
+        "x-orn-@type": "x-orn:Algorithm",
+        "x-orn:expects": {
+          "x-orn-@id": "x-orn:Dataset"
+        },
+        "x-orn:returns": {
+          "x-orn-@id": "x-orn:Task"
+        },
+        "x-algorithm": {
+          "DecisionStump": "https://en.wikipedia.org/wiki/Decision_stump"
+        },
+        "x-orn-@id": "/algorithm/DecisionStump/adaboost"
+      }
+    },
+    "/algorithm/DecisionStump/bagging": {
+      "post": {
+        "tags": [
+          "algorithm",
+          "meta algorithm"
+        ],
+        "summary": "REST interface to the WEKA Bagging with DecisionStump classifier.",
+        "description": "REST interface to the WEKA Bagging with DecisionStump classifier. Returns a Task URI.",
+        "operationId": "algorithmDecisionStumpBaggingPost",
+        "consumes": [
+          "multipart/form-data"
+        ],
+        "produces": [
+          "text/uri-list",
+          "application/json"
+        ],
+        "parameters": [
+          {
+            "name": "file",
+            "in": "formData",
+            "required": false,
+            "type": "file"
+          },
+          {
+            "name": "datasetUri",
+            "in": "formData",
+            "description": "Dataset URI or local dataset ID (to the arff representation of a dataset).",
+            "required": false,
+            "type": "string"
+          },
+          {
+            "name": "bagSizePercent",
+            "in": "formData",
+            "description": "Bagging: Size of each bag, as a percentage of the training set size.",
+            "required": false,
+            "type": "integer",
+            "default": 100,
+            "format": "int32"
+          },
+          {
+            "name": "batchSize",
+            "in": "formData",
+            "description": "Bagging: The preferred number of instances to process if batch prediction is being performed. More or fewer instances may be provided, but this gives implementations a chance to specify a preferred batch size.",
+            "required": false,
+            "type": "integer",
+            "default": 100,
+            "format": "int32"
+          },
+          {
+            "name": "numIterations",
+            "in": "formData",
+            "description": "Bagging: The number of iterations to be performed.",
+            "required": false,
+            "type": "integer",
+            "default": 10,
+            "format": "int32"
+          },
+          {
+            "name": "validation",
+            "in": "formData",
+            "description": "Validation to use.",
+            "required": false,
+            "type": "string",
+            "default": "CrossValidation",
+            "enum": [
+              "CrossValidation",
+              "Hold-Out"
+            ]
+          },
+          {
+            "name": "validationNum",
+            "in": "formData",
+            "description": "Num of Crossvalidations or Percentage Split %.",
+            "required": false,
+            "type": "number",
+            "default": 10.0,
+            "format": "double"
+          },
+          {
+            "name": "subjectid",
+            "in": "header",
+            "description": "Authorization token",
+            "required": false,
+            "type": "string"
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "OK"
+          },
+          "400": {
+            "description": "Bad Request"
+          },
+          "401": {
+            "description": "Unauthorized"
+          },
+          "403": {
+            "description": "Forbidden"
+          },
+          "404": {
+            "description": "Resource Not Found"
+          },
+          "500": {
+            "description": "Internal Server Error"
+          }
+        },
+        "x-orn-@type": "x-orn:Algorithm",
+        "x-orn:expects": {
+          "x-orn-@id": "x-orn:Dataset"
+        },
+        "x-orn:returns": {
+          "x-orn-@id": "x-orn:Task"
+        },
+        "x-algorithm": {
+          "DecisionStump": "https://en.wikipedia.org/wiki/Decision_stump"
+        },
+        "x-orn-@id": "/algorithm/DecisionStump/bagging"
       }
     },
     "/aa/login": {
@@ -1010,10 +3667,22 @@
         ],
         "responses": {
           "200": {
-            "description": "Logged in - authentication token can be found in the response body (in JSON)"
+            "description": "OK"
+          },
+          "400": {
+            "description": "Bad Request"
           },
           "401": {
-            "description": "Wrong, missing or insufficient credentials. Error report is produced."
+            "description": "Unauthorized"
+          },
+          "403": {
+            "description": "Forbidden"
+          },
+          "404": {
+            "description": "Resource Not Found"
+          },
+          "500": {
+            "description": "Internal Server Error"
           }
         }
       }
@@ -1042,12 +3711,337 @@
         ],
         "responses": {
           "200": {
-            "description": "Token invalidated."
+            "description": "OK"
+          },
+          "400": {
+            "description": "Bad Request"
           },
           "401": {
-            "description": "Wrong, missing or invalid token."
+            "description": "Unauthorized"
+          },
+          "403": {
+            "description": "Forbidden"
+          },
+          "404": {
+            "description": "Resource Not Found"
+          },
+          "500": {
+            "description": "Internal Server Error"
           }
         }
+      }
+    },
+    "/cluster/Hierarchical": {
+      "post": {
+        "tags": [
+          "cluster"
+        ],
+        "summary": "REST interface to the WEKA Hierarchical clusterer.",
+        "description": "REST interface to the WEKA Hierarchical clusterer.",
+        "operationId": "clusterHierarchicalPost",
+        "consumes": [
+          "multipart/form-data"
+        ],
+        "produces": [
+          "text/x-arff"
+        ],
+        "parameters": [
+          {
+            "name": "file",
+            "in": "formData",
+            "required": false,
+            "type": "file"
+          },
+          {
+            "name": "datasetUri",
+            "in": "formData",
+            "description": "Dataset URI or local dataset ID (to the arff representation of a dataset).",
+            "required": false,
+            "type": "string"
+          },
+          {
+            "name": "printNewick",
+            "in": "formData",
+            "description": "Flag to indicate whether the cluster should be print in Newick format. This can be useful for display in other programs. However, for large datasets a lot of text may be produced, which may not be a nuisance when the Newick format is not required",
+            "required": false,
+            "type": "boolean"
+          },
+          {
+            "name": "numClusters",
+            "in": "formData",
+            "description": "Sets the number of clusters. If a single hierarchy is desired, set this to 1.",
+            "required": false,
+            "type": "integer",
+            "format": "int32"
+          },
+          {
+            "name": "linkType",
+            "in": "formData",
+            "description": "Sets the method used to measure the distance between two clusters.",
+            "required": false,
+            "type": "string",
+            "default": "SINGLE",
+            "enum": [
+              "SINGLE",
+              "COMPLETE",
+              "ADJCOMPLETE",
+              "AVERAGE",
+              "MEAN",
+              "CENTROID",
+              "WARD",
+              "NEIGHBOR_JOINING"
+            ]
+          },
+          {
+            "name": "distanceIsBranchLength",
+            "in": "formData",
+            "description": "If set to false, the distance between clusters is interpreted as the height of the node linking the clusters. This is appropriate for example for single link clustering. However, for neighbor joining, the distance is better interpreted as branch length. Set this flag to get the latter interpretation.",
+            "required": false,
+            "type": "boolean"
+          },
+          {
+            "name": "distanceFunction",
+            "in": "formData",
+            "description": "Sets the distance function, which measures the distance between two individual. Instances (or possibly the distance between an instance and the centroid of a clusterdepending on the Link type). Examples: \u0027EuclideanDistance -R first-last\u0027, \u0027weka.core.ChebyshevDistance -R first-last\u0027, \u0027weka.core.ManhattanDistance -R first-last\u0027, \u0027weka.core.MinkowskiDistance -P 2.0 -R first-last\u0027 or \u0027weka.core.FilteredDistance -R first-last -F \"weka.filters.unsupervised.attribute.RandomProjection -N 10 -R 42 -D Sparse1\" -D \"weka.core.EuclideanDistance -R first-last\"\u0027.",
+            "required": false,
+            "type": "string"
+          },
+          {
+            "name": "subjectid",
+            "in": "header",
+            "description": "authorization token",
+            "required": false,
+            "type": "string"
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "OK"
+          },
+          "400": {
+            "description": "Bad Request"
+          },
+          "401": {
+            "description": "Unauthorized"
+          },
+          "403": {
+            "description": "Forbidden"
+          },
+          "404": {
+            "description": "Resource Not Found"
+          },
+          "500": {
+            "description": "Internal Server Error"
+          }
+        },
+        "x-orn-@type": "x-orn:Algorithm",
+        "x-orn:expects": {
+          "x-orn-@id": "x-orn:Dataset"
+        },
+        "x-orn:returns": {
+          "x-orn-@id": "x-orn:Cluster"
+        },
+        "x-algorithm": {
+          "SimpleKMeans": "http://weka.sourceforge.net/doc.dev/weka/clusterers/HierarchicalClusterer.html"
+        },
+        "x-orn-@id": "/cluster/Hierarchical"
+      }
+    },
+    "/cluster/SimpleKMeans": {
+      "post": {
+        "tags": [
+          "cluster"
+        ],
+        "summary": "REST interface to the WEKA SimpleKMeans clusterer.",
+        "description": "REST interface to the WEKA SimpleKMeans clusterer.",
+        "operationId": "clusterSimpleKMeansPost",
+        "consumes": [
+          "multipart/form-data"
+        ],
+        "produces": [
+          "text/x-arff"
+        ],
+        "parameters": [
+          {
+            "name": "file",
+            "in": "formData",
+            "required": false,
+            "type": "file"
+          },
+          {
+            "name": "datasetUri",
+            "in": "formData",
+            "description": "Dataset URI or local dataset ID (to the arff representation of a dataset).",
+            "required": false,
+            "type": "string"
+          },
+          {
+            "name": "canopyMaxNumCanopiesToHoldInMemory",
+            "in": "formData",
+            "description": "If using canopy clustering for initialization and/or speedup this is the maximum number of candidate canopies to retain in main memory during training of the canopy clusterer. T2 distance and data characteristics determine how many candidate canopies are formed before periodic and final pruning are performed. There may not be enough memory available if T2 is set too low.",
+            "required": false,
+            "type": "integer",
+            "format": "int32"
+          },
+          {
+            "name": "canopyMinimumCanopyDensity",
+            "in": "formData",
+            "description": "If using canopy clustering for initialization and/or speedup this is the minimum T2-based density below which a canopy will be pruned during periodic pruning",
+            "required": false,
+            "type": "number",
+            "format": "double"
+          },
+          {
+            "name": "canopyPeriodicPruningRate",
+            "in": "formData",
+            "description": "If using canopy clustering for initialization and/or speedup this is how often to prune low density canopies during training",
+            "required": false,
+            "type": "number",
+            "format": "double"
+          },
+          {
+            "name": "canopyT1",
+            "in": "formData",
+            "description": "The T1 distance to use when using canopy clustering. Values \u003c 0 are taken as a positive multiplier for the T2 distance",
+            "required": false,
+            "type": "number",
+            "format": "double"
+          },
+          {
+            "name": "canopyT2",
+            "in": "formData",
+            "description": "The T2 distance to use when using canopy clustering. Values \u003c 0 indicate that this should be set using a heuristic based on attribute standard deviation",
+            "required": false,
+            "type": "number",
+            "format": "double"
+          },
+          {
+            "name": "displayStdDevs",
+            "in": "formData",
+            "description": "Display std deviations of numeric attributes and counts of nominal attributes.",
+            "required": false,
+            "type": "boolean"
+          },
+          {
+            "name": "distanceFunction",
+            "in": "formData",
+            "description": "The distance function to use for instances comparison (default: weka.core.EuclideanDistance).",
+            "required": false,
+            "type": "string"
+          },
+          {
+            "name": "doNotCheckCapabilities",
+            "in": "formData",
+            "description": "If set, clusterer capabilities are not checked before clusterer is built (Use with caution to reduce runtime).",
+            "required": false,
+            "type": "boolean"
+          },
+          {
+            "name": "dontReplaceMissingValues",
+            "in": "formData",
+            "description": "Replace missing values globally with mean/mode.",
+            "required": false,
+            "type": "boolean"
+          },
+          {
+            "name": "fastDistanceCalc",
+            "in": "formData",
+            "description": "Uses cut-off values for speeding up distance calculation, but suppresses also the calculation and output of the within cluster sum of squared errors/sum of distances.",
+            "required": false,
+            "type": "boolean"
+          },
+          {
+            "name": "initializationMethod",
+            "in": "formData",
+            "description": "The initialization method to use. Random, k-means++, Canopy or farthest first.",
+            "required": false,
+            "type": "string"
+          },
+          {
+            "name": "maxIterations",
+            "in": "formData",
+            "description": "Set maximum number of iterations.",
+            "required": false,
+            "type": "integer",
+            "format": "int32"
+          },
+          {
+            "name": "numClusters",
+            "in": "formData",
+            "description": "Set number of clusters.",
+            "required": false,
+            "type": "integer",
+            "format": "int32"
+          },
+          {
+            "name": "numExecutionSlots",
+            "in": "formData",
+            "description": "The number of execution slots (threads) to use. Set equal to the number of available cpu/cores.",
+            "required": false,
+            "type": "integer",
+            "format": "int32"
+          },
+          {
+            "name": "preserveInstancesOrder",
+            "in": "formData",
+            "description": "Preserve order of instances.",
+            "required": false,
+            "type": "boolean"
+          },
+          {
+            "name": "reduceNumberOfDistanceCalcsViaCanopies",
+            "in": "formData",
+            "description": "Use canopy clustering to reduce the number of distance calculations performed by k-means",
+            "required": false,
+            "type": "boolean"
+          },
+          {
+            "name": "seed",
+            "in": "formData",
+            "description": "The random number seed to be used.",
+            "required": false,
+            "type": "integer",
+            "format": "int32"
+          },
+          {
+            "name": "subjectid",
+            "in": "header",
+            "description": "authorization token",
+            "required": false,
+            "type": "string"
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "OK"
+          },
+          "400": {
+            "description": "Bad Request"
+          },
+          "401": {
+            "description": "Unauthorized"
+          },
+          "403": {
+            "description": "Forbidden"
+          },
+          "404": {
+            "description": "Resource Not Found"
+          },
+          "500": {
+            "description": "Internal Server Error"
+          }
+        },
+        "x-orn-@type": "x-orn:Algorithm",
+        "x-orn:expects": {
+          "x-orn-@id": "x-orn:Dataset"
+        },
+        "x-orn:returns": {
+          "x-orn-@id": "x-orn:Cluster"
+        },
+        "x-algorithm": {
+          "SimpleKMeans": "http://weka.sourceforge.net/doc.dev/weka/clusterers/SimpleKMeans.html"
+        },
+        "x-orn-@id": "/cluster/EM"
       }
     },
     "/cluster/EM": {
@@ -1072,7 +4066,7 @@
             "type": "file"
           },
           {
-            "name": "datasetURI",
+            "name": "datasetUri",
             "in": "formData",
             "description": "Dataset URI or local dataset ID (to the arff representation of a dataset).",
             "required": false,
@@ -1081,7 +4075,7 @@
           {
             "name": "numFolds",
             "in": "formData",
-            "description": "Number of folds to use when cross-validating to find the best number of clusters (default = 10)",
+            "description": "Number of folds to use when cross-validating to find the best number of clusters (default \u003d 10)",
             "required": false,
             "type": "integer",
             "default": 10,
@@ -1090,7 +4084,7 @@
           {
             "name": "numKMeansRuns",
             "in": "formData",
-            "description": "Number of runs of k-means to perform (default = 10)",
+            "description": "Number of runs of k-means to perform (default \u003d 10)",
             "required": false,
             "type": "integer",
             "default": 10,
@@ -1099,7 +4093,7 @@
           {
             "name": "maximumNumberOfClusters",
             "in": "formData",
-            "description": "Maximum number of clusters to consider during cross-validation to select the best number of clusters (default = -1).",
+            "description": "Maximum number of clusters to consider during cross-validation to select the best number of clusters (default \u003d -1).",
             "required": false,
             "type": "integer",
             "default": -1,
@@ -1108,7 +4102,7 @@
           {
             "name": "numClusters",
             "in": "formData",
-            "description": "The number of clusters. -1 to select number of clusters automatically by cross validation (default = -1).",
+            "description": "The number of clusters. -1 to select number of clusters automatically by cross validation (default \u003d -1).",
             "required": false,
             "type": "integer",
             "default": -1,
@@ -1117,7 +4111,7 @@
           {
             "name": "maxIterations",
             "in": "formData",
-            "description": "Maximum number of iterations (default = 100).",
+            "description": "Maximum number of iterations (default \u003d 100).",
             "required": false,
             "type": "integer",
             "default": 100,
@@ -1126,6 +4120,7 @@
           {
             "name": "subjectid",
             "in": "header",
+            "description": "authorization token",
             "required": false,
             "type": "string"
           }
@@ -1145,14 +4140,25 @@
           },
           "404": {
             "description": "Resource Not Found"
+          },
+          "500": {
+            "description": "Internal Server Error"
           }
+        },
+        "x-orn-@type": "x-orn:Algorithm",
+        "x-orn:expects": {
+          "x-orn-@id": "x-orn:Dataset"
+        },
+        "x-orn:returns": {
+          "x-orn-@id": "x-orn:Cluster"
         },
         "x-algorithm": {
           "EM": "https://en.wikipedia.org/wiki/Expectation%E2%80%93maximization_algorithm"
-        }
+        },
+        "x-orn-@id": "/cluster/EM"
       }
     },
-    "/dataset/{id}/arff": {
+    "/dataset/{id}": {
       "get": {
         "tags": [
           "dataset"
@@ -1194,8 +4200,143 @@
           },
           "404": {
             "description": "Resource Not Found"
+          },
+          "500": {
+            "description": "Internal Server Error"
           }
-        }
+        },
+        "x-orn-@type": "x-orn:Dataset",
+        "x-orn:expects": {
+          "x-orn-@id": "x-orn:ID"
+        },
+        "x-orn:returns": {
+          "x-orn-@id": "x-orn:Arff"
+        },
+        "x-orn-@id": "/dataset/{id}"
+      },
+      "post": {
+        "tags": [
+          "dataset"
+        ],
+        "summary": "Filter an internal dataset with weka filter.",
+        "description": "Filter an internal dataset with weka filter. Remove attributes and normalize or standardize all numeric attributes of a dataset. Change String to Nominal. Or Discretize attributes. Save the dataset by POST request the content-type text/uri-list.",
+        "operationId": "filter",
+        "consumes": [
+          "multipart/form-data"
+        ],
+        "produces": [
+          "text/x-arff",
+          "text/uri-list"
+        ],
+        "parameters": [
+          {
+            "name": "id",
+            "in": "path",
+            "description": "Dataset ID",
+            "required": true,
+            "type": "string"
+          },
+          {
+            "name": "idx_remove",
+            "in": "formData",
+            "description": "Feature(s) to remove. ID or comma separated IDs of the attribute(s)(column(s)) to remove. (0 \u003d no attribute will be deleted)",
+            "required": false,
+            "type": "string",
+            "default": "0"
+          },
+          {
+            "name": "scale",
+            "in": "formData",
+            "description": "Normalize all numeric values - scale: - The factor for scaling the output range (default: 1).",
+            "required": false,
+            "type": "string"
+          },
+          {
+            "name": "translation",
+            "in": "formData",
+            "description": "Normalize all numeric values - translation: The translation of the output range (default: 0).",
+            "required": false,
+            "type": "string"
+          },
+          {
+            "name": "standardize",
+            "in": "formData",
+            "description": "Standardize all numeric attributes in the given dataset to have zero mean and unit variance (apart from the class attribute, if set).",
+            "required": false,
+            "type": "boolean"
+          },
+          {
+            "name": "ignore",
+            "in": "formData",
+            "description": "Ignore class (ignore class attribute for Normalization or Standization).",
+            "required": false,
+            "type": "boolean"
+          },
+          {
+            "name": "attributeRange",
+            "in": "formData",
+            "description": "String to Nominal: Sets which attributes to process. This attributes must be string attributes (\"first\" and \"last\" are valid values as well as ranges and lists. Empty value do not process the filter).",
+            "required": false,
+            "type": "string"
+          },
+          {
+            "name": "attributeIndicies",
+            "in": "formData",
+            "description": "Discretize: Specify range of attributes to act on. This is a comma separated list of attribute indices, with \"first\" and \"last\" valid values. Specify an inclusive range with \"-\". E.g: \"first-3,5,6-10,last\". Empty value do not process the filter).",
+            "required": false,
+            "type": "string"
+          },
+          {
+            "name": "bins",
+            "in": "formData",
+            "description": "Discretize: Number of bins (default: 10).",
+            "required": false,
+            "type": "integer",
+            "format": "int32"
+          },
+          {
+            "name": "useEqualFrequency",
+            "in": "formData",
+            "description": "Discretize: useEqualFrequency - if set to true, equal-frequency binning will be used instead of equal-width binning.",
+            "required": false,
+            "type": "boolean"
+          },
+          {
+            "name": "subjectid",
+            "in": "header",
+            "description": "Authorization token",
+            "required": false,
+            "type": "string"
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "OK"
+          },
+          "400": {
+            "description": "Bad Request"
+          },
+          "401": {
+            "description": "Unauthorized"
+          },
+          "403": {
+            "description": "Forbidden"
+          },
+          "404": {
+            "description": "Resource Not Found"
+          },
+          "500": {
+            "description": "Internal Server Error"
+          }
+        },
+        "x-orn-@type": "x-orn:Dataset",
+        "x-orn:expects": {
+          "x-orn-@id": "x-orn:ID"
+        },
+        "x-orn:returns": {
+          "x-orn-@id": "x-orn:Dataset"
+        },
+        "x-orn-@id": "/dataset/{id}"
       }
     },
     "/dataset": {
@@ -1234,8 +4375,16 @@
           },
           "404": {
             "description": "Resource Not Found"
+          },
+          "500": {
+            "description": "Internal Server Error"
           }
-        }
+        },
+        "x-orn-@type": "x-orn:URIList",
+        "x-orn:returns": {
+          "x-orn-@id": "x-orn:URIList"
+        },
+        "x-orn-@id": "/dataset"
       },
       "post": {
         "tags": [
@@ -1289,101 +4438,19 @@
           },
           "404": {
             "description": "Resource Not Found"
+          },
+          "500": {
+            "description": "Internal Server Error"
           }
-        }
-      }
-    },
-    "/dataset/{id}": {
-      "post": {
-        "tags": [
-          "dataset"
-        ],
-        "summary": "Filter an internal dataset with weka filter.",
-        "description": "Filter an internal dataset with weka filter. Remove attributes and normalize or standardize all numeric attributes of a dataset.Save the dataset by POST request the content-type text/uri-list.",
-        "operationId": "filter",
-        "consumes": [
-          "multipart/form-data"
-        ],
-        "produces": [
-          "text/x-arff",
-          "text/uri-list"
-        ],
-        "parameters": [
-          {
-            "name": "id",
-            "in": "path",
-            "description": "Dataset ID",
-            "required": true,
-            "type": "string"
-          },
-          {
-            "name": "idx_remove",
-            "in": "formData",
-            "description": "Feature(s) to remove. ID or comma separated IDs of the attribute(s)(column(s)) to remove. (0 = no attribute will be deleted)",
-            "required": false,
-            "type": "string",
-            "default": "0"
-          },
-          {
-            "name": "scale",
-            "in": "formData",
-            "description": "Normalize all numeric values - scale: - The factor for scaling the output range (default: 1).",
-            "required": false,
-            "type": "string"
-          },
-          {
-            "name": "translation",
-            "in": "formData",
-            "description": "Normalize all numeric values - translation: The translation of the output range (default: 0).",
-            "required": false,
-            "type": "string"
-          },
-          {
-            "name": "standardize",
-            "in": "formData",
-            "description": "Standardize all numeric attributes in the given dataset to have zero mean and unit variance (apart from the class attribute, if set).",
-            "required": false,
-            "type": "boolean"
-          },
-          {
-            "name": "ignore",
-            "in": "formData",
-            "description": "Ignore class (ignore class attribute for Normalization or Standization).",
-            "required": false,
-            "type": "boolean"
-          },
-          {
-            "name": "attributeRange",
-            "in": "formData",
-            "description": "String to Nominal: Sets which attributes to process. This attributes must be string attributes (\"first\" and \"last\" are valid values as well as ranges and lists. Empty value do not process the filter).",
-            "required": false,
-            "type": "string"
-          },
-          {
-            "name": "subjectid",
-            "in": "header",
-            "description": "Authorization token",
-            "required": false,
-            "type": "string"
-          }
-        ],
-        "responses": {
-          "200": {
-            "description": "OK"
-          },
-          "400": {
-            "description": "Bad Request"
-          },
-          "401": {
-            "description": "Unauthorized"
-          },
-          "403": {
-            "description": "Forbidden"
-          },
-          "404": {
-            "description": "Resource Not Found"
-          }
-        }
+        },
+        "x-orn-@type": "x-orn:Dataset",
+        "x-orn:expects": {
+          "x-orn-@id": "x-orn:URI"
+        },
+        "x-orn:returns": {
+          "x-orn-@id": "x-orn:Dataset"
+        },
+        "x-orn-@id": "/dataset"
       }
     },
     "/model/{id}": {
@@ -1398,7 +4465,8 @@
           "multipart/form-data"
         ],
         "produces": [
-          "text/plain"
+          "text/plain",
+          "application/json"
         ],
         "parameters": [
           {
@@ -1431,8 +4499,19 @@
           },
           "404": {
             "description": "Resource Not Found"
+          },
+          "500": {
+            "description": "Internal Server Error"
           }
-        }
+        },
+        "x-orn-@type": "x-orn:Model",
+        "x-orn:expects": {
+          "x-orn-@id": "x-orn:ModelId"
+        },
+        "x-orn:returns": {
+          "x-orn-@id": "x-orn:Model"
+        },
+        "x-orn-@id": "/model/{id}"
       },
       "post": {
         "tags": [
@@ -1491,8 +4570,19 @@
           },
           "404": {
             "description": "Resource Not Found"
+          },
+          "500": {
+            "description": "Internal Server Error"
           }
-        }
+        },
+        "x-orn-@type": "x-orn:Model",
+        "x-orn:expects": {
+          "x-orn-@id": "x-orn:Dataset"
+        },
+        "x-orn:returns": {
+          "x-orn-@id": "x-orn:Prediction"
+        },
+        "x-orn-@id": "/model/{id}"
       }
     },
     "/model": {
@@ -1534,9 +4624,127 @@
           },
           "404": {
             "description": "Resource Not Found"
+          },
+          "500": {
+            "description": "Internal Server Error"
           }
-        }
+        },
+        "x-orn-@type": "x-orn:Model",
+        "x-orn:expects": {
+          "x-orn-@id": "x-orn:void"
+        },
+        "x-orn:returns": {
+          "x-orn-@id": "x-orn:ModelList"
+        },
+        "x-orn-@id": "/model"
+      }
+    },
+    "/task/{id}": {
+      "get": {
+        "tags": [
+          "task"
+        ],
+        "summary": "Get json representation of a task.",
+        "description": "Get json representation of a task.",
+        "operationId": "get",
+        "produces": [
+          "application/json"
+        ],
+        "parameters": [
+          {
+            "name": "id",
+            "in": "path",
+            "description": "Task ID",
+            "required": true,
+            "type": "string"
+          },
+          {
+            "name": "subjectid",
+            "in": "header",
+            "description": "Authorization token",
+            "required": false,
+            "type": "string"
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "OK"
+          },
+          "400": {
+            "description": "Bad Request"
+          },
+          "401": {
+            "description": "Unauthorized"
+          },
+          "403": {
+            "description": "Forbidden"
+          },
+          "404": {
+            "description": "Resource Not Found"
+          },
+          "500": {
+            "description": "Internal Server Error"
+          }
+        },
+        "x-orn-@type": "x-orn:Task",
+        "x-orn:expects": {
+          "x-orn-@id": "x-orn:ID"
+        },
+        "x-orn:returns": {
+          "x-orn-@id": "x-orn:Task"
+        },
+        "x-orn-@id": "/task/{id}"
+      }
+    },
+    "/task": {
+      "get": {
+        "tags": [
+          "task"
+        ],
+        "summary": "List all tasks.",
+        "description": "List all tasks.",
+        "operationId": "list",
+        "produces": [
+          "text/uri-list",
+          "application/json"
+        ],
+        "parameters": [
+          {
+            "name": "subjectid",
+            "in": "header",
+            "description": "Authorization token",
+            "required": false,
+            "type": "string"
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "OK"
+          },
+          "400": {
+            "description": "Bad Request"
+          },
+          "401": {
+            "description": "Unauthorized"
+          },
+          "403": {
+            "description": "Forbidden"
+          },
+          "404": {
+            "description": "Resource Not Found"
+          },
+          "500": {
+            "description": "Internal Server Error"
+          }
+        },
+        "x-orn-@type": "x-orn:URIList",
+        "x-orn:returns": {
+          "x-orn-@id": "x-orn:URIList"
+        },
+        "x-orn-@id": "/task"
       }
     }
-  }
+  },
+  "x-orn-@type": "x-orn:Service",
+  "x-orn-@id": "weka rest service"
 }
