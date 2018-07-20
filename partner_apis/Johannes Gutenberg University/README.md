@@ -9,7 +9,7 @@ The webservice provides an OpenRiskNet compliant REST interface to machine learn
 The application is developed by the Institute of Computer Science at the Johannes Gutenberg University Mainz.
 OpenRiskNet is funded by the European Commission GA 731075. WEKA is developed by the Machine Learning Group at the University of Waikato.
 
-A Swagger GUI representing the API, in the development version, can be found here: [https://cuttlefish.informatik.uni-mainz.de](https://cuttlefish.informatik.uni-mainz.de) 
+A Swagger GUI representing the API, in the OpenAPI 3.0.1 version, can be found here: [https://jguweka.prod.openrisknet.org/](https://jguweka.prod.openrisknet.org/) 
 
 ## Lazar & Nano-Lazar API definitions
 
