@@ -533,7 +533,7 @@
         "description": "Get compound representation",
         "parameters": [
           {
-            "$ref": "#/components/parameters/InChI"
+            "$ref": "#/components/parameters/inchi"
           },
           {
             "$ref": "#/components/parameters/subjectid"
@@ -1344,7 +1344,7 @@
           "type": "string"
         }
       },
-      "InChI": {
+      "inchi": {
         "name": "InChI",
         "in": "path",
         "description": "InChI String",

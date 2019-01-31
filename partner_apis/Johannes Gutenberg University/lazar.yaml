@@ -477,7 +477,7 @@ paths:
         - compound
       description: Get compound representation
       parameters:
-        - $ref: '#/components/parameters/InChI'
+        - $ref: '#/components/parameters/inchi'
         - $ref: '#/components/parameters/subjectid'
       responses:
         '200':
@@ -988,7 +988,7 @@ components:
       required: true
       schema:
         type: string
-    InChI:
+    inchi:
       name: InChI
       in: path
       description: InChI String
