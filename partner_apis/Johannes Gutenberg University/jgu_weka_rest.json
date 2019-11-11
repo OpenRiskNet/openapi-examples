@@ -4419,9 +4419,9 @@
   "x-orn-@type" : "Service",
   "x-orn-@context" : {
     "@vocab" : "http://openrisknet.org/schema#",
-    "orn-@id" : "@id",
-    "orn" : "http://openrisknet.org/schema#",
-    "orn-@type" : "@type"
+    "x-orn-@id" : "@id",
+    "x-orn" : "http://openrisknet.org/schema#",
+    "x-orn-@type" : "@type"
   },
   "x-orn-@id" : "https://jguweka.prod.openrisknet.org"
 }
