@@ -2,17 +2,17 @@
   "openapi" : "3.0.1",
   "info" : {
     "title" : "JGU WEKA REST Service",
-    "description" : "RESTful API Webservice to WEKA Machine Learning Algorithms.\n  This webservice provides an [OpenRiskNet](https://openrisknet.org/) compliant REST interface to machine learning algorithms from the WEKA Java Library.\n  This application is developed by the [Institute of Computer Science](http://www.datamining.informatik.uni-mainz.de) at the Johannes Gutenberg University Mainz.\n\n  OpenRiskNet is funded by the European Commission GA 731075. WEKA is developed by the [Machine Learning Group](https://www.cs.waikato.ac.nz/ml/index.html) at the University of Waikato.\n\n  See [Documentation](https://jguwekarest.github.io/jguwekarest/), [Issue Tracker](https://github.com/jguwekarest/jguwekarest/issues) and [Code](https://github.com/jguwekarest/jguwekarest) at Github.",
+    "description" : "This is a RESTful API Webservice for WEKA Machine Learning algorithms.\nThis webservice provides an [OpenRiskNet](https://openrisknet.org/) compliant REST interface for machine learning algorithms from the WEKA library.\n This service is developed by the [Institute of Computer Science](http://www.datamining.informatik.uni-mainz.de) at the Johannes Gutenberg University Mainz.\n\nOpenRiskNet is funded by the European Commission GA 731075.\nWEKA is developed by the [Machine Learning Group](https://www.cs.waikato.ac.nz/ml/index.html) at the University of Waikato.\n\nSee [Documentation](https://jguwekarest.github.io/jguwekarest/), [Issue Tracker](https://github.com/jguwekarest/jguwekarest/issues) and [Code](https://github.com/jguwekarest/jguwekarest) at Github.",
     "contact" : {
-      "name" : "Data Mining Group JGU Mainz",
-      "url" : "http://www.datamining.informatik.uni-mainz.de",
-      "email" : "rautenberg@uni-mainz.de"
+      "name" : "Data Mining Group, Institute of Computer Science, J.G.U. Mainz",
+      "url" : "https://www.datamining.informatik.uni-mainz.de",
+      "email" : "datamining@uni-mainz.de"
     },
     "license" : {
       "name" : "GNU General Public License 3",
-      "url" : "https://www.gnu.org/licenses/gpl-3.0.de.html"
+      "url" : "https://www.gnu.org/licenses/gpl-3.0.html"
     },
-    "version" : "0.3.0-OAS3"
+    "version" : "0.5.1-OAS3"
   },
   "externalDocs" : {
     "description" : "JGU WEKA REST Service Documentation on GitHub",
@@ -112,7 +112,9 @@
                 "type" : "object",
                 "properties" : {
                   "file" : {
-                    "$ref" : "#/components/schemas/FormDataContentDisposition"
+                    "type" : "string",
+                    "description" : "ARFF data file.",
+                    "format" : "binary"
                   },
                   "datasetUri" : {
                     "type" : "string",
@@ -147,6 +149,7 @@
                   },
                   "searchParams" : {
                     "type" : "string",
+                    "description" : "The parameter for algorithmn to be used for searching in the compound. Are set automatically (WEKA's standard parameter setting) (Default '-P 1 -S BAYES' for local.K2).",
                     "example" : "-P 1 -S BAYES",
                     "default" : "-P 1 -S BAYES"
                   },
@@ -241,7 +244,9 @@
                 "type" : "object",
                 "properties" : {
                   "file" : {
-                    "$ref" : "#/components/schemas/FormDataContentDisposition"
+                    "type" : "string",
+                    "description" : "ARFF data file.",
+                    "format" : "binary"
                   },
                   "datasetUri" : {
                     "type" : "string",
@@ -250,24 +255,28 @@
                   },
                   "batchSize" : {
                     "type" : "integer",
+                    "description" : "Adaboost M1: The preferred number of instances to process if batch prediction is being performed. More or fewer instances may be provided, but this gives implementations a chance to specify a preferred batch size.",
                     "format" : "int32",
                     "example" : 100,
                     "default" : 100
                   },
                   "numIterations" : {
                     "type" : "integer",
+                    "description" : "Adaboost M1: The number of iterations to be performed.",
                     "format" : "int32",
                     "example" : 10,
                     "default" : 10
                   },
                   "useResampling" : {
                     "type" : "integer",
+                    "description" : "Adaboost M1: Whether resampling is used instead of reweighting.",
                     "format" : "int32",
                     "enum" : [ 0, 1 ],
                     "default" : 0
                   },
                   "weightThreshold" : {
                     "type" : "integer",
+                    "description" : "Adaboost M1: Weight threshold for weight pruning.",
                     "format" : "int32",
                     "example" : 100,
                     "default" : 100
@@ -300,6 +309,7 @@
                   },
                   "searchParams" : {
                     "type" : "string",
+                    "description" : "The parameter for algorithmn to be used for searching in the compound. Are set automatically (WEKA's standard parameter setting) (Default '-P 1 -S BAYES' for local.K2).",
                     "example" : "-P 1 -S BAYES",
                     "default" : "-P 1 -S BAYES"
                   },
@@ -394,7 +404,9 @@
                 "type" : "object",
                 "properties" : {
                   "file" : {
-                    "$ref" : "#/components/schemas/FormDataContentDisposition"
+                    "type" : "string",
+                    "description" : "ARFF data file.",
+                    "format" : "binary"
                   },
                   "datasetUri" : {
                     "type" : "string",
@@ -403,18 +415,21 @@
                   },
                   "bagSizePercent" : {
                     "type" : "integer",
+                    "description" : "Bagging: Size of each bag, as a percentage of the training set size.",
                     "format" : "int32",
                     "example" : 100,
                     "default" : 100
                   },
                   "batchSize" : {
                     "type" : "integer",
+                    "description" : "Bagging: The preferred number of instances to process if batch prediction is being performed. More or fewer instances may be provided, but this gives implementations a chance to specify a preferred batch size.",
                     "format" : "int32",
                     "example" : 100,
                     "default" : 100
                   },
                   "numIterations" : {
                     "type" : "integer",
+                    "description" : "Bagging: The number of iterations to be performed.",
                     "format" : "int32",
                     "example" : 10,
                     "default" : 10
@@ -447,6 +462,7 @@
                   },
                   "searchParams" : {
                     "type" : "string",
+                    "description" : "The parameter for algorithmn to be used for searching in the compound. Are set automatically (WEKA's standard parameter setting) (Default '-P 1 -S BAYES' for local.K2).",
                     "example" : "-P 1 -S BAYES",
                     "default" : "-P 1 -S BAYES"
                   },
@@ -541,25 +557,32 @@
                 "type" : "object",
                 "properties" : {
                   "file" : {
-                    "$ref" : "#/components/schemas/FormDataContentDisposition"
+                    "type" : "string",
+                    "description" : "ARFF data file.",
+                    "format" : "binary"
                   },
                   "datasetUri" : {
-                    "type" : "string"
+                    "type" : "string",
+                    "description" : "Dataset URI or local dataset ID (to the arff representation of a dataset).",
+                    "default" : ""
                   },
                   "batchSize" : {
                     "type" : "integer",
+                    "description" : "The preferred number of instances to process if batch prediction is being performed. More or fewer instances may be provided, but this gives implementations a chance to specify a preferred batch size.",
                     "format" : "int32",
                     "example" : 100,
                     "default" : 100
                   },
                   "useKernelEstimator" : {
                     "type" : "integer",
+                    "description" : "Use a kernel estimator for numeric attributes rather than a normal distribution. (Default: 0).",
                     "format" : "int32",
                     "enum" : [ 0, 1 ],
                     "default" : 0
                   },
                   "useSupervisedDiscretization" : {
                     "type" : "number",
+                    "description" : "Use supervised discretization to convert numeric attributes to nominal ones. (Default: 0). Works not together with useKernelEstimator=1.",
                     "enum" : [ 0, 1 ],
                     "default" : 0
                   },
@@ -653,43 +676,53 @@
                 "type" : "object",
                 "properties" : {
                   "file" : {
-                    "$ref" : "#/components/schemas/FormDataContentDisposition"
+                    "type" : "string",
+                    "description" : "ARFF data file.",
+                    "format" : "binary"
                   },
                   "datasetUri" : {
-                    "type" : "string"
+                    "type" : "string",
+                    "description" : "Dataset URI or local dataset ID (to the arff representation of a dataset).",
+                    "default" : ""
                   },
                   "batchSize" : {
                     "type" : "integer",
+                    "description" : "The preferred number of instances to process if batch prediction is being performed. More or fewer instances may be provided, but this gives implementations a chance to specify a preferred batch size.",
                     "format" : "int32",
                     "example" : 100,
                     "default" : 100
                   },
                   "numIterations" : {
                     "type" : "integer",
+                    "description" : "Adaboost M1: The number of iterations to be performed.",
                     "format" : "int32",
                     "example" : 10,
                     "default" : 10
                   },
                   "useResampling" : {
                     "type" : "integer",
+                    "description" : "Adaboost M1: Whether resampling is used instead of reweighting.",
                     "format" : "int32",
                     "enum" : [ 0, 1 ],
                     "default" : 0
                   },
                   "weightThreshold" : {
                     "type" : "integer",
+                    "description" : "Adaboost M1: Weight threshold for weight pruning.",
                     "format" : "int32",
                     "example" : 100,
                     "default" : 100
                   },
                   "useKernelEstimator" : {
                     "type" : "integer",
+                    "description" : "Use a kernel estimator for numeric attributes rather than a normal distribution. (Default: 0).",
                     "format" : "int32",
                     "enum" : [ 0, 1 ],
                     "default" : 0
                   },
                   "useSupervisedDiscretization" : {
                     "type" : "number",
+                    "description" : "Use supervised discretization to convert numeric attributes to nominal ones. (Default: 0). Works not together with useKernelEstimator=1.",
                     "enum" : [ 0, 1 ],
                     "default" : 0
                   },
@@ -783,37 +816,46 @@
                 "type" : "object",
                 "properties" : {
                   "file" : {
-                    "$ref" : "#/components/schemas/FormDataContentDisposition"
+                    "type" : "string",
+                    "description" : "ARFF data file.",
+                    "format" : "binary"
                   },
                   "datasetUri" : {
-                    "type" : "string"
+                    "type" : "string",
+                    "description" : "Dataset URI or local dataset ID (to the arff representation of a dataset).",
+                    "default" : ""
                   },
                   "bagSizePercent" : {
                     "type" : "integer",
+                    "description" : "Bagging: Size of each bag, as a percentage of the training set size.",
                     "format" : "int32",
                     "example" : 100,
                     "default" : 100
                   },
                   "batchSize" : {
                     "type" : "integer",
+                    "description" : "The preferred number of instances to process if batch prediction is being performed. More or fewer instances may be provided, but this gives implementations a chance to specify a preferred batch size.",
                     "format" : "int32",
                     "example" : 100,
                     "default" : 100
                   },
                   "numIterations" : {
                     "type" : "integer",
+                    "description" : "Bagging: The number of iterations to be performed.",
                     "format" : "int32",
                     "example" : 10,
                     "default" : 10
                   },
                   "useKernelEstimator" : {
                     "type" : "integer",
+                    "description" : "Use a kernel estimator for numeric attributes rather than a normal distribution. (Default: 0).",
                     "format" : "int32",
                     "enum" : [ 0, 1 ],
                     "default" : 0
                   },
                   "useSupervisedDiscretization" : {
                     "type" : "number",
+                    "description" : "Use supervised discretization to convert numeric attributes to nominal ones. (Default: 0). Works not together with useKernelEstimator=1.",
                     "enum" : [ 0, 1 ],
                     "default" : 0
                   },
@@ -886,6 +928,397 @@
         "x-orn-@id" : "/algorithm/BayesNet"
       }
     },
+    "/algorithm/linearRegression" : {
+      "post" : {
+        "tags" : [ "algorithm" ],
+        "summary" : "REST interface to the WEKA linear regression classifier.",
+        "description" : "REST interface to the WEKA linear regression classifier. Returns a Task URI.",
+        "operationId" : "algorithmLRPost",
+        "parameters" : [ {
+          "name" : "subjectid",
+          "in" : "header",
+          "description" : "authorization token",
+          "schema" : {
+            "type" : "string"
+          }
+        } ],
+        "requestBody" : {
+          "content" : {
+            "multipart/form-data" : {
+              "schema" : {
+                "type" : "object",
+                "properties" : {
+                  "file" : {
+                    "type" : "string",
+                    "description" : "ARFF data file.",
+                    "format" : "binary"
+                  },
+                  "datasetUri" : {
+                    "type" : "string",
+                    "description" : "Dataset URI or local dataset ID (to the arff representation of a dataset).",
+                    "default" : ""
+                  },
+                  "attributeSelectionMethod" : {
+                    "type" : "integer",
+                    "description" : "Attribute selection method to be used (Default M5 method).Available methods are: no attribute selection(Value:1), attribute selection using M5's method (Value:0) and a greedy selection using the Akaike information metric(Value:2). One of 0,1,2 (Default: 0).",
+                    "format" : "int32",
+                    "enum" : [ 0, 1, 2 ],
+                    "default" : 0
+                  },
+                  "eliminateColinearAttributes" : {
+                    "type" : "integer",
+                    "description" : "Whether to eliminate colinear attributes. Must be 0 or 1 (Default: 1).",
+                    "format" : "int32",
+                    "enum" : [ 0, 1 ],
+                    "default" : 1
+                  },
+                  "ridge" : {
+                    "type" : "number",
+                    "description" : "The ridge parameter (Default: 1.0E-8).",
+                    "default" : 1.0E-8
+                  },
+                  "validation" : {
+                    "type" : "string",
+                    "description" : "Validation to use.",
+                    "example" : "CrossValidation",
+                    "enum" : [ "CrossValidation", "Hold-Out" ],
+                    "default" : "CrossValidation"
+                  },
+                  "validationNum" : {
+                    "minimum" : 0,
+                    "type" : "number",
+                    "description" : "Num of Crossvalidations or Percentage Split %.",
+                    "format" : "double",
+                    "example" : 10,
+                    "default" : 10
+                  }
+                }
+              }
+            }
+          }
+        },
+        "responses" : {
+          "200" : {
+            "description" : "OK",
+            "content" : {
+              "text/uri-list" : {
+                "schema" : {
+                  "type" : "string"
+                }
+              },
+              "application/json" : {
+                "schema" : {
+                  "type" : "string"
+                }
+              }
+            }
+          },
+          "400" : {
+            "description" : "Bad Request"
+          },
+          "401" : {
+            "description" : "Unauthorized"
+          },
+          "403" : {
+            "description" : "Forbidden"
+          },
+          "404" : {
+            "description" : "Resource Not Found"
+          },
+          "500" : {
+            "description" : "Internal Server Error"
+          }
+        },
+        "x-orn-@type" : "x-orn:Algorithm",
+        "x-orn:expects" : {
+          "x-orn-@id" : "x-orn:Dataset"
+        },
+        "x-orn:returns" : {
+          "x-orn-@id" : "x-orn:Task"
+        },
+        "x-algorithm" : {
+          "Linear Regression" : "https://en.wikipedia.org/wiki/Linear_regression"
+        },
+        "x-orn-@id" : "/algorithm/linearRegression"
+      }
+    },
+    "/algorithm/linearRegression/adaboost" : {
+      "post" : {
+        "tags" : [ "algorithm", "meta algorithm" ],
+        "summary" : "REST interface to the WEKA Bagging with linear regression classifier.",
+        "description" : "REST interface to the WEKA Bagging with linear regression classifier. Returns a Task URI.",
+        "operationId" : "algorithmLRAdaBoostPost",
+        "parameters" : [ {
+          "name" : "subjectid",
+          "in" : "header",
+          "description" : "authorization token",
+          "schema" : {
+            "type" : "string"
+          }
+        } ],
+        "requestBody" : {
+          "content" : {
+            "multipart/form-data" : {
+              "schema" : {
+                "type" : "object",
+                "properties" : {
+                  "file" : {
+                    "type" : "string",
+                    "description" : "ARFF data file.",
+                    "format" : "binary"
+                  },
+                  "datasetUri" : {
+                    "type" : "string",
+                    "description" : "Dataset URI or local dataset ID (to the arff representation of a dataset).",
+                    "default" : ""
+                  },
+                  "batchSize" : {
+                    "type" : "integer",
+                    "description" : "Adaboost M1: The preferred number of instances to process if batch prediction is being performed. More or fewer instances may be provided, but this gives implementations a chance to specify a preferred batch size.",
+                    "format" : "int32",
+                    "example" : 100,
+                    "default" : 100
+                  },
+                  "numIterations" : {
+                    "type" : "integer",
+                    "description" : "Adaboost M1: The number of iterations to be performed.",
+                    "format" : "int32",
+                    "example" : 10,
+                    "default" : 10
+                  },
+                  "useResampling" : {
+                    "type" : "integer",
+                    "description" : "Adaboost M1: Whether resampling is used instead of reweighting.",
+                    "format" : "int32",
+                    "enum" : [ 0, 1 ],
+                    "default" : 0
+                  },
+                  "weightThreshold" : {
+                    "type" : "integer",
+                    "description" : "Adaboost M1: Weight threshold for weight pruning.",
+                    "format" : "int32",
+                    "example" : 100,
+                    "default" : 100
+                  },
+                  "attributeSelectionMethod" : {
+                    "type" : "integer",
+                    "description" : "Attribute selection method to be used (Default M5 method).Available methods are: no attribute selection(Value:1), attribute selection using M5's method (Value:0) and a greedy selection using the Akaike information metric(Value:2). One of 0,1,2 (Default: 0).",
+                    "format" : "int32",
+                    "enum" : [ 0, 1, 2 ],
+                    "default" : 0
+                  },
+                  "eliminateColinearAttributes" : {
+                    "type" : "integer",
+                    "description" : "Whether to eliminate colinear attributes. Must be 0 or 1 (Default: 1).",
+                    "format" : "int32",
+                    "enum" : [ 0, 1 ],
+                    "default" : 1
+                  },
+                  "ridge" : {
+                    "type" : "number",
+                    "description" : "The ridge parameter (Default: 1.0E-8).",
+                    "default" : 1.0E-8
+                  },
+                  "validation" : {
+                    "type" : "string",
+                    "description" : "Validation to use.",
+                    "example" : "CrossValidation",
+                    "enum" : [ "CrossValidation", "Hold-Out" ],
+                    "default" : "CrossValidation"
+                  },
+                  "validationNum" : {
+                    "minimum" : 0,
+                    "type" : "number",
+                    "description" : "Num of Crossvalidations or Percentage Split %.",
+                    "format" : "double",
+                    "example" : 10,
+                    "default" : 10
+                  }
+                }
+              }
+            }
+          }
+        },
+        "responses" : {
+          "200" : {
+            "description" : "OK",
+            "content" : {
+              "text/uri-list" : {
+                "schema" : {
+                  "type" : "string"
+                }
+              },
+              "application/json" : {
+                "schema" : {
+                  "type" : "string"
+                }
+              }
+            }
+          },
+          "400" : {
+            "description" : "Bad Request"
+          },
+          "401" : {
+            "description" : "Unauthorized"
+          },
+          "403" : {
+            "description" : "Forbidden"
+          },
+          "404" : {
+            "description" : "Resource Not Found"
+          },
+          "500" : {
+            "description" : "Internal Server Error"
+          }
+        },
+        "x-orn-@type" : "x-orn:Algorithm",
+        "x-orn:expects" : {
+          "x-orn-@id" : "x-orn:Dataset"
+        },
+        "x-orn:returns" : {
+          "x-orn-@id" : "x-orn:Task"
+        },
+        "x-algorithm" : {
+          "Linear Regression" : "https://en.wikipedia.org/wiki/Linear_regression"
+        },
+        "x-orn-@id" : "/algorithm/linearRegression/adaboost"
+      }
+    },
+    "/algorithm/linearRegression/bagging" : {
+      "post" : {
+        "tags" : [ "algorithm", "meta algorithm" ],
+        "summary" : "REST interface to the WEKA Bagging with linear regression classifier.",
+        "description" : "REST interface to the WEKA linear Bagging with regression classifier. Returns a Task URI.",
+        "operationId" : "algorithmLRBaggingPost",
+        "parameters" : [ {
+          "name" : "subjectid",
+          "in" : "header",
+          "description" : "authorization token",
+          "schema" : {
+            "type" : "string"
+          }
+        } ],
+        "requestBody" : {
+          "content" : {
+            "multipart/form-data" : {
+              "schema" : {
+                "type" : "object",
+                "properties" : {
+                  "file" : {
+                    "type" : "string",
+                    "description" : "ARFF data file.",
+                    "format" : "binary"
+                  },
+                  "datasetUri" : {
+                    "type" : "string",
+                    "description" : "Dataset URI or local dataset ID (to the arff representation of a dataset).",
+                    "default" : ""
+                  },
+                  "bagSizePercent" : {
+                    "type" : "integer",
+                    "description" : "Bagging: Size of each bag, as a percentage of the training set size.",
+                    "format" : "int32",
+                    "example" : 100,
+                    "default" : 100
+                  },
+                  "batchSize" : {
+                    "type" : "integer",
+                    "description" : "Bagging: The preferred number of instances to process if batch prediction is being performed. More or fewer instances may be provided, but this gives implementations a chance to specify a preferred batch size.",
+                    "format" : "int32",
+                    "example" : 100,
+                    "default" : 100
+                  },
+                  "numIterations" : {
+                    "type" : "integer",
+                    "description" : "Bagging: The number of iterations to be performed.",
+                    "format" : "int32",
+                    "example" : 10,
+                    "default" : 10
+                  },
+                  "attributeSelectionMethod" : {
+                    "type" : "integer",
+                    "description" : "Attribute selection method to be used (Default M5 method).Available methods are: no attribute selection(Value:1), attribute selection using M5's method (Value:0) and a greedy selection using the Akaike information metric(Value:2). One of 0,1,2 (Default: 0).",
+                    "format" : "int32",
+                    "enum" : [ 0, 1, 2 ],
+                    "default" : 0
+                  },
+                  "eliminateColinearAttributes" : {
+                    "type" : "integer",
+                    "description" : "Whether to eliminate colinear attributes. Must be 0 or 1 (Default: 1).",
+                    "format" : "int32",
+                    "enum" : [ 0, 1 ],
+                    "default" : 1
+                  },
+                  "ridge" : {
+                    "type" : "number",
+                    "description" : "The ridge parameter (Default: 1.0E-8).",
+                    "default" : 1.0E-8
+                  },
+                  "validation" : {
+                    "type" : "string",
+                    "description" : "Validation to use.",
+                    "example" : "CrossValidation",
+                    "enum" : [ "CrossValidation", "Hold-Out" ],
+                    "default" : "CrossValidation"
+                  },
+                  "validationNum" : {
+                    "minimum" : 0,
+                    "type" : "number",
+                    "description" : "Num of Crossvalidations or Percentage Split %.",
+                    "format" : "double",
+                    "example" : 10,
+                    "default" : 10
+                  }
+                }
+              }
+            }
+          }
+        },
+        "responses" : {
+          "200" : {
+            "description" : "OK",
+            "content" : {
+              "text/uri-list" : {
+                "schema" : {
+                  "type" : "string"
+                }
+              },
+              "application/json" : {
+                "schema" : {
+                  "type" : "string"
+                }
+              }
+            }
+          },
+          "400" : {
+            "description" : "Bad Request"
+          },
+          "401" : {
+            "description" : "Unauthorized"
+          },
+          "403" : {
+            "description" : "Forbidden"
+          },
+          "404" : {
+            "description" : "Resource Not Found"
+          },
+          "500" : {
+            "description" : "Internal Server Error"
+          }
+        },
+        "x-orn-@type" : "x-orn:Algorithm",
+        "x-orn:expects" : {
+          "x-orn-@id" : "x-orn:Dataset"
+        },
+        "x-orn:returns" : {
+          "x-orn-@id" : "x-orn:Task"
+        },
+        "x-algorithm" : {
+          "Linear Regression" : "https://en.wikipedia.org/wiki/Linear_regression"
+        },
+        "x-orn-@id" : "/algorithm/linearRegression/bagging"
+      }
+    },
     "/algorithm/libsvm" : {
       "post" : {
         "tags" : [ "algorithm" ],
@@ -907,76 +1340,97 @@
                 "type" : "object",
                 "properties" : {
                   "file" : {
-                    "$ref" : "#/components/schemas/FormDataContentDisposition"
+                    "type" : "string",
+                    "description" : "ARFF data file.",
+                    "format" : "binary"
                   },
                   "datasetUri" : {
-                    "type" : "string"
+                    "type" : "string",
+                    "description" : "Dataset URI or local dataset ID (to the arff representation of a dataset).",
+                    "default" : ""
                   },
                   "svmType" : {
                     "type" : "integer",
+                    "description" : "SVMType -- The type of SVM to use. \n 0: C-SVC (classification) \n 1: nu-SVC (classification) \n 2: one-class SVM (classification) \n 3: epsilon-SVR (regression)\n 4: nu-SVR (regression)\n (Default: 0).",
                     "format" : "int32",
                     "enum" : [ 0, 1, 2, 3, 4 ],
                     "default" : 0
                   },
                   "coef0" : {
                     "type" : "number",
+                    "description" : "coef0 -- The coefficient to use. (Default: 0).",
                     "format" : "float",
                     "default" : 0
                   },
                   "cost" : {
                     "type" : "number",
+                    "description" : "cost -- The cost parameter C for C-SVC, epsilon-SVR and nu-SVR. (Default: 1.0).",
                     "format" : "float",
                     "default" : 1.0
                   },
                   "degree" : {
                     "type" : "integer",
+                    "description" : "degree -- The degree of the kernel. (Default: 3).",
                     "format" : "int32",
                     "default" : 3
                   },
                   "eps" : {
                     "type" : "number",
+                    "description" : "eps -- The tolerance of the termination criterion. (Default: 0.001).",
                     "default" : 0.001
                   },
                   "gamma" : {
                     "type" : "number",
+                    "description" : "gamma -- The gamma to use, if 0 then 1/max_index is used. (Default: 0.0).",
                     "default" : 0.0
                   },
                   "kernelType" : {
                     "type" : "integer",
+                    "description" : "kernelType -- The type of kernel to use.\n 0: linear:u'*v \n 1: polynomial: (gamma*u'*v + coef0)^degree \n 2: radial basis function: exp(-gamma*|u-v|^2) \n 3: sigmoid: tanh()gamma*u'*v + coef0) \n (Default: 2).",
                     "format" : "int32",
                     "enum" : [ 0, 1, 2, 3 ],
                     "default" : 2
                   },
                   "loss" : {
                     "type" : "number",
+                    "description" : "loss -- The epsilon for the loss function in epsilon-SVR. (Default: 0.1).",
                     "default" : 0.1
                   },
                   "normalize" : {
                     "type" : "boolean",
+                    "description" : "normalize -- Whether to normalize the data.",
                     "default" : false
                   },
                   "nu" : {
                     "type" : "number",
+                    "description" : "nu -- The value of nu for nu-SVC, one-class SVM and nu-SVR. (Default: 0.5).",
                     "default" : 0.5
                   },
                   "probabilityEstimates" : {
                     "type" : "boolean",
+                    "description" : "probabilityEstimates -- Whether to generate probability estimates instead of -1/+1 for classification problems.",
                     "default" : false
                   },
                   "shrinking" : {
                     "type" : "boolean",
+                    "description" : "shrinking -- Whether to use the shrinking heuristic.",
                     "default" : true
                   },
                   "weights" : {
-                    "type" : "string"
+                    "type" : "string",
+                    "description" : "weights -- The weights to use for the classes (blank-separated list, eg, \"1 1 1\" for a 3-class problem), if empty 1 is used by default."
                   },
                   "validation" : {
                     "type" : "string",
+                    "description" : "Validation to use.",
+                    "example" : "CrossValidation",
                     "enum" : [ "CrossValidation", "Hold-Out" ],
                     "default" : "CrossValidation"
                   },
                   "validationNum" : {
+                    "minimum" : 0,
                     "type" : "number",
+                    "description" : "Num of Crossvalidations or Percentage Split %.",
                     "format" : "double",
                     "example" : 10,
                     "default" : 10
@@ -1031,6 +1485,387 @@
         "x-orn-@id" : "/algorithm/libsvm"
       }
     },
+    "/algorithm/libsvm/adaboost" : {
+      "post" : {
+        "tags" : [ "algorithm" ],
+        "summary" : "REST interface to the WEKA support vector machine wrapper library classifier.",
+        "description" : "REST interface to the WEKA support vector machine wrapper library classifier.Returns a Task URI.",
+        "operationId" : "algorithmLibSVMAdaBoostPost",
+        "parameters" : [ {
+          "name" : "subjectid",
+          "in" : "header",
+          "description" : "authorization token",
+          "schema" : {
+            "type" : "string"
+          }
+        } ],
+        "requestBody" : {
+          "content" : {
+            "multipart/form-data" : {
+              "schema" : {
+                "type" : "object",
+                "properties" : {
+                  "file" : {
+                    "type" : "string",
+                    "description" : "ARFF data file.",
+                    "format" : "binary"
+                  },
+                  "datasetUri" : {
+                    "type" : "string",
+                    "description" : "Dataset URI or local dataset ID (to the arff representation of a dataset).",
+                    "default" : ""
+                  },
+                  "batchSize" : {
+                    "type" : "integer",
+                    "description" : "Adaboost M1: The preferred number of instances to process if batch prediction is being performed. More or fewer instances may be provided, but this gives implementations a chance to specify a preferred batch size.",
+                    "format" : "int32",
+                    "example" : 100,
+                    "default" : 100
+                  },
+                  "numIterations" : {
+                    "type" : "integer",
+                    "description" : "Adaboost M1: The number of iterations to be performed.",
+                    "format" : "int32",
+                    "example" : 10,
+                    "default" : 10
+                  },
+                  "useResampling" : {
+                    "type" : "integer",
+                    "description" : "Adaboost M1: Whether resampling is used instead of reweighting.",
+                    "format" : "int32",
+                    "enum" : [ 0, 1 ],
+                    "default" : 0
+                  },
+                  "weightThreshold" : {
+                    "type" : "integer",
+                    "description" : "Adaboost M1: Weight threshold for weight pruning.",
+                    "format" : "int32",
+                    "example" : 100,
+                    "default" : 100
+                  },
+                  "svmType" : {
+                    "type" : "integer",
+                    "description" : "SVMType -- The type of SVM to use. \n 0: C-SVC (classification) \n 1: nu-SVC (classification) \n 2: one-class SVM (classification) \n 3: epsilon-SVR (regression)\n 4: nu-SVR (regression)\n (Default: 0).",
+                    "format" : "int32",
+                    "enum" : [ 0, 1, 2, 3, 4 ],
+                    "default" : 0
+                  },
+                  "coef0" : {
+                    "type" : "number",
+                    "description" : "coef0 -- The coefficient to use. (Default: 0).",
+                    "format" : "float",
+                    "default" : 0
+                  },
+                  "cost" : {
+                    "type" : "number",
+                    "description" : "cost -- The cost parameter C for C-SVC, epsilon-SVR and nu-SVR. (Default: 1.0).",
+                    "format" : "float",
+                    "default" : 1.0
+                  },
+                  "degree" : {
+                    "type" : "integer",
+                    "description" : "degree -- The degree of the kernel. (Default: 3).",
+                    "format" : "int32",
+                    "default" : 3
+                  },
+                  "eps" : {
+                    "type" : "number",
+                    "description" : "eps -- The tolerance of the termination criterion. (Default: 0.001).",
+                    "default" : 0.001
+                  },
+                  "gamma" : {
+                    "type" : "number",
+                    "description" : "gamma -- The gamma to use, if 0 then 1/max_index is used. (Default: 0.0).",
+                    "default" : 0.0
+                  },
+                  "kernelType" : {
+                    "type" : "integer",
+                    "description" : "kernelType -- The type of kernel to use.\n 0: linear:u'*v \n 1: polynomial: (gamma*u'*v + coef0)^degree \n 2: radial basis function: exp(-gamma*|u-v|^2) \n 3: sigmoid: tanh()gamma*u'*v + coef0) \n (Default: 2).",
+                    "format" : "int32",
+                    "enum" : [ 0, 1, 2, 3 ],
+                    "default" : 2
+                  },
+                  "loss" : {
+                    "type" : "number",
+                    "description" : "loss -- The epsilon for the loss function in epsilon-SVR. (Default: 0.1).",
+                    "default" : 0.1
+                  },
+                  "normalize" : {
+                    "type" : "boolean",
+                    "description" : "normalize -- Whether to normalize the data.",
+                    "default" : false
+                  },
+                  "nu" : {
+                    "type" : "number",
+                    "description" : "nu -- The value of nu for nu-SVC, one-class SVM and nu-SVR. (Default: 0.5).",
+                    "default" : 0.5
+                  },
+                  "probabilityEstimates" : {
+                    "type" : "boolean",
+                    "description" : "probabilityEstimates -- Whether to generate probability estimates instead of -1/+1 for classification problems.",
+                    "default" : false
+                  },
+                  "shrinking" : {
+                    "type" : "boolean",
+                    "description" : "shrinking -- Whether to use the shrinking heuristic.",
+                    "default" : true
+                  },
+                  "weights" : {
+                    "type" : "string",
+                    "description" : "weights -- The weights to use for the classes (blank-separated list, eg, \"1 1 1\" for a 3-class problem), if empty 1 is used by default."
+                  },
+                  "validation" : {
+                    "type" : "string",
+                    "description" : "Validation to use.",
+                    "example" : "CrossValidation",
+                    "enum" : [ "CrossValidation", "Hold-Out" ],
+                    "default" : "CrossValidation"
+                  },
+                  "validationNum" : {
+                    "minimum" : 0,
+                    "type" : "number",
+                    "description" : "Num of Crossvalidations or Percentage Split %.",
+                    "format" : "double",
+                    "example" : 10,
+                    "default" : 10
+                  }
+                }
+              }
+            }
+          }
+        },
+        "responses" : {
+          "200" : {
+            "description" : "OK",
+            "content" : {
+              "text/uri-list" : {
+                "schema" : {
+                  "type" : "string"
+                }
+              },
+              "application/json" : {
+                "schema" : {
+                  "type" : "string"
+                }
+              }
+            }
+          },
+          "400" : {
+            "description" : "Bad Request"
+          },
+          "401" : {
+            "description" : "Unauthorized"
+          },
+          "403" : {
+            "description" : "Forbidden"
+          },
+          "404" : {
+            "description" : "Resource Not Found"
+          },
+          "500" : {
+            "description" : "Internal Server Error"
+          }
+        },
+        "x-orn-@type" : "x-orn:Algorithm",
+        "x-orn:expects" : {
+          "x-orn-@id" : "x-orn:Dataset"
+        },
+        "x-orn:returns" : {
+          "x-orn-@id" : "x-orn:Task"
+        },
+        "x-algorithm" : {
+          "support vector machine" : "https://en.wikipedia.org/wiki/Support_vector_machine"
+        },
+        "x-orn-@id" : "/algorithm/libsvm/adaboost"
+      }
+    },
+    "/algorithm/libsvm/bagging" : {
+      "post" : {
+        "tags" : [ "algorithm" ],
+        "summary" : "REST interface to the WEKA support vector machine wrapper library classifier.",
+        "description" : "REST interface to the WEKA support vector machine wrapper library classifier.Returns a Task URI.",
+        "operationId" : "algorithmLibSVMBaggingPost",
+        "parameters" : [ {
+          "name" : "subjectid",
+          "in" : "header",
+          "description" : "authorization token",
+          "schema" : {
+            "type" : "string"
+          }
+        } ],
+        "requestBody" : {
+          "content" : {
+            "multipart/form-data" : {
+              "schema" : {
+                "type" : "object",
+                "properties" : {
+                  "file" : {
+                    "type" : "string",
+                    "description" : "ARFF data file.",
+                    "format" : "binary"
+                  },
+                  "datasetUri" : {
+                    "type" : "string",
+                    "description" : "Dataset URI or local dataset ID (to the arff representation of a dataset).",
+                    "default" : ""
+                  },
+                  "bagSizePercent" : {
+                    "type" : "integer",
+                    "description" : "Bagging: Size of each bag, as a percentage of the training set size.",
+                    "format" : "int32",
+                    "example" : 100,
+                    "default" : 100
+                  },
+                  "batchSize" : {
+                    "type" : "integer",
+                    "description" : "Bagging: The preferred number of instances to process if batch prediction is being performed. More or fewer instances may be provided, but this gives implementations a chance to specify a preferred batch size.",
+                    "format" : "int32",
+                    "example" : 100,
+                    "default" : 100
+                  },
+                  "numIterations" : {
+                    "type" : "integer",
+                    "description" : "Bagging: The number of iterations to be performed.",
+                    "format" : "int32",
+                    "example" : 10,
+                    "default" : 10
+                  },
+                  "svmType" : {
+                    "type" : "integer",
+                    "description" : "SVMType -- The type of SVM to use. \n 0: C-SVC (classification) \n 1: nu-SVC (classification) \n 2: one-class SVM (classification) \n 3: epsilon-SVR (regression)\n 4: nu-SVR (regression)\n (Default: 0).",
+                    "format" : "int32",
+                    "enum" : [ 0, 1, 2, 3, 4 ],
+                    "default" : 0
+                  },
+                  "coef0" : {
+                    "type" : "number",
+                    "description" : "coef0 -- The coefficient to use. (Default: 0).",
+                    "format" : "float",
+                    "default" : 0
+                  },
+                  "cost" : {
+                    "type" : "number",
+                    "description" : "cost -- The cost parameter C for C-SVC, epsilon-SVR and nu-SVR. (Default: 1.0).",
+                    "format" : "float",
+                    "default" : 1.0
+                  },
+                  "degree" : {
+                    "type" : "integer",
+                    "description" : "degree -- The degree of the kernel. (Default: 3).",
+                    "format" : "int32",
+                    "default" : 3
+                  },
+                  "eps" : {
+                    "type" : "number",
+                    "description" : "eps -- The tolerance of the termination criterion. (Default: 0.001).",
+                    "default" : 0.001
+                  },
+                  "gamma" : {
+                    "type" : "number",
+                    "description" : "gamma -- The gamma to use, if 0 then 1/max_index is used. (Default: 0.0).",
+                    "default" : 0.0
+                  },
+                  "kernelType" : {
+                    "type" : "integer",
+                    "description" : "kernelType -- The type of kernel to use.\n 0: linear:u'*v \n 1: polynomial: (gamma*u'*v + coef0)^degree \n 2: radial basis function: exp(-gamma*|u-v|^2) \n 3: sigmoid: tanh()gamma*u'*v + coef0) \n (Default: 2).",
+                    "format" : "int32",
+                    "enum" : [ 0, 1, 2, 3 ],
+                    "default" : 2
+                  },
+                  "loss" : {
+                    "type" : "number",
+                    "description" : "loss -- The epsilon for the loss function in epsilon-SVR. (Default: 0.1).",
+                    "default" : 0.1
+                  },
+                  "normalize" : {
+                    "type" : "boolean",
+                    "description" : "normalize -- Whether to normalize the data.",
+                    "default" : false
+                  },
+                  "nu" : {
+                    "type" : "number",
+                    "description" : "nu -- The value of nu for nu-SVC, one-class SVM and nu-SVR. (Default: 0.5).",
+                    "default" : 0.5
+                  },
+                  "probabilityEstimates" : {
+                    "type" : "boolean",
+                    "description" : "probabilityEstimates -- Whether to generate probability estimates instead of -1/+1 for classification problems.",
+                    "default" : false
+                  },
+                  "shrinking" : {
+                    "type" : "boolean",
+                    "description" : "shrinking -- Whether to use the shrinking heuristic.",
+                    "default" : true
+                  },
+                  "weights" : {
+                    "type" : "string",
+                    "description" : "weights -- The weights to use for the classes (blank-separated list, eg, \"1 1 1\" for a 3-class problem), if empty 1 is used by default."
+                  },
+                  "validation" : {
+                    "type" : "string",
+                    "description" : "Validation to use.",
+                    "example" : "CrossValidation",
+                    "enum" : [ "CrossValidation", "Hold-Out" ],
+                    "default" : "CrossValidation"
+                  },
+                  "validationNum" : {
+                    "minimum" : 0,
+                    "type" : "number",
+                    "description" : "Num of Crossvalidations or Percentage Split %.",
+                    "format" : "double",
+                    "example" : 10,
+                    "default" : 10
+                  }
+                }
+              }
+            }
+          }
+        },
+        "responses" : {
+          "200" : {
+            "description" : "OK",
+            "content" : {
+              "text/uri-list" : {
+                "schema" : {
+                  "type" : "string"
+                }
+              },
+              "application/json" : {
+                "schema" : {
+                  "type" : "string"
+                }
+              }
+            }
+          },
+          "400" : {
+            "description" : "Bad Request"
+          },
+          "401" : {
+            "description" : "Unauthorized"
+          },
+          "403" : {
+            "description" : "Forbidden"
+          },
+          "404" : {
+            "description" : "Resource Not Found"
+          },
+          "500" : {
+            "description" : "Internal Server Error"
+          }
+        },
+        "x-orn-@type" : "x-orn:Algorithm",
+        "x-orn:expects" : {
+          "x-orn-@id" : "x-orn:Dataset"
+        },
+        "x-orn:returns" : {
+          "x-orn-@id" : "x-orn:Task"
+        },
+        "x-algorithm" : {
+          "support vector machine" : "https://en.wikipedia.org/wiki/Support_vector_machine"
+        },
+        "x-orn-@id" : "/algorithm/libsvm/bagging"
+      }
+    },
     "/algorithm/logistic" : {
       "post" : {
         "tags" : [ "algorithm" ],
@@ -1052,28 +1887,39 @@
                 "type" : "object",
                 "properties" : {
                   "file" : {
-                    "$ref" : "#/components/schemas/FormDataContentDisposition"
+                    "type" : "string",
+                    "description" : "ARFF data file.",
+                    "format" : "binary"
                   },
                   "datasetUri" : {
-                    "type" : "string"
+                    "type" : "string",
+                    "description" : "Dataset URI or local dataset ID (to the arff representation of a dataset).",
+                    "default" : ""
                   },
                   "ridge" : {
-                    "type" : "number"
+                    "type" : "number",
+                    "description" : "Set the Ridge value in the log-likelihood."
                   },
                   "useConjugateGradientDescent" : {
-                    "type" : "boolean"
+                    "type" : "boolean",
+                    "description" : "Use conjugate gradient descent rather than BFGS updates; faster for problems with many parameters."
                   },
                   "maxIts" : {
                     "type" : "integer",
+                    "description" : "Maximum number of iterations to perform.",
                     "format" : "int32"
                   },
                   "validation" : {
                     "type" : "string",
+                    "description" : "Validation to use.",
+                    "example" : "CrossValidation",
                     "enum" : [ "CrossValidation", "Hold-Out" ],
                     "default" : "CrossValidation"
                   },
                   "validationNum" : {
+                    "minimum" : 0,
                     "type" : "number",
+                    "description" : "Num of Crossvalidations or Percentage Split %.",
                     "format" : "double",
                     "example" : 10,
                     "default" : 10
@@ -1149,93 +1995,114 @@
                 "type" : "object",
                 "properties" : {
                   "file" : {
-                    "$ref" : "#/components/schemas/FormDataContentDisposition"
+                    "type" : "string",
+                    "description" : "ARFF data file.",
+                    "format" : "binary"
                   },
                   "datasetUri" : {
-                    "type" : "string"
+                    "type" : "string",
+                    "description" : "Dataset URI or local dataset ID (to the arff representation of a dataset).",
+                    "default" : ""
                   },
                   "momentum" : {
                     "type" : "number",
+                    "description" : "Momentum applied to the weights during updating.",
                     "format" : "double",
                     "example" : 0.2,
                     "default" : 0.2
                   },
                   "nominalToBinaryFilter" : {
                     "type" : "boolean",
+                    "description" : "This will preprocess the instances with the filter. This could help improve performance if there are nominal attributes in the data.",
                     "example" : true,
                     "enum" : [ true, false ],
                     "default" : true
                   },
                   "hiddenLayers" : {
                     "type" : "string",
+                    "description" : "This defines the hidden layers of the neural network. This is a list of positive whole numbers. 1 for each hidden layer. Comma seperated. #To have no hidden layers put a single 0 here. This will only be used if autobuild is set. There are also wildcard values 'a' = (attribs + classes) / 2, 'i' = attribs, 'o' = classes , 't' = attribs + classes.",
                     "example" : "a",
                     "default" : "a"
                   },
                   "validationThreshold" : {
                     "type" : "integer",
+                    "description" : "Used to terminate validation testing.The value here dictates how many times in a row the validation set error can get worse before training is terminated.",
                     "format" : "int32",
                     "example" : 20,
                     "default" : 20
                   },
                   "normalizeAttributes" : {
                     "type" : "boolean",
+                    "description" : "This will normalize the attributes. This could help improve performance of the network. This is not reliant on the class being numeric. This will also normalize nominal attributes as well (after they have been run through the nominal to binary filter if that is in use) so that the nominal values are between -1 and 1",
                     "example" : true,
                     "enum" : [ true, false ],
                     "default" : true
                   },
                   "numDecimalPlaces" : {
                     "type" : "integer",
+                    "description" : "The number of decimal places to be used for the output of numbers in the model.",
                     "format" : "int32"
                   },
                   "batchSize" : {
                     "type" : "integer",
+                    "description" : "The preferred number of instances to process if batch prediction is being performed. More or fewer instances may be provided, but this gives implementations a chance to specify a preferred batch size.",
                     "format" : "int32",
                     "example" : 100,
                     "default" : 100
                   },
                   "decay" : {
                     "type" : "boolean",
+                    "description" : "This will cause the learning rate to decrease. This will divide the starting learning rate by the epoch number, to determine what the current learning rate should be. This may help to stop the network from diverging from the target output, as well as improve general performance. Note that the decaying learning rate will not be shown in the gui, only the original learning rate. If the learning rate is changed in the gui, this is treated as the starting learning rate.",
                     "example" : true,
                     "enum" : [ true, false ],
                     "default" : true
                   },
                   "validationSetSize" : {
                     "type" : "integer",
+                    "description" : "The percentage size of the validation set.(The training will continue until it is observed that the error on the validation set has been consistently getting worse, or if the training time is reached).  If This is set to zero no validation set will be used and instead the network will train for the specified number of epochs.",
                     "format" : "int32",
                     "example" : 0,
                     "default" : 0
                   },
                   "trainingTime" : {
                     "type" : "integer",
+                    "description" : "The number of epochs to train through. If the validation set is non-zero then it can terminate the network early",
                     "format" : "int32",
                     "example" : 500,
                     "default" : 500
                   },
                   "normalizeNumericClass" : {
                     "type" : "boolean",
+                    "description" : "This will normalize the class if it's numeric. This could help improve performance of the network, It normalizes the class to be between -1 and 1. Note that this is only internally, the output will be scaled back to the original range.",
                     "example" : true,
                     "enum" : [ true, false ],
                     "default" : true
                   },
                   "learningRate" : {
                     "type" : "number",
+                    "description" : "The amount the weights are updated.",
                     "format" : "double",
                     "example" : 0.3,
                     "default" : 0.3
                   },
                   "reset" : {
                     "type" : "boolean",
+                    "description" : "This will allow the network to reset with a lower learning rate. If the network diverges from the answer this will automatically reset the network with a lower learning rate and begin training again. This option is only available if the gui is not set. Note that if the network diverges but isn't allowed to reset it will fail the training process and return an error message.",
                     "example" : true,
                     "enum" : [ true, false ],
                     "default" : true
                   },
                   "validation" : {
                     "type" : "string",
+                    "description" : "Validation to use.",
+                    "example" : "CrossValidation",
                     "enum" : [ "CrossValidation", "Hold-Out" ],
                     "default" : "CrossValidation"
                   },
                   "validationNum" : {
+                    "minimum" : 0,
                     "type" : "number",
+                    "description" : "Num of Crossvalidations or Percentage Split %.",
                     "format" : "double",
                     "example" : 10,
                     "default" : 10
@@ -1311,26 +2178,33 @@
                 "type" : "object",
                 "properties" : {
                   "file" : {
-                    "$ref" : "#/components/schemas/FormDataContentDisposition"
+                    "type" : "string",
+                    "description" : "ARFF data file.",
+                    "format" : "binary"
                   },
                   "datasetUri" : {
-                    "type" : "string"
+                    "type" : "string",
+                    "description" : "Dataset URI or local dataset ID (to the arff representation of a dataset).",
+                    "default" : ""
                   },
                   "numFolds" : {
                     "minimum" : -1,
                     "type" : "integer",
+                    "description" : "The number of folds for cross-validation used to generate training data for calibration models (-1 means use training data).",
                     "format" : "int32",
                     "example" : -1,
                     "default" : -1
                   },
                   "c" : {
                     "type" : "number",
+                    "description" : "The complexity parameter C.",
                     "format" : "double",
                     "example" : 1.0,
                     "default" : 1.0
                   },
                   "batchSize" : {
                     "type" : "integer",
+                    "description" : "The preferred number of instances to process if batch prediction is being performed. More or fewer instances may be provided, but this gives implementations a chance to specify a preferred batch size.",
                     "format" : "int32",
                     "example" : 100,
                     "default" : 100
@@ -1343,6 +2217,7 @@
                   },
                   "filterType" : {
                     "type" : "integer",
+                    "description" : "Determines how/if the data will be transformed. (0=normalize training data, 1=standardize training data, 2=no mormalization/standardization",
                     "format" : "int32",
                     "example" : 0,
                     "enum" : [ 0, 1, 2 ],
@@ -1350,17 +2225,21 @@
                   },
                   "calibrator" : {
                     "type" : "string",
-                    "description" : "The calibration method to use.",
+                    "description" : "The calibration method to use. ",
                     "example" : "weka.classifiers.functions.Logistic -R 1.0E-8 -M -1 -num-decimal-places 4",
                     "default" : "weka.classifiers.functions.Logistic -R 1.0E-8 -M -1 -num-decimal-places 4"
                   },
                   "validation" : {
                     "type" : "string",
+                    "description" : "Validation to use.",
+                    "example" : "CrossValidation",
                     "enum" : [ "CrossValidation", "Hold-Out" ],
                     "default" : "CrossValidation"
                   },
                   "validationNum" : {
+                    "minimum" : 0,
                     "type" : "number",
+                    "description" : "Num of Crossvalidations or Percentage Split %.",
                     "format" : "double",
                     "example" : 10,
                     "default" : 10
@@ -1436,25 +2315,32 @@
                 "type" : "object",
                 "properties" : {
                   "file" : {
-                    "$ref" : "#/components/schemas/FormDataContentDisposition"
+                    "type" : "string",
+                    "description" : "ARFF data file.",
+                    "format" : "binary"
                   },
                   "datasetUri" : {
-                    "type" : "string"
+                    "type" : "string",
+                    "description" : "Dataset URI or local dataset ID (to the arff representation of a dataset).",
+                    "default" : ""
                   },
                   "batchSize" : {
                     "type" : "integer",
+                    "description" : "The preferred number of instances to process if batch prediction is being performed. More or fewer instances may be provided, but this gives implementations a chance to specify a preferred batch size.",
                     "format" : "int32",
                     "example" : 100,
                     "default" : 100
                   },
                   "c" : {
                     "type" : "number",
+                    "description" : "The complexity parameter C.",
                     "format" : "double",
                     "example" : 1.0,
                     "default" : 1.0
                   },
                   "filterType" : {
                     "type" : "integer",
+                    "description" : "Determines how/if the data will be transformed. (0=normalize training data, 1=standardize training data, 2=no mormalization/standardization",
                     "format" : "int32",
                     "example" : 0,
                     "enum" : [ 0, 1, 2 ],
@@ -1468,17 +2354,21 @@
                   },
                   "regOptimizer" : {
                     "type" : "string",
-                    "description" : "The learning algorithm.",
+                    "description" : "The calibration method to use. ",
                     "example" : "weka.classifiers.functions.supportVector.RegSMOImproved -T 0.001 -V -P 1.0E-12 -L 0.001 -W 1",
                     "default" : "weka.classifiers.functions.Logistic -R 1.0E-8 -M -1 -num-decimal-places 4"
                   },
                   "validation" : {
                     "type" : "string",
+                    "description" : "Validation to use.",
+                    "example" : "CrossValidation",
                     "enum" : [ "CrossValidation", "Hold-Out" ],
                     "default" : "CrossValidation"
                   },
                   "validationNum" : {
+                    "minimum" : 0,
                     "type" : "number",
+                    "description" : "Num of Crossvalidations or Percentage Split %.",
                     "format" : "double",
                     "example" : 10,
                     "default" : 10
@@ -1533,109 +2423,6 @@
         "x-orn-@id" : "/algorithm/SMOreg"
       }
     },
-    "/algorithm/linearRegression" : {
-      "post" : {
-        "tags" : [ "algorithm" ],
-        "summary" : "REST interface to the WEKA linear regression classifier.",
-        "description" : "REST interface to the WEKA linear regression classifier. Returns a Task URI.",
-        "operationId" : "algorithmLRPost",
-        "parameters" : [ {
-          "name" : "subjectid",
-          "in" : "header",
-          "description" : "authorization token",
-          "schema" : {
-            "type" : "string"
-          }
-        } ],
-        "requestBody" : {
-          "content" : {
-            "multipart/form-data" : {
-              "schema" : {
-                "type" : "object",
-                "properties" : {
-                  "file" : {
-                    "$ref" : "#/components/schemas/FormDataContentDisposition"
-                  },
-                  "datasetUri" : {
-                    "type" : "string"
-                  },
-                  "attributeSelectionMethod" : {
-                    "type" : "integer",
-                    "format" : "int32",
-                    "enum" : [ 0, 1, 2 ],
-                    "default" : 0
-                  },
-                  "eliminateColinearAttributes" : {
-                    "type" : "integer",
-                    "format" : "int32",
-                    "enum" : [ 0, 1 ],
-                    "default" : 1
-                  },
-                  "ridge" : {
-                    "type" : "number",
-                    "default" : 1.0E-8
-                  },
-                  "validation" : {
-                    "type" : "string",
-                    "enum" : [ "CrossValidation", "Hold-Out" ],
-                    "default" : "CrossValidation"
-                  },
-                  "validationNum" : {
-                    "type" : "number",
-                    "format" : "double",
-                    "example" : 10,
-                    "default" : 10
-                  }
-                }
-              }
-            }
-          }
-        },
-        "responses" : {
-          "200" : {
-            "description" : "OK",
-            "content" : {
-              "text/uri-list" : {
-                "schema" : {
-                  "type" : "string"
-                }
-              },
-              "application/json" : {
-                "schema" : {
-                  "type" : "string"
-                }
-              }
-            }
-          },
-          "400" : {
-            "description" : "Bad Request"
-          },
-          "401" : {
-            "description" : "Unauthorized"
-          },
-          "403" : {
-            "description" : "Forbidden"
-          },
-          "404" : {
-            "description" : "Resource Not Found"
-          },
-          "500" : {
-            "description" : "Internal Server Error"
-          }
-        },
-        "x-orn-@type" : "x-orn:Algorithm",
-        "x-orn:expects" : {
-          "x-orn-@id" : "x-orn:Dataset"
-        },
-        "x-orn:returns" : {
-          "x-orn-@id" : "x-orn:Task"
-        },
-        "x-algorithm" : {
-          "Linear Regression" : "https://en.wikipedia.org/wiki/Linear_regression"
-        },
-        "x-orn-@id" : "/algorithm/linearRegression"
-      }
-    },
     "/algorithm/generic" : {
       "get" : {
         "tags" : [ "algorithm" ],
@@ -1645,9 +2432,9 @@
         "parameters" : [ {
           "name" : "classifierName",
           "in" : "query",
-          "description" : "Classifier to use.",
           "schema" : {
             "type" : "string",
+            "description" : "Classifier to use.",
             "enum" : [ "BayesNet", "DecisionStump", "GaussianProcesses", "J48", "IBk", "LibSVM", "LinearRegression", "Logistic", "M5P", "M5Rules", "MultilayerPerceptron", "NaiveBayes", "RandomForest", "SMO", "SMOreg", "ZeroR", "AdaBoost", "Bagging" ]
           }
         }, {
@@ -1714,25 +2501,33 @@
                 "type" : "object",
                 "properties" : {
                   "file" : {
-                    "$ref" : "#/components/schemas/FormDataContentDisposition"
+                    "type" : "string",
+                    "description" : "ARFF data file.",
+                    "format" : "binary"
                   },
                   "datasetUri" : {
-                    "type" : "string"
+                    "type" : "string",
+                    "description" : "Dataset URI or local dataset ID (to the arff representation of a dataset).",
+                    "default" : ""
                   },
                   "classifierString" : {
                     "type" : "string",
+                    "description" : "Classifier to use.",
                     "enum" : [ "BayesNet", "DecisionStump", "GaussianProcesses", "J48", "IBk", "LibSVM", "LinearRegression", "Logistic", "M5P", "M5Rules", "MultilayerPerceptron", "NaiveBayes", "RandomForest", "SMO", "SMOreg", "ZeroR", "AdaBoost", "Bagging" ]
                   },
                   "paramString" : {
-                    "type" : "string"
+                    "type" : "string",
+                    "description" : "Parameter String. As shown as in WEKA Explorer classifierer line. example for SMO: -C 1.0 -L 0.001 -P 1.0E-12 -N 0 -V -1 -W 1 -K \"weka.classifiers.functions.supportVector.PolyKernel -E 1.0 -C 250007\" -calibrator \"weka.classifiers.functions.Logistic -R 1.0E-8 -M -1 -num-decimal-places 4\""
                   },
                   "validation" : {
                     "type" : "string",
+                    "description" : "Validation to use.",
                     "enum" : [ "CrossValidation", "Hold-Out" ],
                     "default" : "CrossValidation"
                   },
                   "validationNum" : {
                     "type" : "number",
+                    "description" : "Num of Crossvalidations or Percentage Split %.",
                     "format" : "double",
                     "default" : 10
                   }
@@ -1804,13 +2599,18 @@
                 "type" : "object",
                 "properties" : {
                   "file" : {
-                    "$ref" : "#/components/schemas/FormDataContentDisposition"
+                    "type" : "string",
+                    "description" : "ARFF data file.",
+                    "format" : "binary"
                   },
                   "datasetUri" : {
-                    "type" : "string"
+                    "type" : "string",
+                    "description" : "Dataset URI or local dataset ID (to the arff representation of a dataset).",
+                    "default" : ""
                   },
                   "windowSize" : {
                     "type" : "integer",
+                    "description" : "Gets the maximum number of instances allowed in the training pool. The addition of new instances above this value will result in old instances being removed. A value of 0 signifies no limit to the number of training instances. Must be 0 or 1 (Default: 0).",
                     "format" : "int64",
                     "enum" : [ 0, 1 ],
                     "default" : 1
@@ -1823,34 +2623,40 @@
                   },
                   "crossValidate" : {
                     "type" : "integer",
+                    "description" : "Whether hold-one-out cross-validation will be used to select the best k value. Must be 0 or 1 (Default: 0).",
                     "format" : "int64",
                     "enum" : [ 0, 1 ],
                     "default" : 0
                   },
                   "distanceWeighting" : {
                     "type" : "integer",
+                    "description" : "May be 0 for no distance weighting, I for 1/distance or F for 1-distance. Must be 0, I or F (Default: 0).",
                     "format" : "int64",
                     "enum" : [ 0 ],
                     "default" : 0
                   },
                   "meanSquared" : {
                     "type" : "integer",
+                    "description" : "Whether the mean squared error is used rather than mean absolute error when doing cross-validation for regression problems. Must be 0 or 1 (Default: 0).",
                     "format" : "int64",
                     "enum" : [ 0, 1 ],
                     "default" : 0
                   },
                   "nearestNeighbourSearchAlgorithm" : {
                     "type" : "string",
+                    "description" : "The nearest neighbour search algorithm to use (Default: weka.core.neighboursearch.LinearNNSearch). Fixed.",
                     "enum" : [ "LinearNNSearch" ],
                     "default" : "LinearNNSearch"
                   },
                   "validation" : {
                     "type" : "string",
+                    "description" : "Validation to use.",
                     "enum" : [ "CrossValidation", "Hold-Out" ],
                     "default" : "CrossValidation"
                   },
                   "validationNum" : {
                     "type" : "number",
+                    "description" : "Num of Crossvalidations or Percentage Split %.",
                     "format" : "double",
                     "default" : 10
                   }
@@ -1904,6 +2710,132 @@
         "x-orn-@id" : "/algorithm/IBk"
       }
     },
+    "/algorithm/MLPAutoencoder" : {
+      "post" : {
+        "tags" : [ "algorithm" ],
+        "summary" : "REST interface to the WEKA Multilayer Perceptron Autoencoder.",
+        "description" : "REST interface to the WEKA Multilayer Perceptron Autoencoder. Returns a Task URI.",
+        "operationId" : "algorithmMLPAutoencoderPost",
+        "parameters" : [ {
+          "name" : "subjectid",
+          "in" : "header",
+          "description" : "authorization token",
+          "schema" : {
+            "type" : "string"
+          }
+        } ],
+        "requestBody" : {
+          "content" : {
+            "multipart/form-data" : {
+              "schema" : {
+                "type" : "object",
+                "properties" : {
+                  "file" : {
+                    "type" : "string",
+                    "description" : "ARFF data file.",
+                    "format" : "binary"
+                  },
+                  "datasetUri" : {
+                    "type" : "string",
+                    "description" : "Dataset URI or local dataset ID (to the arff representation of a dataset).",
+                    "default" : ""
+                  },
+                  "hiddenUnits" : {
+                    "type" : "integer",
+                    "description" : "The number of hidden units. (Default: 2).",
+                    "format" : "int32",
+                    "example" : 2,
+                    "default" : 2
+                  },
+                  "lambda" : {
+                    "type" : "number",
+                    "description" : "Lambda factor for penalty on weights (Default: 0.01).",
+                    "format" : "double",
+                    "default" : 0.01
+                  },
+                  "tolerance" : {
+                    "type" : "number",
+                    "description" : "Tolerance parameter for delta values (Default: 1.0e-6).",
+                    "format" : "double",
+                    "default" : 0.0000010
+                  },
+                  "useConjGradDesc" : {
+                    "type" : "boolean",
+                    "description" : "Use conjugate gradient descent (recommended for many attributes).",
+                    "enum" : [ true, false ],
+                    "default" : true
+                  },
+                  "useContractiveAE" : {
+                    "type" : "boolean",
+                    "description" : "Use contractive autoencoder instead of autoencoder with weight decay.",
+                    "enum" : [ true, false ],
+                    "default" : false
+                  },
+                  "validation" : {
+                    "type" : "string",
+                    "description" : "Validation to use.",
+                    "example" : "CrossValidation",
+                    "enum" : [ "CrossValidation", "Hold-Out" ],
+                    "default" : "CrossValidation"
+                  },
+                  "validationNum" : {
+                    "minimum" : 0,
+                    "type" : "number",
+                    "description" : "Num of Crossvalidations or Percentage Split %.",
+                    "format" : "double",
+                    "example" : 10,
+                    "default" : 10
+                  }
+                }
+              }
+            }
+          }
+        },
+        "responses" : {
+          "200" : {
+            "description" : "OK",
+            "content" : {
+              "text/uri-list" : {
+                "schema" : {
+                  "type" : "string"
+                }
+              },
+              "application/json" : {
+                "schema" : {
+                  "type" : "string"
+                }
+              }
+            }
+          },
+          "400" : {
+            "description" : "Bad Request"
+          },
+          "401" : {
+            "description" : "Unauthorized"
+          },
+          "403" : {
+            "description" : "Forbidden"
+          },
+          "404" : {
+            "description" : "Resource Not Found"
+          },
+          "500" : {
+            "description" : "Internal Server Error"
+          }
+        },
+        "x-orn-@type" : "x-orn:Algorithm",
+        "x-orn:expects" : {
+          "x-orn-@id" : "x-orn:Dataset"
+        },
+        "x-orn:returns" : {
+          "x-orn-@id" : "x-orn:Task"
+        },
+        "x-algorithm" : {
+          "MLPAutoencoder" : "https://en.wikipedia.org/wiki/Autoencoder"
+        },
+        "x-orn-@id" : "/algorithm/MLPAutoencoder"
+      }
+    },
     "/algorithm/ZeroR" : {
       "post" : {
         "tags" : [ "algorithm" ],
@@ -1925,18 +2857,24 @@
                 "type" : "object",
                 "properties" : {
                   "file" : {
-                    "$ref" : "#/components/schemas/FormDataContentDisposition"
+                    "type" : "string",
+                    "description" : "ARFF data file.",
+                    "format" : "binary"
                   },
                   "datasetUri" : {
-                    "type" : "string"
+                    "type" : "string",
+                    "description" : "Dataset URI or local dataset ID (to the arff representation of a dataset).",
+                    "default" : ""
                   },
                   "validation" : {
                     "type" : "string",
+                    "description" : "Validation to use.",
                     "enum" : [ "CrossValidation", "Hold-Out" ],
                     "default" : "CrossValidation"
                   },
                   "validationNum" : {
                     "type" : "number",
+                    "description" : "Num of Crossvalidations or Percentage Split %.",
                     "format" : "double",
                     "default" : 10
                   }
@@ -2011,38 +2949,49 @@
                 "type" : "object",
                 "properties" : {
                   "file" : {
-                    "$ref" : "#/components/schemas/FormDataContentDisposition"
+                    "type" : "string",
+                    "description" : "ARFF data file.",
+                    "format" : "binary"
                   },
                   "datasetUri" : {
-                    "type" : "string"
+                    "type" : "string",
+                    "description" : "Dataset URI or local dataset ID (to the arff representation of a dataset).",
+                    "default" : ""
                   },
                   "unpruned" : {
                     "type" : "integer",
+                    "description" : "Whether pruning is performed.",
                     "format" : "int32",
+                    "example" : 0,
                     "default" : 0
                   },
                   "useUnsmoothed" : {
                     "type" : "integer",
+                    "description" : "Whether to use unsmoothed predictions.",
                     "format" : "int32",
                     "default" : 0
                   },
                   "minNumInstances" : {
                     "type" : "number",
+                    "description" : "The minimum number of instances to allow at a leaf node.",
                     "format" : "double",
                     "default" : 4
                   },
                   "buildRegressionTree" : {
                     "type" : "integer",
+                    "description" : "Whether to generate a regression tree/rule instead of a model tree/rule.",
                     "format" : "int32",
                     "default" : 0
                   },
                   "validation" : {
                     "type" : "string",
+                    "description" : "Validation to use.",
                     "enum" : [ "CrossValidation", "Hold-Out" ],
                     "default" : "CrossValidation"
                   },
                   "validationNum" : {
                     "type" : "number",
+                    "description" : "Num of Crossvalidations or Percentage Split %.",
                     "format" : "double",
                     "default" : 10
                   }
@@ -2096,12 +3045,12 @@
         "x-orn-@id" : "/algorithm/M5Rules"
       }
     },
-    "/algorithm/DecisionStump/bagging" : {
+    "/algorithm/J48" : {
       "post" : {
-        "tags" : [ "algorithm", "meta algorithm" ],
-        "summary" : "REST interface to the WEKA Bagging with DecisionStump classifier.",
-        "description" : "REST interface to the WEKA Bagging with DecisionStump classifier. Returns a Task URI.",
-        "operationId" : "algorithmDecisionStumpBaggingPost",
+        "tags" : [ "algorithm" ],
+        "summary" : "REST interface to the WEKA J48 classifier.",
+        "description" : "REST interface to the WEKA J48 classifier. Returns a Task URI.",
+        "operationId" : "algorithmJ48Post",
         "parameters" : [ {
           "name" : "subjectid",
           "in" : "header",
@@ -2117,201 +3066,81 @@
                 "type" : "object",
                 "properties" : {
                   "file" : {
-                    "$ref" : "#/components/schemas/FormDataContentDisposition"
-                  },
-                  "datasetUri" : {
-                    "type" : "string"
-                  },
-                  "bagSizePercent" : {
-                    "type" : "integer",
-                    "format" : "int32",
-                    "example" : 100,
-                    "default" : 100
-                  },
-                  "batchSize" : {
-                    "type" : "integer",
-                    "format" : "int32",
-                    "example" : 100,
-                    "default" : 100
-                  },
-                  "numIterations" : {
-                    "type" : "integer",
-                    "format" : "int32",
-                    "example" : 10,
-                    "default" : 10
-                  },
-                  "validation" : {
                     "type" : "string",
-                    "enum" : [ "CrossValidation", "Hold-Out" ],
-                    "default" : "CrossValidation"
-                  },
-                  "validationNum" : {
-                    "type" : "number",
-                    "format" : "double",
-                    "example" : 10,
-                    "default" : 10
-                  }
-                }
-              }
-            }
-          }
-        },
-        "responses" : {
-          "200" : {
-            "description" : "OK",
-            "content" : {
-              "text/uri-list" : {
-                "schema" : {
-                  "type" : "string"
-                }
-              },
-              "application/json" : {
-                "schema" : {
-                  "type" : "string"
-                }
-              }
-            }
-          },
-          "400" : {
-            "description" : "Bad Request"
-          },
-          "401" : {
-            "description" : "Unauthorized"
-          },
-          "403" : {
-            "description" : "Forbidden"
-          },
-          "404" : {
-            "description" : "Resource Not Found"
-          },
-          "500" : {
-            "description" : "Internal Server Error"
-          }
-        },
-        "x-orn-@type" : "x-orn:Algorithm",
-        "x-orn:expects" : {
-          "x-orn-@id" : "x-orn:Dataset"
-        },
-        "x-orn:returns" : {
-          "x-orn-@id" : "x-orn:Task"
-        },
-        "x-algorithm" : {
-          "DecisionStump" : "https://en.wikipedia.org/wiki/Decision_stump"
-        },
-        "x-orn-@id" : "/algorithm/DecisionStump/bagging"
-      }
-    },
-    "/algorithm/RandomForest" : {
-      "post" : {
-        "tags" : [ "algorithm", "meta algorithm" ],
-        "summary" : "REST interface to the WEKA RandomForest classifier.",
-        "description" : "REST interface to the WEKA RandomForest classifier. Returns a Task URI.",
-        "operationId" : "algorithmRandomForestPost",
-        "parameters" : [ {
-          "name" : "subjectid",
-          "in" : "header",
-          "description" : "Authorization token",
-          "schema" : {
-            "type" : "string"
-          }
-        } ],
-        "requestBody" : {
-          "content" : {
-            "multipart/form-data" : {
-              "schema" : {
-                "type" : "object",
-                "properties" : {
-                  "file" : {
-                    "$ref" : "#/components/schemas/FormDataContentDisposition"
+                    "description" : "ARFF data file.",
+                    "format" : "binary"
                   },
                   "datasetUri" : {
-                    "type" : "string"
+                    "type" : "string",
+                    "description" : "Dataset URI or local dataset ID (to the arff representation of a dataset).",
+                    "default" : ""
                   },
-                  "storeOutOfBagPredictions" : {
-                    "type" : "boolean",
-                    "example" : false,
-                    "enum" : [ true, false ],
-                    "default" : false
-                  },
-                  "numExecutionSlots" : {
+                  "binarySplits" : {
                     "type" : "integer",
+                    "description" : "Whether to use binary splits on nominal attributes when building the trees.",
                     "format" : "int32",
-                    "example" : 1,
+                    "enum" : [ 0, 1 ],
+                    "default" : 0
+                  },
+                  "confidenceFactor" : {
+                    "type" : "number",
+                    "description" : "The confidence factor used for pruning (smaller values incur more pruning).",
+                    "default" : 0.25
+                  },
+                  "minNumObj" : {
+                    "type" : "integer",
+                    "description" : "The minimum number of instances per leaf.",
+                    "format" : "int32",
+                    "default" : 2
+                  },
+                  "numFolds" : {
+                    "type" : "integer",
+                    "description" : "Determines the amount of data used for reduced-error pruning.  One fold is used for pruning, the rest for growing the tree",
+                    "format" : "int32",
+                    "default" : 3
+                  },
+                  "reducedErrorPruning" : {
+                    "type" : "integer",
+                    "description" : "Whether reduced-error pruning is used instead of C.4.5 pruning.",
+                    "format" : "int32",
+                    "default" : 0
+                  },
+                  "seed" : {
+                    "type" : "integer",
+                    "description" : "The seed used for randomizing the data when reduced-error pruning is used.",
+                    "format" : "int32",
                     "default" : 1
                   },
-                  "bagSizePercent" : {
+                  "subtreeRaising" : {
                     "type" : "integer",
+                    "description" : "Whether to consider the subtree raising operation when pruning.",
                     "format" : "int32",
-                    "example" : 100,
-                    "default" : 100
+                    "enum" : [ 0, 1 ],
+                    "default" : 1
                   },
-                  "numDecimalPlaces" : {
+                  "unpruned" : {
                     "type" : "integer",
+                    "description" : "Whether pruning is performed.",
                     "format" : "int32",
-                    "example" : 10,
-                    "default" : 10
+                    "enum" : [ 0, 1 ],
+                    "default" : 1
                   },
-                  "batchSize" : {
+                  "useLaplace" : {
                     "type" : "integer",
+                    "description" : "Whether counts at leaves are smoothed based on Laplace.",
                     "format" : "int32",
-                    "example" : 100,
-                    "default" : 100
-                  },
-                  "printClassifiers" : {
-                    "type" : "boolean",
-                    "example" : false,
-                    "enum" : [ true, false ],
-                    "default" : false
-                  },
-                  "numIterations" : {
-                    "type" : "integer",
-                    "format" : "int32",
-                    "example" : 100,
-                    "default" : 100
-                  },
-                  "outputOutOfBagComplexityStatistics" : {
-                    "type" : "boolean",
-                    "example" : false,
-                    "enum" : [ true, false ],
-                    "default" : false
-                  },
-                  "breakTiesRandomly" : {
-                    "type" : "boolean",
-                    "example" : false,
-                    "enum" : [ true, false ],
-                    "default" : false
-                  },
-                  "maxDepth" : {
-                    "type" : "integer",
-                    "format" : "int32",
-                    "example" : 0,
-                    "default" : 0
-                  },
-                  "computeAttributeImportance" : {
-                    "type" : "boolean",
-                    "example" : false,
-                    "enum" : [ true, false ],
-                    "default" : false
-                  },
-                  "calcOutOfBag" : {
-                    "type" : "boolean",
-                    "example" : false,
-                    "enum" : [ true, false ],
-                    "default" : false
-                  },
-                  "numFeatures" : {
-                    "type" : "integer",
-                    "format" : "int32",
-                    "example" : 0,
+                    "enum" : [ 0, 1 ],
                     "default" : 0
                   },
                   "validation" : {
                     "type" : "string",
+                    "description" : "Validation to use.",
                     "enum" : [ "CrossValidation", "Hold-Out" ],
                     "default" : "CrossValidation"
                   },
                   "validationNum" : {
                     "type" : "number",
+                    "description" : "Num of Crossvalidations or Percentage Split %.",
                     "format" : "double",
                     "example" : 10,
                     "default" : 10
@@ -2361,9 +3190,9 @@
           "x-orn-@id" : "x-orn:Task"
         },
         "x-algorithm" : {
-          "Random Forest" : "https://en.wikipedia.org/wiki/Random_forest"
+          "J48" : "https://en.wikipedia.org/wiki/C4.5_algorithm#Implementations"
         },
-        "x-orn-@id" : "/algorithm/RandomForest"
+        "x-orn-@id" : "/algorithm/J48"
       }
     },
     "/algorithm/J48/adaboost" : {
@@ -2387,87 +3216,106 @@
                 "type" : "object",
                 "properties" : {
                   "file" : {
-                    "$ref" : "#/components/schemas/FormDataContentDisposition"
+                    "type" : "string",
+                    "description" : "ARFF data file.",
+                    "format" : "binary"
                   },
                   "datasetUri" : {
-                    "type" : "string"
+                    "type" : "string",
+                    "description" : "Dataset URI or local dataset ID (to the arff representation of a dataset).",
+                    "default" : ""
                   },
                   "batchSize" : {
                     "type" : "integer",
+                    "description" : "Adaboost M1: The preferred number of instances to process if batch prediction is being performed. More or fewer instances may be provided, but this gives implementations a chance to specify a preferred batch size.",
                     "format" : "int32",
                     "default" : 100
                   },
                   "numIterations" : {
                     "type" : "integer",
+                    "description" : "Adaboost M1: The number of iterations to be performed.",
                     "format" : "int32",
                     "default" : 10
                   },
                   "useResampling" : {
                     "type" : "integer",
+                    "description" : "Adaboost M1: Whether resampling is used instead of reweighting.",
                     "format" : "int32",
                     "enum" : [ 0, 1 ],
                     "default" : 0
                   },
                   "weightThreshold" : {
                     "type" : "integer",
+                    "description" : "Adaboost M1: Weight threshold for weight pruning.",
                     "format" : "int32",
                     "default" : 100
                   },
                   "binarySplits" : {
                     "type" : "integer",
+                    "description" : "Whether to use binary splits on nominal attributes when building the trees.",
                     "format" : "int32",
                     "enum" : [ 0, 1 ],
                     "default" : 0
                   },
                   "confidenceFactor" : {
                     "type" : "number",
+                    "description" : "The confidence factor used for pruning (smaller values incur more pruning).",
                     "default" : 0.25
                   },
                   "minNumObj" : {
                     "type" : "integer",
+                    "description" : "The minimum number of instances per leaf.",
                     "format" : "int32",
                     "default" : 2
                   },
                   "numFolds" : {
                     "type" : "integer",
+                    "description" : "Determines the amount of data used for reduced-error pruning.  One fold is used for pruning, the rest for growing the tree",
                     "format" : "int32",
                     "default" : 3
                   },
                   "reducedErrorPruning" : {
                     "type" : "integer",
+                    "description" : "Whether reduced-error pruning is used instead of C.4.5 pruning.",
                     "format" : "int32",
                     "default" : 0
                   },
                   "seed" : {
                     "type" : "integer",
+                    "description" : "The seed used for randomizing the data when reduced-error pruning is used.",
                     "format" : "int32",
                     "default" : 1
                   },
                   "subtreeRaising" : {
                     "type" : "integer",
+                    "description" : "Whether to consider the subtree raising operation when pruning.",
                     "format" : "int32",
                     "enum" : [ 0, 1 ],
                     "default" : 1
                   },
                   "unpruned" : {
                     "type" : "integer",
+                    "description" : "Whether pruning is performed.",
                     "format" : "int32",
                     "enum" : [ 0, 1 ],
                     "default" : 1
                   },
                   "useLaplace" : {
                     "type" : "integer",
+                    "description" : "Whether counts at leaves are smoothed based on Laplace.",
                     "format" : "int32",
                     "enum" : [ 0, 1 ],
                     "default" : 0
                   },
                   "validation" : {
                     "type" : "string",
+                    "description" : "Validation to use.",
                     "enum" : [ "CrossValidation", "Hold-Out" ],
                     "default" : "CrossValidation"
                   },
                   "validationNum" : {
                     "type" : "number",
+                    "description" : "Num of Crossvalidations or Percentage Split %.",
                     "format" : "double",
                     "example" : 10,
                     "default" : 10
@@ -2543,81 +3391,99 @@
                 "type" : "object",
                 "properties" : {
                   "file" : {
-                    "$ref" : "#/components/schemas/FormDataContentDisposition"
+                    "type" : "string",
+                    "description" : "ARFF data file.",
+                    "format" : "binary"
                   },
                   "datasetUri" : {
-                    "type" : "string"
+                    "type" : "string",
+                    "description" : "Dataset URI or local dataset ID (to the arff representation of a dataset).",
+                    "default" : ""
                   },
                   "bagSizePercent" : {
                     "type" : "integer",
+                    "description" : "Bagging: Size of each bag, as a percentage of the training set size.",
                     "format" : "int32",
                     "default" : 100
                   },
                   "batchSize" : {
                     "type" : "integer",
+                    "description" : "Bagging: The preferred number of instances to process if batch prediction is being performed. More or fewer instances may be provided, but this gives implementations a chance to specify a preferred batch size.",
                     "format" : "int32",
                     "default" : 100
                   },
                   "numIterations" : {
                     "type" : "integer",
+                    "description" : "Bagging: The number of iterations to be performed.",
                     "format" : "int32",
                     "default" : 10
                   },
                   "binarySplits" : {
                     "type" : "integer",
+                    "description" : "Whether to use binary splits on nominal attributes when building the trees.",
                     "format" : "int32",
                     "enum" : [ 0, 1 ],
                     "default" : 0
                   },
                   "confidenceFactor" : {
                     "type" : "number",
+                    "description" : "The confidence factor used for pruning (smaller values incur more pruning).",
                     "default" : 0.25
                   },
                   "minNumObj" : {
                     "type" : "integer",
+                    "description" : "The minimum number of instances per leaf.",
                     "format" : "int32",
                     "default" : 2
                   },
                   "numFolds" : {
                     "type" : "integer",
+                    "description" : "Determines the amount of data used for reduced-error pruning.  One fold is used for pruning, the rest for growing the tree",
                     "format" : "int32",
                     "default" : 3
                   },
                   "reducedErrorPruning" : {
                     "type" : "integer",
+                    "description" : "Whether reduced-error pruning is used instead of C.4.5 pruning.",
                     "format" : "int32",
                     "default" : 0
                   },
                   "seed" : {
                     "type" : "integer",
+                    "description" : "The seed used for randomizing the data when reduced-error pruning is used.",
                     "format" : "int32",
                     "default" : 1
                   },
                   "subtreeRaising" : {
                     "type" : "integer",
+                    "description" : "Whether to consider the subtree raising operation when pruning.",
                     "format" : "int32",
                     "enum" : [ 0, 1 ],
                     "default" : 1
                   },
                   "unpruned" : {
                     "type" : "integer",
+                    "description" : "Whether pruning is performed.",
                     "format" : "int32",
                     "enum" : [ 0, 1 ],
                     "default" : 1
                   },
                   "useLaplace" : {
                     "type" : "integer",
+                    "description" : "Whether counts at leaves are smoothed based on Laplace.",
                     "format" : "int32",
                     "enum" : [ 0, 1 ],
                     "default" : 0
                   },
                   "validation" : {
                     "type" : "string",
+                    "description" : "Validation to use.",
                     "enum" : [ "CrossValidation", "Hold-Out" ],
                     "default" : "CrossValidation"
                   },
                   "validationNum" : {
                     "type" : "number",
+                    "description" : "Num of Crossvalidations or Percentage Split %.",
                     "format" : "double",
                     "example" : 10,
                     "default" : 10
@@ -2693,41 +3559,52 @@
                 "type" : "object",
                 "properties" : {
                   "file" : {
-                    "$ref" : "#/components/schemas/FormDataContentDisposition"
+                    "type" : "string",
+                    "description" : "ARFF data file.",
+                    "format" : "binary"
                   },
                   "datasetUri" : {
-                    "type" : "string"
+                    "type" : "string",
+                    "description" : "Dataset URI or local dataset ID (to the arff representation of a dataset).",
+                    "default" : ""
                   },
                   "unpruned" : {
                     "type" : "integer",
+                    "description" : "Whether unpruned tree to be generated.",
                     "format" : "int32",
+                    "example" : 0,
                     "enum" : [ 0, 1 ],
                     "default" : 0
                   },
                   "useUnsmoothed" : {
                     "type" : "integer",
+                    "description" : "Whether to use unsmoothed predictions.",
                     "format" : "int32",
                     "enum" : [ 0, 1 ],
                     "default" : 0
                   },
                   "minNumInstances" : {
                     "type" : "number",
+                    "description" : "The minimum number of instances to allow at a leaf node.",
                     "format" : "double",
                     "default" : 4
                   },
                   "buildRegressionTree" : {
                     "type" : "integer",
+                    "description" : "Whether to generate a regression tree/rule instead of a model tree/rule.",
                     "format" : "int32",
                     "enum" : [ 0, 1 ],
                     "default" : 0
                   },
                   "validation" : {
                     "type" : "string",
+                    "description" : "Validation to use.",
                     "enum" : [ "CrossValidation", "Hold-Out" ],
                     "default" : "CrossValidation"
                   },
                   "validationNum" : {
                     "type" : "number",
+                    "description" : "Num of Crossvalidations or Percentage Split %.",
                     "format" : "double",
                     "example" : 10,
                     "default" : 10
@@ -2803,62 +3680,77 @@
                 "type" : "object",
                 "properties" : {
                   "file" : {
-                    "$ref" : "#/components/schemas/FormDataContentDisposition"
+                    "type" : "string",
+                    "description" : "ARFF data file.",
+                    "format" : "binary"
                   },
                   "datasetUri" : {
-                    "type" : "string"
+                    "type" : "string",
+                    "description" : "Dataset URI or local dataset ID (to the arff representation of a dataset).",
+                    "default" : ""
                   },
                   "batchSize" : {
                     "type" : "integer",
+                    "description" : "Adaboost M1: The preferred number of instances to process if batch prediction is being performed. More or fewer instances may be provided, but this gives implementations a chance to specify a preferred batch size.",
                     "format" : "int32",
                     "default" : 100
                   },
                   "numIterations" : {
                     "type" : "integer",
+                    "description" : "Adaboost M1: The number of iterations to be performed.",
                     "format" : "int32",
                     "default" : 10
                   },
                   "useResampling" : {
                     "type" : "integer",
+                    "description" : "Adaboost M1: Whether resampling is used instead of reweighting.",
                     "format" : "int32",
                     "enum" : [ 0, 1 ],
                     "default" : 0
                   },
                   "weightThreshold" : {
                     "type" : "integer",
+                    "description" : "Adaboost M1: Weight threshold for weight pruning.",
                     "format" : "int32",
                     "default" : 100
                   },
                   "unpruned" : {
                     "type" : "integer",
+                    "description" : "Whether unpruned tree to be generated.",
                     "format" : "int32",
+                    "example" : 0,
                     "enum" : [ 0, 1 ],
                     "default" : 0
                   },
                   "useUnsmoothed" : {
                     "type" : "integer",
+                    "description" : "Whether to use unsmoothed predictions.",
                     "format" : "int32",
                     "enum" : [ 0, 1 ],
                     "default" : 0
                   },
                   "minNumInstances" : {
                     "type" : "number",
+                    "description" : "The minimum number of instances to allow at a leaf node.",
                     "format" : "double",
                     "default" : 4
                   },
                   "buildRegressionTree" : {
                     "type" : "integer",
+                    "description" : "Whether to generate a regression tree/rule instead of a model tree/rule.",
                     "format" : "int32",
                     "enum" : [ 0, 1 ],
                     "default" : 0
                   },
                   "validation" : {
                     "type" : "string",
+                    "description" : "Validation to use.",
                     "enum" : [ "CrossValidation", "Hold-Out" ],
                     "default" : "CrossValidation"
                   },
                   "validationNum" : {
                     "type" : "number",
+                    "description" : "Num of Crossvalidations or Percentage Split %.",
                     "format" : "double",
                     "example" : 10,
                     "default" : 10
@@ -2934,56 +3826,70 @@
                 "type" : "object",
                 "properties" : {
                   "file" : {
-                    "$ref" : "#/components/schemas/FormDataContentDisposition"
+                    "type" : "string",
+                    "description" : "ARFF data file.",
+                    "format" : "binary"
                   },
                   "datasetUri" : {
-                    "type" : "string"
+                    "type" : "string",
+                    "description" : "Dataset URI or local dataset ID (to the arff representation of a dataset).",
+                    "default" : ""
                   },
                   "bagSizePercent" : {
                     "type" : "integer",
+                    "description" : "Bagging: Size of each bag, as a percentage of the training set size.",
                     "format" : "int32",
                     "default" : 100
                   },
                   "batchSize" : {
                     "type" : "integer",
+                    "description" : "Bagging: The preferred number of instances to process if batch prediction is being performed. More or fewer instances may be provided, but this gives implementations a chance to specify a preferred batch size.",
                     "format" : "int32",
                     "default" : 100
                   },
                   "numIterations" : {
                     "type" : "integer",
+                    "description" : "Bagging: The number of iterations to be performed.",
                     "format" : "int32",
                     "default" : 10
                   },
                   "unpruned" : {
                     "type" : "integer",
+                    "description" : "Whether unpruned tree to be generated.",
                     "format" : "int32",
+                    "example" : 0,
                     "enum" : [ 0, 1 ],
                     "default" : 0
                   },
                   "useUnsmoothed" : {
                     "type" : "integer",
+                    "description" : "Whether to use unsmoothed predictions.",
                     "format" : "int32",
                     "enum" : [ 0, 1 ],
                     "default" : 0
                   },
                   "minNumInstances" : {
                     "type" : "number",
+                    "description" : "The minimum number of instances to allow at a leaf node.",
                     "format" : "double",
                     "default" : 4
                   },
                   "buildRegressionTree" : {
                     "type" : "integer",
+                    "description" : "Whether to generate a regression tree/rule instead of a model tree/rule.",
                     "format" : "int32",
                     "enum" : [ 0, 1 ],
                     "default" : 0
                   },
                   "validation" : {
                     "type" : "string",
+                    "description" : "Validation to use.",
                     "enum" : [ "CrossValidation", "Hold-Out" ],
                     "default" : "CrossValidation"
                   },
                   "validationNum" : {
                     "type" : "number",
+                    "description" : "Num of Crossvalidations or Percentage Split %.",
                     "format" : "double",
                     "example" : 10,
                     "default" : 10
@@ -3059,18 +3965,24 @@
                 "type" : "object",
                 "properties" : {
                   "file" : {
-                    "$ref" : "#/components/schemas/FormDataContentDisposition"
+                    "type" : "string",
+                    "description" : "ARFF data file.",
+                    "format" : "binary"
                   },
                   "datasetUri" : {
-                    "type" : "string"
+                    "type" : "string",
+                    "description" : "Dataset URI or local dataset ID (to the arff representation of a dataset).",
+                    "default" : ""
                   },
                   "validation" : {
                     "type" : "string",
+                    "description" : "Validation to use.",
                     "enum" : [ "CrossValidation", "Hold-Out" ],
                     "default" : "CrossValidation"
                   },
                   "validationNum" : {
                     "type" : "number",
+                    "description" : "Num of Crossvalidations or Percentage Split %.",
                     "format" : "double",
                     "example" : 10,
                     "default" : 10
@@ -3146,39 +4058,49 @@
                 "type" : "object",
                 "properties" : {
                   "file" : {
-                    "$ref" : "#/components/schemas/FormDataContentDisposition"
+                    "type" : "string",
+                    "description" : "ARFF data file.",
+                    "format" : "binary"
                   },
                   "datasetUri" : {
-                    "type" : "string"
+                    "type" : "string",
+                    "description" : "Dataset URI or local dataset ID (to the arff representation of a dataset).",
+                    "default" : ""
                   },
                   "batchSize" : {
                     "type" : "integer",
+                    "description" : "Adaboost M1: The preferred number of instances to process if batch prediction is being performed. More or fewer instances may be provided, but this gives implementations a chance to specify a preferred batch size.",
                     "format" : "int32",
                     "default" : 100
                   },
                   "numIterations" : {
                     "type" : "integer",
+                    "description" : "Adaboost M1: The number of iterations to be performed.",
                     "format" : "int32",
                     "default" : 10
                   },
                   "useResampling" : {
                     "type" : "integer",
+                    "description" : "Adaboost M1: Whether resampling is used instead of reweighting.",
                     "format" : "int32",
                     "enum" : [ 0, 1 ],
                     "default" : 0
                   },
                   "weightThreshold" : {
                     "type" : "integer",
+                    "description" : "Adaboost M1: Weight threshold for weight pruning.",
                     "format" : "int32",
                     "default" : 100
                   },
                   "validation" : {
                     "type" : "string",
+                    "description" : "Validation to use.",
                     "enum" : [ "CrossValidation", "Hold-Out" ],
                     "default" : "CrossValidation"
                   },
                   "validationNum" : {
                     "type" : "number",
+                    "description" : "Num of Crossvalidations or Percentage Split %.",
                     "format" : "double",
                     "example" : 10,
                     "default" : 10
@@ -3233,12 +4155,12 @@
         "x-orn-@id" : "/algorithm/DecisionStump/adaboost"
       }
     },
-    "/algorithm/J48" : {
+    "/algorithm/DecisionStump/bagging" : {
       "post" : {
-        "tags" : [ "algorithm" ],
-        "summary" : "REST interface to the WEKA J48 classifier.",
-        "description" : "REST interface to the WEKA J48 classifier. Returns a Task URI.",
-        "operationId" : "algorithmJ48Post",
+        "tags" : [ "algorithm", "meta algorithm" ],
+        "summary" : "REST interface to the WEKA Bagging with DecisionStump classifier.",
+        "description" : "REST interface to the WEKA Bagging with DecisionStump classifier. Returns a Task URI.",
+        "operationId" : "algorithmDecisionStumpBaggingPost",
         "parameters" : [ {
           "name" : "subjectid",
           "in" : "header",
@@ -3254,66 +4176,45 @@
                 "type" : "object",
                 "properties" : {
                   "file" : {
-                    "$ref" : "#/components/schemas/FormDataContentDisposition"
+                    "type" : "string",
+                    "description" : "ARFF data file.",
+                    "format" : "binary"
                   },
                   "datasetUri" : {
-                    "type" : "string"
+                    "type" : "string",
+                    "description" : "Dataset URI or local dataset ID (to the arff representation of a dataset).",
+                    "default" : ""
                   },
-                  "binarySplits" : {
+                  "bagSizePercent" : {
                     "type" : "integer",
+                    "description" : "Bagging: Size of each bag, as a percentage of the training set size.",
                     "format" : "int32",
-                    "enum" : [ 0, 1 ],
-                    "default" : 0
+                    "example" : 100,
+                    "default" : 100
                   },
-                  "confidenceFactor" : {
-                    "type" : "number",
-                    "default" : 0.25
-                  },
-                  "minNumObj" : {
+                  "batchSize" : {
                     "type" : "integer",
+                    "description" : "Bagging: The preferred number of instances to process if batch prediction is being performed. More or fewer instances may be provided, but this gives implementations a chance to specify a preferred batch size.",
                     "format" : "int32",
-                    "default" : 2
+                    "example" : 100,
+                    "default" : 100
                   },
-                  "numFolds" : {
+                  "numIterations" : {
                     "type" : "integer",
+                    "description" : "Bagging: The number of iterations to be performed.",
                     "format" : "int32",
-                    "default" : 3
-                  },
-                  "reducedErrorPruning" : {
-                    "type" : "integer",
-                    "format" : "int32",
-                    "default" : 0
-                  },
-                  "seed" : {
-                    "type" : "integer",
-                    "format" : "int32",
-                    "default" : 1
-                  },
-                  "subtreeRaising" : {
-                    "type" : "integer",
-                    "format" : "int32",
-                    "enum" : [ 0, 1 ],
-                    "default" : 1
-                  },
-                  "unpruned" : {
-                    "type" : "integer",
-                    "format" : "int32",
-                    "enum" : [ 0, 1 ],
-                    "default" : 1
-                  },
-                  "useLaplace" : {
-                    "type" : "integer",
-                    "format" : "int32",
-                    "enum" : [ 0, 1 ],
-                    "default" : 0
+                    "example" : 10,
+                    "default" : 10
                   },
                   "validation" : {
                     "type" : "string",
+                    "description" : "Validation to use.",
                     "enum" : [ "CrossValidation", "Hold-Out" ],
                     "default" : "CrossValidation"
                   },
                   "validationNum" : {
                     "type" : "number",
+                    "description" : "Num of Crossvalidations or Percentage Split %.",
                     "format" : "double",
                     "example" : 10,
                     "default" : 10
@@ -3363,9 +4264,193 @@
           "x-orn-@id" : "x-orn:Task"
         },
         "x-algorithm" : {
-          "J48" : "https://en.wikipedia.org/wiki/C4.5_algorithm#Implementations"
+          "DecisionStump" : "https://en.wikipedia.org/wiki/Decision_stump"
         },
-        "x-orn-@id" : "/algorithm/J48"
+        "x-orn-@id" : "/algorithm/DecisionStump/bagging"
+      }
+    },
+    "/algorithm/RandomForest" : {
+      "post" : {
+        "tags" : [ "algorithm", "meta algorithm" ],
+        "summary" : "REST interface to the WEKA RandomForest classifier.",
+        "description" : "REST interface to the WEKA RandomForest classifier. Returns a Task URI.",
+        "operationId" : "algorithmRandomForestPost",
+        "parameters" : [ {
+          "name" : "subjectid",
+          "in" : "header",
+          "description" : "Authorization token",
+          "schema" : {
+            "type" : "string"
+          }
+        } ],
+        "requestBody" : {
+          "content" : {
+            "multipart/form-data" : {
+              "schema" : {
+                "type" : "object",
+                "properties" : {
+                  "file" : {
+                    "type" : "string",
+                    "description" : "ARFF data file.",
+                    "format" : "binary"
+                  },
+                  "datasetUri" : {
+                    "type" : "string",
+                    "description" : "Dataset URI or local dataset ID (to the arff representation of a dataset).",
+                    "default" : ""
+                  },
+                  "storeOutOfBagPredictions" : {
+                    "type" : "boolean",
+                    "description" : "Whether to store the out-of-bag predictions.",
+                    "example" : false,
+                    "enum" : [ true, false ],
+                    "default" : false
+                  },
+                  "numExecutionSlots" : {
+                    "type" : "integer",
+                    "description" : "The number of execution slots (threads) to use for constructing the ensemble.",
+                    "format" : "int32",
+                    "example" : 1,
+                    "default" : 1
+                  },
+                  "bagSizePercent" : {
+                    "type" : "integer",
+                    "description" : "Size of each bag, as a percentage of the training set size.",
+                    "format" : "int32",
+                    "example" : 100,
+                    "default" : 100
+                  },
+                  "numDecimalPlaces" : {
+                    "type" : "integer",
+                    "description" : "The number of decimal places to be used for the output of numbers in the model.",
+                    "format" : "int32",
+                    "example" : 10,
+                    "default" : 10
+                  },
+                  "batchSize" : {
+                    "type" : "integer",
+                    "description" : "The preferred number of instances to process if batch prediction is being performed. More or fewer instances may be provided, but this gives implementations a chance to specify a preferred batch size.",
+                    "format" : "int32",
+                    "example" : 100,
+                    "default" : 100
+                  },
+                  "printClassifiers" : {
+                    "type" : "boolean",
+                    "description" : "Print the individual classifiers in the output",
+                    "example" : false,
+                    "enum" : [ true, false ],
+                    "default" : false
+                  },
+                  "numIterations" : {
+                    "type" : "integer",
+                    "description" : "The number of iterations to be performed.",
+                    "format" : "int32",
+                    "example" : 100,
+                    "default" : 100
+                  },
+                  "outputOutOfBagComplexityStatistics" : {
+                    "type" : "boolean",
+                    "description" : "Whether to output complexity-based statistics when out-of-bag evaluation is performed.",
+                    "example" : false,
+                    "enum" : [ true, false ],
+                    "default" : false
+                  },
+                  "breakTiesRandomly" : {
+                    "type" : "boolean",
+                    "description" : "Break ties randomly when several attributes look equally good.",
+                    "example" : false,
+                    "enum" : [ true, false ],
+                    "default" : false
+                  },
+                  "maxDepth" : {
+                    "type" : "integer",
+                    "description" : "The maximum depth of the tree, 0 for unlimited.",
+                    "format" : "int32",
+                    "example" : 0,
+                    "default" : 0
+                  },
+                  "computeAttributeImportance" : {
+                    "type" : "boolean",
+                    "description" : "Compute attribute importance via mean impurity decrease",
+                    "example" : false,
+                    "enum" : [ true, false ],
+                    "default" : false
+                  },
+                  "calcOutOfBag" : {
+                    "type" : "boolean",
+                    "description" : "Whether the out-of-bag error is calculated.",
+                    "example" : false,
+                    "enum" : [ true, false ],
+                    "default" : false
+                  },
+                  "numFeatures" : {
+                    "type" : "integer",
+                    "description" : "Sets the number of randomly chosen attributes. If 0, int(log_2(#predictors) + 1) is used.",
+                    "format" : "int32",
+                    "example" : 0,
+                    "default" : 0
+                  },
+                  "validation" : {
+                    "type" : "string",
+                    "description" : "Validation to use.",
+                    "enum" : [ "CrossValidation", "Hold-Out" ],
+                    "default" : "CrossValidation"
+                  },
+                  "validationNum" : {
+                    "type" : "number",
+                    "description" : "Num of Crossvalidations or Percentage Split %.",
+                    "format" : "double",
+                    "example" : 10,
+                    "default" : 10
+                  }
+                }
+              }
+            }
+          }
+        },
+        "responses" : {
+          "200" : {
+            "description" : "OK",
+            "content" : {
+              "text/uri-list" : {
+                "schema" : {
+                  "type" : "string"
+                }
+              },
+              "application/json" : {
+                "schema" : {
+                  "type" : "string"
+                }
+              }
+            }
+          },
+          "400" : {
+            "description" : "Bad Request"
+          },
+          "401" : {
+            "description" : "Unauthorized"
+          },
+          "403" : {
+            "description" : "Forbidden"
+          },
+          "404" : {
+            "description" : "Resource Not Found"
+          },
+          "500" : {
+            "description" : "Internal Server Error"
+          }
+        },
+        "x-orn-@type" : "x-orn:Algorithm",
+        "x-orn:expects" : {
+          "x-orn-@id" : "x-orn:Dataset"
+        },
+        "x-orn:returns" : {
+          "x-orn-@id" : "x-orn:Task"
+        },
+        "x-algorithm" : {
+          "Random Forest" : "https://en.wikipedia.org/wiki/Random_forest"
+        },
+        "x-orn-@id" : "/algorithm/RandomForest"
       }
     },
     "/aa/login" : {
@@ -3488,33 +4573,42 @@
                 "type" : "object",
                 "properties" : {
                   "file" : {
-                    "$ref" : "#/components/schemas/FormDataContentDisposition"
+                    "type" : "string",
+                    "description" : "ARFF data file.",
+                    "format" : "binary"
                   },
                   "datasetUri" : {
-                    "type" : "string"
+                    "type" : "string",
+                    "description" : "Dataset URI or local dataset ID (to the arff representation of a dataset).",
+                    "x-orn-@test" : "testvalue"
                   },
                   "numFolds" : {
                     "type" : "integer",
+                    "description" : "Number of folds to use when cross-validating to find the best number of clusters (default = 10)",
                     "format" : "int32",
                     "default" : 10
                   },
                   "numKMeansRuns" : {
                     "type" : "integer",
+                    "description" : "Number of runs of k-means to perform (default = 10)",
                     "format" : "int32",
                     "default" : 10
                   },
                   "maximumNumberOfClusters" : {
                     "type" : "integer",
+                    "description" : "Maximum number of clusters to consider during cross-validation to select the best number of clusters (default = -1).",
                     "format" : "int32",
                     "default" : -1
                   },
                   "numClusters" : {
                     "type" : "integer",
+                    "description" : "The number of clusters. -1 to select number of clusters automatically by cross validation (default = -1).",
                     "format" : "int32",
                     "default" : -1
                   },
                   "maxIterations" : {
                     "type" : "integer",
+                    "description" : "Maximum number of iterations (default = 100).",
                     "format" : "int32",
                     "default" : 100
                   }
@@ -3584,69 +4678,88 @@
                 "type" : "object",
                 "properties" : {
                   "file" : {
-                    "$ref" : "#/components/schemas/FormDataContentDisposition"
+                    "type" : "string",
+                    "description" : "ARFF data file.",
+                    "format" : "binary"
                   },
                   "datasetUri" : {
-                    "type" : "string"
+                    "type" : "string",
+                    "description" : "Dataset URI or local dataset ID (to the arff representation of a dataset)."
                   },
                   "canopyMaxNumCanopiesToHoldInMemory" : {
                     "type" : "integer",
+                    "description" : "If using canopy clustering for initialization and/or speedup this is the maximum number of candidate canopies to retain in main memory during training of the canopy clusterer. T2 distance and data characteristics determine how many candidate canopies are formed before periodic and final pruning are performed. There may not be enough memory available if T2 is set too low.",
                     "format" : "int32"
                   },
                   "canopyMinimumCanopyDensity" : {
                     "type" : "number",
+                    "description" : "If using canopy clustering for initialization and/or speedup this is the minimum T2-based density below which a canopy will be pruned during periodic pruning",
                     "format" : "double"
                   },
                   "canopyPeriodicPruningRate" : {
                     "type" : "number",
+                    "description" : "If using canopy clustering for initialization and/or speedup this is how often to prune low density canopies during training",
                     "format" : "double"
                   },
                   "canopyT1" : {
                     "type" : "number",
+                    "description" : "The T1 distance to use when using canopy clustering. Values < 0 are taken as a positive multiplier for the T2 distance",
                     "format" : "double"
                   },
                   "canopyT2" : {
                     "type" : "number",
+                    "description" : "The T2 distance to use when using canopy clustering. Values < 0 indicate that this should be set using a heuristic based on attribute standard deviation",
                     "format" : "double"
                   },
                   "displayStdDevs" : {
-                    "type" : "boolean"
+                    "type" : "boolean",
+                    "description" : "Display std deviations of numeric attributes and counts of nominal attributes."
                   },
                   "distanceFunction" : {
-                    "type" : "string"
+                    "type" : "string",
+                    "description" : "The distance function to use for instances comparison (default: EuclideanDistance) (e.g.: 'EuclideanDistance -R first-last', 'ManhattanDistance -R 1,2,3,4')."
                   },
                   "dontReplaceMissingValues" : {
-                    "type" : "boolean"
+                    "type" : "boolean",
+                    "description" : "Replace missing values globally with mean/mode."
                   },
                   "fastDistanceCalc" : {
-                    "type" : "boolean"
+                    "type" : "boolean",
+                    "description" : "Uses cut-off values for speeding up distance calculation, but suppresses also the calculation and output of the within cluster sum of squared errors/sum of distances."
                   },
                   "initializationMethod" : {
                     "type" : "integer",
+                    "description" : "The initialization method to use. Random(0), k-means++(1), Canopy(2) or farthest first(3).",
                     "format" : "int32",
                     "enum" : [ 0, 1, 2, 3 ],
                     "default" : 0
                   },
                   "maxIterations" : {
                     "type" : "integer",
+                    "description" : "Set maximum number of iterations.",
                     "format" : "int32"
                   },
                   "numClusters" : {
                     "type" : "integer",
+                    "description" : "Set number of clusters.",
                     "format" : "int32"
                   },
                   "numExecutionSlots" : {
                     "type" : "integer",
+                    "description" : "The number of execution slots (threads) to use. Set equal to the number of available cpu/cores.",
                     "format" : "int32"
                   },
                   "preserveInstancesOrder" : {
-                    "type" : "boolean"
+                    "type" : "boolean",
+                    "description" : "Preserve order of instances."
                   },
                   "reduceNumberOfDistanceCalcsViaCanopies" : {
-                    "type" : "boolean"
+                    "type" : "boolean",
+                    "description" : "Use canopy clustering to reduce the number of distance calculations performed by k-means"
                   },
                   "seed" : {
                     "type" : "integer",
+                    "description" : "The random number seed to be used.",
                     "format" : "int32"
                   }
                 }
@@ -3715,29 +4828,37 @@
                 "type" : "object",
                 "properties" : {
                   "file" : {
-                    "$ref" : "#/components/schemas/FormDataContentDisposition"
+                    "type" : "string",
+                    "description" : "ARFF data file.",
+                    "format" : "binary"
                   },
                   "datasetUri" : {
-                    "type" : "string"
+                    "type" : "string",
+                    "description" : "Dataset URI or local dataset ID (to the arff representation of a dataset)."
                   },
                   "printNewick" : {
-                    "type" : "boolean"
+                    "type" : "boolean",
+                    "description" : "Flag to indicate whether the cluster should be print in Newick format. This can be useful for display in other programs. However, for large datasets a lot of text may be produced, which may not be a nuisance when the Newick format is not required"
                   },
                   "numClusters" : {
                     "type" : "integer",
+                    "description" : "Sets the number of clusters. If a single hierarchy is desired, set this to 1.",
                     "format" : "int32",
                     "default" : 1
                   },
                   "linkType" : {
                     "type" : "string",
+                    "description" : "Sets the method used to measure the distance between two clusters.",
                     "enum" : [ "SINGLE", "COMPLETE", "ADJCOMPLETE", "AVERAGE", "MEAN", "CENTROID", "WARD", "NEIGHBOR_JOINING" ],
                     "default" : "SINGLE"
                   },
                   "distanceIsBranchLength" : {
-                    "type" : "boolean"
+                    "type" : "boolean",
+                    "description" : "If set to false, the distance between clusters is interpreted as the height of the node linking the clusters. This is appropriate for example for single link clustering. However, for neighbor joining, the distance is better interpreted as branch length. Set this flag to get the latter interpretation."
                   },
                   "distanceFunction" : {
-                    "type" : "string"
+                    "type" : "string",
+                    "description" : "Sets the distance function, which measures the distance between two individual. Instances (or possibly the distance between an instance and the centroid of a clusterdepending on the Link type). Examples: 'EuclideanDistance -R first-last', 'weka.core.ChebyshevDistance -R first-last', 'weka.core.ManhattanDistance -R first-last', 'weka.core.MinkowskiDistance -P 2.0 -R first-last' or 'weka.core.FilteredDistance -R first-last -F \"weka.filters.unsupervised.attribute.RandomProjection -N 10 -R 42 -D Sparse1\" -D \"weka.core.EuclideanDistance -R first-last\"'."
                   }
                 }
               }
@@ -3845,7 +4966,7 @@
       "post" : {
         "tags" : [ "dataset" ],
         "summary" : "Filter an internal dataset with weka filter.",
-        "description" : "Filter an internal dataset with weka filter. Remove attributes and normalize or standardize all numeric attributes of a dataset. Change String to Nominal. Or Discretize attributes. Save the dataset by POST request the content-type text/uri-list.",
+        "description" : "Filter an internal dataset with weka filter. Remove attributes and normalize or standardize all numeric attributes of a dataset. Change String to Nominal. Or Discretize attributes. Save the dataset by sending the Accept header text/uri-list as content-type. Use text/x-arff to preview the data.",
         "operationId" : "filter",
         "parameters" : [ {
           "name" : "id",
@@ -4000,7 +5121,7 @@
       "post" : {
         "tags" : [ "dataset" ],
         "summary" : "Download dataset and convert into weka arff format.",
-        "description" : "Download an external dataset and convert it into weka arff format. Save the dataset by POST request the content-type text/uri-list.",
+        "description" : "Download an external dataset and convert it into weka arff format. Save the dataset by sending the Accept header text/uri-list as content-type. Use text/x-arff to preview the data.",
         "operationId" : "create",
         "parameters" : [ {
           "name" : "subjectid",
@@ -4009,6 +5130,14 @@
           "schema" : {
             "type" : "string"
           }
+        }, {
+          "name" : "bearerToken",
+          "in" : "header",
+          "description" : "Token for Bearer Authentication",
+          "schema" : {
+            "type" : "string"
+          },
+          "example" : "Bearer eyJhbGciO..."
         } ],
         "requestBody" : {
           "content" : {
@@ -4017,10 +5146,13 @@
                 "type" : "object",
                 "properties" : {
                   "dataset_uri" : {
-                    "type" : "string"
+                    "type" : "string",
+                    "description" : "URI of the dataset to be used.",
+                    "example" : "https://api-jaqpot.prod.openrisknet.org/jaqpot/services/dataset/Gajewicz_10_29_class"
                   },
                   "class_uri" : {
-                    "type" : "string"
+                    "type" : "string",
+                    "description" : "URI of the feature to define as weka class"
                   }
                 }
               }
@@ -4031,12 +5163,12 @@
           "200" : {
             "description" : "OK",
             "content" : {
-              "text/x-arff" : {
+              "text/uri-list" : {
                 "schema" : {
                   "type" : "string"
                 }
               },
-              "text/uri-list" : {
+              "text/x-arff" : {
                 "schema" : {
                   "type" : "string"
                 }
@@ -4067,62 +5199,6 @@
           "x-orn-@id" : "x-orn:Dataset"
         },
         "x-orn-@id" : "/dataset"
-      }
-    },
-    "/model" : {
-      "get" : {
-        "tags" : [ "model" ],
-        "summary" : "List all Models",
-        "description" : "List all Models.",
-        "operationId" : "getModelList",
-        "parameters" : [ {
-          "name" : "subjectid",
-          "in" : "header",
-          "description" : "Authorization token",
-          "schema" : {
-            "type" : "string"
-          }
-        } ],
-        "responses" : {
-          "200" : {
-            "description" : "OK",
-            "content" : {
-              "text/uri-list" : {
-                "schema" : {
-                  "type" : "string"
-                }
-              },
-              "application/json" : {
-                "schema" : {
-                  "type" : "string"
-                }
-              }
-            }
-          },
-          "400" : {
-            "description" : "Bad Request"
-          },
-          "401" : {
-            "description" : "Unauthorized"
-          },
-          "403" : {
-            "description" : "Forbidden"
-          },
-          "404" : {
-            "description" : "Resource Not Found"
-          },
-          "500" : {
-            "description" : "Internal Server Error"
-          }
-        },
-        "x-orn-@type" : "x-orn:Model",
-        "x-orn:expects" : {
-          "x-orn-@id" : "x-orn:void"
-        },
-        "x-orn:returns" : {
-          "x-orn-@id" : "x-orn:ModelList"
-        },
-        "x-orn-@id" : "/model"
       }
     },
     "/model/{id}" : {
@@ -4216,7 +5292,9 @@
                 "type" : "object",
                 "properties" : {
                   "file" : {
-                    "$ref" : "#/components/schemas/FormDataContentDisposition"
+                    "type" : "string",
+                    "description" : "ARFF data file.",
+                    "format" : "binary"
                   },
                   "datasetID" : {
                     "type" : "string"
@@ -4261,6 +5339,62 @@
           "x-orn-@id" : "x-orn:Prediction"
         },
         "x-orn-@id" : "/model/{id}"
+      }
+    },
+    "/model" : {
+      "get" : {
+        "tags" : [ "model" ],
+        "summary" : "List all Models",
+        "description" : "List all Models.",
+        "operationId" : "getModelList",
+        "parameters" : [ {
+          "name" : "subjectid",
+          "in" : "header",
+          "description" : "Authorization token",
+          "schema" : {
+            "type" : "string"
+          }
+        } ],
+        "responses" : {
+          "200" : {
+            "description" : "OK",
+            "content" : {
+              "text/uri-list" : {
+                "schema" : {
+                  "type" : "string"
+                }
+              },
+              "application/json" : {
+                "schema" : {
+                  "type" : "string"
+                }
+              }
+            }
+          },
+          "400" : {
+            "description" : "Bad Request"
+          },
+          "401" : {
+            "description" : "Unauthorized"
+          },
+          "403" : {
+            "description" : "Forbidden"
+          },
+          "404" : {
+            "description" : "Resource Not Found"
+          },
+          "500" : {
+            "description" : "Internal Server Error"
+          }
+        },
+        "x-orn-@type" : "x-orn:Model",
+        "x-orn:expects" : {
+          "x-orn-@id" : "x-orn:void"
+        },
+        "x-orn:returns" : {
+          "x-orn-@id" : "x-orn:ModelList"
+        },
+        "x-orn-@id" : "/model"
       }
     },
     "/task/{id}" : {
@@ -4376,52 +5510,12 @@
       }
     }
   },
-  "components" : {
-    "schemas" : {
-      "FormDataContentDisposition" : {
-        "type" : "object",
-        "properties" : {
-          "type" : {
-            "type" : "string"
-          },
-          "parameters" : {
-            "type" : "object",
-            "additionalProperties" : {
-              "type" : "string"
-            }
-          },
-          "fileName" : {
-            "type" : "string"
-          },
-          "creationDate" : {
-            "type" : "string",
-            "format" : "date-time"
-          },
-          "modificationDate" : {
-            "type" : "string",
-            "format" : "date-time"
-          },
-          "readDate" : {
-            "type" : "string",
-            "format" : "date-time"
-          },
-          "size" : {
-            "type" : "integer",
-            "format" : "int64"
-          },
-          "name" : {
-            "type" : "string"
-          }
-        }
-      }
-    }
-  },
   "x-orn-@type" : "Service",
   "x-orn-@context" : {
+    "x-orn-@type" : "@type",
     "@vocab" : "http://openrisknet.org/schema#",
-    "x-orn-@id" : "@id",
     "x-orn" : "http://openrisknet.org/schema#",
-    "x-orn-@type" : "@type"
+    "x-orn-@id" : "@id"
   },
   "x-orn-@id" : "https://jguweka.prod.openrisknet.org"
 }
